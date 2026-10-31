@@ -270,45 +270,48 @@ body {
   text-shadow: 0 0 10px rgba(255, 107, 107, 0.45);
 }
 
-.cert-accreditations-plaque {
-  background: #ffffff;
-  border: 1.5px solid rgba(255, 215, 0, 0.85);
-  border-radius: 8px;
-  padding: 5px 16px;
+.cert-accreditations-wrapper {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 9999px;
+  padding: 5px 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 14px rgba(255, 215, 0, 0.35);
-  margin: 7px 0 9px 0;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  margin: 6px 0 8px 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-.cert-accreditations-plaque:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.65), 0 0 20px rgba(255, 215, 0, 0.55);
+.cert-accreditations-wrapper:hover {
+  transform: scale(1.02);
+  border-color: rgba(255, 215, 0, 0.75);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65), 0 0 16px rgba(255, 215, 0, 0.35);
 }
 
-.cert-accreditations-plaque img {
-  max-width: 530px;
+.cert-accreditations-img {
+  max-width: 500px;
   width: 100%;
   height: auto;
-  max-height: 32px;
+  max-height: 28px;
   object-fit: contain;
   display: block;
+  filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.9)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
   image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
 }
 
 .cert-dept-title {
   font-family: var(--font-cert);
-  font-size: clamp(1.05rem, 1.5vw, 1.32rem);
-  font-weight: 800;
-  color: var(--accent-green);
-  text-transform: none; /* Title Case matching Certificate! */
+  font-size: clamp(1.05rem, 1.5vw, 1.34rem);
+  font-weight: 700;
+  color: #f7d070; /* Radiant warm champagne gold matching certificate aesthetics */
+  text-transform: none; /* Exact Title Case matching Certificate! */
   letter-spacing: 0.025em;
   line-height: 1.25;
   margin-top: 4px;
-  text-shadow: 0 0 14px rgba(34, 224, 122, 0.45);
+  text-shadow: 0 0 14px rgba(247, 208, 112, 0.4), 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* Floating Controls Island (Added somewhere else - bottom floating bar) */
@@ -478,13 +481,13 @@ body {
   .cert-dept-title {
     font-size: 0.95rem;
   }
-  .cert-accreditations-plaque {
-    padding: 4px 10px;
-    margin: 5px 0 7px 0;
+  .cert-accreditations-wrapper {
+    padding: 4px 12px;
+    margin: 4px 0 6px 0;
   }
-  .cert-accreditations-plaque img {
+  .cert-accreditations-img {
     max-width: 320px;
-    max-height: 24px;
+    max-height: 22px;
   }
   .floating-controls-island {
     bottom: 12px;

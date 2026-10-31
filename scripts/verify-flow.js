@@ -50,6 +50,7 @@ async function main() {
     chromePath,
     [
       "--headless=new",
+      "--no-sandbox",
       `--remote-debugging-port=${debugPort}`,
       `--user-data-dir=${tempUserDataDir}`,
       "--no-first-run",
@@ -159,7 +160,7 @@ async function main() {
   console.log("Department title in header:", deptTitle);
   console.log("Launch button text:", launchBtnText);
 
-  if (!landingVisible || !deptTitle.includes("INFORMATION SCIENCE")) {
+  if (!landingVisible || !deptTitle.toUpperCase().includes("INFORMATION SCIENCE")) {
     throw new Error("Landing screen verification failed!");
   }
   await takeScreenshot("test-1-landing.png");

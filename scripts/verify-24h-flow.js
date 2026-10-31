@@ -44,6 +44,7 @@ async function main() {
     chromePath,
     [
       "--headless=new",
+      "--no-sandbox",
       `--remote-debugging-port=${debugPort}`,
       `--user-data-dir=${tempUserDataDir}`,
       "--no-first-run",
@@ -135,7 +136,7 @@ async function main() {
   console.log("Event date badge:", dateBadge);
   console.log("Launch button text:", launchBtn);
 
-  if (!isLanding || !deptTitle.includes("INFORMATION SCIENCE") || !dateBadge.includes("5th & 6th November 2026")) {
+  if (!isLanding || !deptTitle.toUpperCase().includes("INFORMATION SCIENCE") || !dateBadge.includes("5th & 6th November 2026")) {
     throw new Error("Landing screen verification failed!");
   }
   await takeScreenshot("test-24h-1-landing.png");
