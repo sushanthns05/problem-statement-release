@@ -198,3 +198,4 @@ export class GlitterEngine {
     window.removeEventListener("resize", this.handleResize);
   }
 }
+

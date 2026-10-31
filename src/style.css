@@ -141,15 +141,15 @@ body {
 }
 
 .header-logo-badge {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: #ffffff;
   padding: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 14px rgba(63, 216, 255, 0.4);
+  box-shadow: 0 0 16px rgba(63, 216, 255, 0.45);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   overflow: hidden;
   flex-shrink: 0;
@@ -157,12 +157,17 @@ body {
 
 .header-logo-badge.logo-rect {
   border-radius: 12px;
+  width: 54px;
+  height: 54px;
+  padding: 2px;
 }
 
 .header-logo-badge img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .header-logo-badge:hover {
