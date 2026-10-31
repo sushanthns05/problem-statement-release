@@ -1,0 +1,7 @@
+node_modules/
+dist/
+test-*.png
+.DS_Store
+.firebase/
+firebase-debug.log
+

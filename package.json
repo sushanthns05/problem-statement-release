@@ -1,0 +1,17 @@
+{
+  "name": "hackathon-launch-countdown",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hackathon Problem Statement Launch Countdown Web App",
+  "type": "module",
+  "scripts": {
+    "dev": "node ./node_modules/vite/bin/vite.js",
+    "build": "node ./node_modules/vite/bin/vite.js build",
+    "preview": "node ./node_modules/vite/bin/vite.js preview",
+    "test": "node ./node_modules/vitest/vitest.mjs run"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0",
+    "vitest": "^3.0.5"
+  }
+}
