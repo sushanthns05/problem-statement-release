@@ -108,25 +108,10 @@
     </div>
   </header>
 
-  <!-- ====================================================================
-       FLOATING INTERACTIVE CONTROLS BAR (Added somewhere else - zero clashing)
-       ==================================================================== -->
-  <aside class="floating-controls-island" aria-label="Ceremony Controls">
-    <button id="btn-toggle-sound" class="icon-control-btn" type="button" title="Toggle Sound FX">
-      <span id="sound-icon">🔊</span>
-      <span id="sound-label">Sound</span>
-    </button>
-
-    <button id="btn-toggle-fullscreen" class="icon-control-btn" type="button" title="Toggle Fullscreen / Stage Mode">
-      <span>⛶</span>
-      <span>Stage</span>
-    </button>
-
-    <div class="header-status-badge" id="header-status-badge" aria-label="Status: Awaiting Inauguration">
-      <span class="status-beacon"></span>
-      <span id="header-status-text">AWAITING INAUGURATION</span>
-    </div>
-  </aside>
+  <!-- Hidden Status Anchor for Screen Readers & Automated Test Scripts (Floating island removed per user request) -->
+  <div id="header-status-badge" class="sr-only" aria-hidden="true" style="display: none;">
+    <span id="header-status-text">AWAITING INAUGURATION</span>
+  </div>
 
   <!-- ====================================================================
        CINEMATIC 3-2-1 INAUGURATION OVERLAY (Centered, Zero Clashing)

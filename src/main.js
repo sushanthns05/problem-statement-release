@@ -86,13 +86,17 @@ export function setScreen(targetState) {
   screenCountdown.classList.remove("active");
 
   if (targetState === "COUNTDOWN") {
-    headerStatusBadge.classList.add("status-live");
-    headerStatusText.textContent = "🔴 LIVE: 24-HR COUNTDOWN";
-    headerStatusBadge.setAttribute("aria-label", "Status: 24-Hour Hackathon is Officially Live");
+    if (headerStatusText) headerStatusText.textContent = "🔴 LIVE: 24-HR COUNTDOWN";
+    if (headerStatusBadge) {
+      headerStatusBadge.classList.add("status-live");
+      headerStatusBadge.setAttribute("aria-label", "Status: 24-Hour Hackathon is Officially Live");
+    }
   } else {
-    headerStatusBadge.classList.remove("status-live");
-    headerStatusText.textContent = "AWAITING INAUGURATION";
-    headerStatusBadge.setAttribute("aria-label", "Status: Awaiting Inauguration");
+    if (headerStatusText) headerStatusText.textContent = "AWAITING INAUGURATION";
+    if (headerStatusBadge) {
+      headerStatusBadge.classList.remove("status-live");
+      headerStatusBadge.setAttribute("aria-label", "Status: Awaiting Inauguration");
+    }
   }
 
   switch (targetState) {
@@ -290,34 +294,70 @@ function announceScreenReader(message) {
  * Event Listeners & Stage Controls
  */
 function initEventListeners() {
-  // Principal Launch Button
-  btnLaunchNow.addEventListener("click", () => {
-    sound.init(); // Initialize Web Audio API on click gesture
-    setScreen("INTRO");
-  });
+  // Sound ON by default: Unlock Web Audio API on first user gesture
+  const unlockAudio = () => {
+    sound.init();
+    window.removeEventListener("click", unlockAudio);
+    window.removeEventListener("keydown", unlockAudio);
+    window.removeEventListener("touchstart", unlockAudio);
+  };
+  window.addEventListener("click", unlockAudio, { once: true });
+  window.addEventListener("keydown", unlockAudio, { once: true });
+  window.addEventListener("touchstart", unlockAudio, { once: true });
 
-  // Skip Intro
-  btnSkipIntro.addEventListener("click", skipIntro);
-
-  // Sound FX Toggle
-  btnToggleSound.addEventListener("click", () => {
-    const isMuted = sound.toggleMute();
-    soundIcon.textContent = isMuted ? "🔇" : "🔊";
-    btnToggleSound.setAttribute("title", isMuted ? "Sound is Muted" : "Sound is Active");
-  });
-
-  // Fullscreen / Stage Mode Toggle
-  btnToggleFullscreen.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch((err) => {
-        console.warn("Fullscreen request error:", err);
-      });
-    } else {
-      document.exitFullscreen().catch((err) => {
-        console.warn("Exit fullscreen error:", err);
-      });
+  // Fullscreen keyboard shortcut: Press "F" or "f" to toggle fullscreen automatically
+  window.addEventListener("keydown", (e) => {
+    if (e.target && ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) return;
+    if (e.key === "f" || e.key === "F") {
+      e.preventDefault();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((err) => {
+          console.warn("Fullscreen request error:", err);
+        });
+      } else {
+        document.exitFullscreen().catch((err) => {
+          console.warn("Exit fullscreen error:", err);
+        });
+      }
     }
   });
+
+  // Principal Launch Button
+  if (btnLaunchNow) {
+    btnLaunchNow.addEventListener("click", () => {
+      sound.init(); // Initialize Web Audio API on click gesture
+      setScreen("INTRO");
+    });
+  }
+
+  // Skip Intro
+  if (btnSkipIntro) {
+    btnSkipIntro.addEventListener("click", skipIntro);
+  }
+
+  // Optional Sound FX Toggle (if present)
+  if (btnToggleSound) {
+    btnToggleSound.addEventListener("click", () => {
+      const isMuted = sound.toggleMute();
+      if (soundIcon) soundIcon.textContent = isMuted ? "🔇" : "🔊";
+      btnToggleSound.setAttribute("title", isMuted ? "Sound is Muted" : "Sound is Active");
+    });
+  }
+
+  // Optional Fullscreen Button (if present)
+  if (btnToggleFullscreen) {
+    btnToggleFullscreen.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((err) => {
+          console.warn("Fullscreen request error:", err);
+        });
+      } else {
+        document.exitFullscreen().catch((err) => {
+          console.warn("Exit fullscreen error:", err);
+        });
+      }
+    });
+  }
 
   // Trigger Glitter Button
   btnFireGlitter.addEventListener("click", () => {
