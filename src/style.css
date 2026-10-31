@@ -675,88 +675,88 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .event-hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 14px;
+  gap: 7px;
+  padding: 5px 16px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--border-radius-full);
   font-family: var(--font-display);
-  font-size: 0.74rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--accent-cyan);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  box-shadow: 0 0 12px rgba(63, 216, 255, 0.2);
+  box-shadow: 0 0 14px rgba(63, 216, 255, 0.2);
 }
 
 .event-date-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 14px;
+  gap: 7px;
+  padding: 5px 16px;
   background: rgba(255, 215, 0, 0.1);
   border: 1px solid rgba(255, 215, 0, 0.35);
   border-radius: var(--border-radius-full);
-  font-size: 0.74rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--gold);
   letter-spacing: 0.04em;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.2);
 }
 
 .landing-title {
   font-family: var(--font-display);
   font-weight: 800;
   line-height: 1.12;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .landing-title .title-line-1 {
   display: block;
-  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-size: clamp(1.85rem, 3.8vw, 2.75rem);
   color: #ffffff;
   letter-spacing: -0.01em;
-  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.85);
 }
 
 .landing-title .title-line-2 {
   display: block;
-  font-size: clamp(1.55rem, 3.2vw, 2.35rem);
+  font-size: clamp(2.35rem, 4.8vw, 3.6rem);
   letter-spacing: -0.01em;
   background: linear-gradient(135deg, var(--gold) 0%, #ffdf40 30%, var(--accent-green) 70%, var(--accent-cyan) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.45));
+  filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.5));
 }
 
 .landing-subtitle {
-  font-size: clamp(0.78rem, 1.1vw, 0.90rem);
+  font-size: clamp(0.90rem, 1.35vw, 1.10rem);
   color: var(--text-dim);
-  max-width: 580px;
-  line-height: 1.4;
-  margin-bottom: 10px;
+  max-width: 650px;
+  line-height: 1.5;
+  margin-bottom: 12px;
 }
 
 .principal-invitation-box {
   background: rgba(255, 255, 255, 0.03);
   border: 1px dashed rgba(255, 215, 0, 0.35);
   border-radius: var(--border-radius-lg);
-  padding: 6px 18px;
-  margin-bottom: 14px;
+  padding: 8px 22px;
+  margin-bottom: 16px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: var(--gold);
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.12);
 }
 
 /* Grand Ceremonial Launch Button */
@@ -766,17 +766,17 @@ body {
   background: linear-gradient(135deg, #22e07a 0%, #10b981 60%, #059669 100%);
   color: #021a0d;
   font-family: var(--font-display);
-  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  font-size: clamp(1.15rem, 2.2vw, 1.42rem);
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 13px 44px;
+  padding: 16px 52px;
   border-radius: var(--border-radius-full);
   cursor: pointer;
   position: relative;
   box-shadow: 
-    0 0 25px rgba(34, 224, 122, 0.6),
-    0 0 50px rgba(34, 224, 122, 0.25),
+    0 0 28px rgba(34, 224, 122, 0.6),
+    0 0 58px rgba(34, 224, 122, 0.28),
     inset 0 2px 0 rgba(255, 255, 255, 0.7);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   animation: grandPulse 2.4s infinite ease-in-out;
@@ -785,8 +785,8 @@ body {
 .launch-button:hover {
   transform: translateY(-2px) scale(1.03);
   box-shadow: 
-    0 0 35px rgba(34, 224, 122, 0.85),
-    0 0 75px rgba(34, 224, 122, 0.45),
+    0 0 38px rgba(34, 224, 122, 0.85),
+    0 0 85px rgba(34, 224, 122, 0.45),
     inset 0 2px 0 rgba(255, 255, 255, 0.9);
 }
 
@@ -797,19 +797,19 @@ body {
 @keyframes grandPulse {
   0%, 100% {
     box-shadow: 
-      0 0 20px rgba(34, 224, 122, 0.5),
-      0 0 45px rgba(34, 224, 122, 0.2);
+      0 0 22px rgba(34, 224, 122, 0.5),
+      0 0 50px rgba(34, 224, 122, 0.22);
   }
   50% {
     box-shadow: 
-      0 0 35px rgba(34, 224, 122, 0.85),
-      0 0 80px rgba(34, 224, 122, 0.45);
+      0 0 38px rgba(34, 224, 122, 0.85),
+      0 0 90px rgba(34, 224, 122, 0.45);
   }
 }
 
 .landing-footer-note {
-  margin-top: 10px;
-  font-size: 0.72rem;
+  margin-top: 12px;
+  font-size: 0.78rem;
   color: var(--text-muted);
 }
 
