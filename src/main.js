@@ -68,10 +68,10 @@ function initContent() {
   document.title = `${CONFIG.eventName} | 24-Hour Hackathon Launch Countdown`;
 
   const deptTitle = document.getElementById("header-dept-title");
-  if (deptTitle) deptTitle.textContent = CONFIG.departmentName;
+  if (deptTitle) deptTitle.textContent = "Department of Information Science & Engineering";
 
   const collegeTitle = document.getElementById("header-college-title");
-  if (collegeTitle) collegeTitle.textContent = `${CONFIG.collegeName}, ${CONFIG.location}`;
+  if (collegeTitle) collegeTitle.textContent = "SJB Institute of Technology";
 }
 
 /**

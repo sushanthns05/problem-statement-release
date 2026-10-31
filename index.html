@@ -7,10 +7,10 @@
   <meta name="description" content="Lakshya 2026 - 24-Hour National Hackathon Launch Countdown | SJBIT Department of Information Science and Engineering" />
   <title>Lakshya 2026 | 24-Hour Hackathon Launch Countdown</title>
 
-  <!-- Google Fonts: Space Grotesk (Display), Orbitron (Digital Timer), Inter (Body) -->
+  <!-- Google Fonts: Playfair Display (Certificate Serif), Cinzel, Space Grotesk, Orbitron, Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Space+Grotesk:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Space+Grotesk:wght@600;700;800;900&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/src/style.css" />
 </head>
@@ -23,43 +23,111 @@
   <!-- Accessible Screen Reader Announcements -->
   <div id="sr-countdown-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Header Navigation with Official Dignitary & Institutional Banner (matching Image 1) -->
+  <!-- ====================================================================
+       OFFICIAL INSTITUTIONAL HEADER (Exact Certificate Alignment & Fonts, Blended with Dark Theme)
+       ==================================================================== -->
   <header class="site-header" role="banner">
-    <div class="header-banner-container">
-      <h1 class="sr-only">SJB Institute of Technology - Department of Information Science and Engineering</h1>
-      <span id="header-dept-title" class="sr-only">DEPARTMENT OF INFORMATION SCIENCE AND ENGINEERING</span>
-      <span id="header-college-title" class="sr-only">SJB Institute of Technology, Bengaluru</span>
+    <div class="cert-header-container">
 
-      <div class="header-banner-wrapper">
-        <img 
-          src="/assets/official-header-banner.jpg" 
-          alt="Sri Adichunchanagiri Shikshana Trust® - SJB Institute of Technology - Department of Information Science & Engineering" 
-          class="header-official-banner-img"
-          loading="eager"
-        />
-      </div>
-    </div>
+      <!-- LEFT WING: Staggered Portraits as in Certificate Image 1 -->
+      <div class="cert-wing cert-wing-left">
+        <!-- Top: Dr. Nirmalanandanatha Mahaswamiji -->
+        <div class="cert-avatar-badge cert-avatar-top" title="His Holiness Jagadguru Sri Sri Sri Dr. Nirmalanandanatha Mahaswamiji">
+          <img src="/assets/dignitary-nirmalanandanatha-clean.png" alt="His Holiness Jagadguru Sri Sri Sri Dr. Nirmalanandanatha Mahaswamiji" loading="eager" />
+        </div>
 
-    <!-- Controls Bar directly below the header banner (matching Image 2) -->
-    <div class="header-sub-controls-bar">
-      <div class="sub-controls-inner">
-        <button id="btn-toggle-sound" class="icon-control-btn" type="button" title="Toggle Sound FX">
-          <span id="sound-icon">🔊</span>
-          <span id="sound-label">Sound</span>
-        </button>
-
-        <button id="btn-toggle-fullscreen" class="icon-control-btn" type="button" title="Toggle Fullscreen / Stage Mode">
-          <span>⛶</span>
-          <span>Stage</span>
-        </button>
-
-        <div class="header-status-badge" id="header-status-badge" aria-label="Status: Awaiting Inauguration">
-          <span class="status-beacon"></span>
-          <span id="header-status-text">AWAITING INAUGURATION</span>
+        <!-- Bottom-Left: Revered Trustee / Secretary -->
+        <div class="cert-avatar-badge cert-avatar-bottom" title="Revered Trustee / Secretary, Sri Adichunchanagiri Shikshana Trust">
+          <img src="/assets/dignitary-trustee-clean.png" alt="Revered Trustee / Secretary" loading="eager" />
         </div>
       </div>
+
+      <!-- CENTER: Certificate Academic Hierarchy & Same Font -->
+      <div class="cert-center-column">
+        <div class="cert-invocation">|| Jai Sri Gurudev ||</div>
+        <div class="cert-trust-title">Sri Adichunchanagiri Shikshana Trust&reg;</div>
+        <h1 class="cert-college-title" id="header-college-title">SJB Institute of Technology</h1>
+        <div class="cert-college-address">No.67, BGS Health &amp; Education City, Dr.Vishnuvardhan Rd, Kengeri, Bengaluru, Karnataka 560060</div>
+        <div class="cert-autonomous-badge">An Autonomous Institute under VTU</div>
+
+        <div class="cert-accreditations-row">
+          <img 
+            src="/assets/accreditations-row-transparent.png" 
+            alt="Accreditations: AICTE, NAAC A+, NBA, ARIIA, IIC, ISO 9001:2015, QS I-GAUGE GOLD, IEEE Bengaluru" 
+            loading="eager"
+          />
+        </div>
+
+        <div class="cert-dept-title" id="header-dept-title">Department of Information Science &amp; Engineering</div>
+      </div>
+
+      <!-- RIGHT WING: Staggered Portrait & Jubilee as in Certificate Image 1 -->
+      <div class="cert-wing cert-wing-right">
+        <!-- Top: Sri Sri Prakashnath Swamiji -->
+        <div class="cert-avatar-badge cert-avatar-top" title="Revered Sri Sri Prakashnath Swamiji">
+          <img src="/assets/dignitary-prakashnath-clean.png" alt="Revered Sri Sri Prakashnath Swamiji" loading="eager" />
+        </div>
+
+        <!-- Bottom-Right: Silver Jubilee 25 Years Emblem -->
+        <div class="cert-avatar-badge cert-avatar-bottom cert-jubilee-badge" title="SJBIT Silver Jubilee (25 Years of Excellence in Education)">
+          <img src="/assets/sjbit-silver-jubilee-logo-clean.png" alt="SJBIT Silver Jubilee 25 Years" loading="eager" />
+        </div>
+      </div>
+
     </div>
   </header>
+
+  <!-- ====================================================================
+       FLOATING INTERACTIVE CONTROLS BAR (Added somewhere else - zero clashing)
+       ==================================================================== -->
+  <aside class="floating-controls-island" aria-label="Ceremony Controls">
+    <button id="btn-toggle-sound" class="icon-control-btn" type="button" title="Toggle Sound FX">
+      <span id="sound-icon">🔊</span>
+      <span id="sound-label">Sound</span>
+    </button>
+
+    <button id="btn-toggle-fullscreen" class="icon-control-btn" type="button" title="Toggle Fullscreen / Stage Mode">
+      <span>⛶</span>
+      <span>Stage</span>
+    </button>
+
+    <div class="header-status-badge" id="header-status-badge" aria-label="Status: Awaiting Inauguration">
+      <span class="status-beacon"></span>
+      <span id="header-status-text">AWAITING INAUGURATION</span>
+    </div>
+  </aside>
+
+  <!-- ====================================================================
+       CINEMATIC 3-2-1 INAUGURATION OVERLAY (Centered, Zero Clashing)
+       ==================================================================== -->
+  <div id="screen-intro" class="screen intro-overlay-fullscreen" role="dialog" aria-modal="true" aria-label="Inauguration 3-2-1 Sequence">
+    <!-- 3-2-1 Container -->
+    <div id="intro-countdown-box" class="intro-box">
+      <div class="intro-circle-container">
+        <svg class="intro-svg-ring" viewBox="0 0 220 220" aria-hidden="true">
+          <circle class="intro-ring-track" cx="110" cy="110" r="100"></circle>
+          <circle id="intro-svg-progress" class="intro-ring-progress" cx="110" cy="110" r="100"></circle>
+        </svg>
+        <div id="intro-number-display" class="intro-number">3</div>
+      </div>
+      <!-- For 3s: GET, For 2s: SET, For 1s: GO -->
+      <div id="intro-label-display" class="intro-action-label">GET</div>
+    </div>
+
+    <!-- Grand "WE ARE LIVE!" Message Display -->
+    <div id="intro-live-splash" class="live-splash-box" style="display: none;">
+      <div class="live-splash-beacon-row">
+        <span class="live-splash-beacon"></span>
+        <span class="live-splash-tag">OFFICIALLY INAUGURATED</span>
+      </div>
+      <h2 class="live-splash-title">WE ARE LIVE!</h2>
+      <p class="live-splash-subtitle">Lakshya 2026 &bull; 24-Hour Hackathon Commences Now</p>
+    </div>
+
+    <button id="btn-skip-intro" class="skip-intro-btn" type="button">
+      Skip &rarr;
+    </button>
+  </div>
 
   <!-- Main Screens Container -->
   <main class="screens-container">
@@ -105,38 +173,7 @@
       </div>
     </section>
 
-    <!-- ====================================================================
-         SCREEN 2: 3-2-1 INAUGURATION COUNTDOWN (GET -> SET -> GO -> LIVE!)
-         ==================================================================== -->
-    <div id="screen-intro" class="screen" role="dialog" aria-modal="true" aria-label="Inauguration 3-2-1 Sequence">
-      
-      <!-- 3-2-1 Container -->
-      <div id="intro-countdown-box" class="intro-box">
-        <div class="intro-circle-container">
-          <svg class="intro-svg-ring" viewBox="0 0 220 220" aria-hidden="true">
-            <circle class="intro-ring-track" cx="110" cy="110" r="100"></circle>
-            <circle id="intro-svg-progress" class="intro-ring-progress" cx="110" cy="110" r="100"></circle>
-          </svg>
-          <div id="intro-number-display" class="intro-number">3</div>
-        </div>
-        <!-- For 3s: GET, For 2s: SET, For 1s: GO -->
-        <div id="intro-label-display" class="intro-action-label">GET</div>
-      </div>
 
-      <!-- Grand "WE ARE LIVE!" Message Display -->
-      <div id="intro-live-splash" class="live-splash-box" style="display: none;">
-        <div class="live-splash-beacon-row">
-          <span class="live-splash-beacon"></span>
-          <span class="live-splash-tag">OFFICIALLY INAUGURATED</span>
-        </div>
-        <h2 class="live-splash-title">WE ARE LIVE!</h2>
-        <p class="live-splash-subtitle">Lakshya 2026 &bull; 24-Hour Hackathon Commences Now</p>
-      </div>
-
-      <button id="btn-skip-intro" class="skip-intro-btn" type="button">
-        Skip &rarr;
-      </button>
-    </div>
 
     <!-- ====================================================================
          SCREEN 3: LIVE 24-HOUR COUNTDOWN SCREEN
