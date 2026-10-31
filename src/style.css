@@ -607,14 +607,103 @@ body {
   animation: numberZoomFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.intro-label {
-  font-family: var(--font-digital);
-  font-size: 1.3rem;
-  letter-spacing: 0.35em;
+.intro-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInScreen 0.4s ease-out;
+}
+
+.intro-action-label {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 9vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
   color: var(--accent-cyan);
-  text-shadow: 0 0 20px var(--accent-cyan);
-  margin-top: 36px;
-  animation: readyPulse 1s infinite alternate;
+  text-shadow: 
+    0 0 25px rgba(63, 216, 255, 0.9),
+    0 0 50px rgba(63, 216, 255, 0.5),
+    0 0 10px #ffffff;
+  margin-top: 28px;
+  animation: actionWordPop 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes actionWordPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  25% { transform: scale(1.15); opacity: 1; }
+  85% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.05); opacity: 0.3; }
+}
+
+/* Grand "WE ARE LIVE!" Message Display */
+.live-splash-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  animation: liveSplashZoom 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  padding: 20px;
+}
+
+@keyframes liveSplashZoom {
+  0% { transform: scale(0.4); opacity: 0; }
+  50% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.live-splash-beacon-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 24px;
+  background: rgba(255, 51, 102, 0.18);
+  border: 1px solid rgba(255, 51, 102, 0.6);
+  border-radius: var(--border-radius-full);
+  margin-bottom: 24px;
+  box-shadow: 0 0 25px rgba(255, 51, 102, 0.4);
+}
+
+.live-splash-beacon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ff3366;
+  box-shadow: 0 0 18px #ff3366;
+  animation: liveHeartbeat 0.7s infinite alternate;
+}
+
+.live-splash-tag {
+  font-family: var(--font-digital);
+  font-size: 0.95rem;
+  letter-spacing: 0.15em;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.live-splash-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 12vw, 8rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #ffffff 0%, #ff4d79 40%, #22e07a 80%, #3fd8ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 45px rgba(255, 51, 102, 0.7));
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.live-splash-subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3vw, 1.8rem);
+  color: var(--gold);
+  font-weight: 700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+  letter-spacing: 0.05em;
 }
 
 .skip-intro-btn {

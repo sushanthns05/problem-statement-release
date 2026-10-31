@@ -5,7 +5,6 @@ import {
   clearStoredLaunchTime,
   get24HourRemaining,
   format24HourDisplay,
-  formatISTDate,
   shouldAnnounceToScreenReader,
 } from "./timer.js";
 import { ParticleBackground } from "./particles.js";
@@ -23,10 +22,10 @@ let currentScreen = "LANDING";
 let launchTimestamp = getStoredLaunchTime();
 let countdownInterval = null;
 let introInterval = null;
+let liveSplashTimeout = null;
 let particleBg = null;
 let glitterEngine = null;
 let lastAnnouncedMinute = null;
-let isRehearsal10s = false;
 
 // DOM Elements
 const screenLanding = document.getElementById("screen-landing");
@@ -43,10 +42,12 @@ const soundIcon = document.getElementById("sound-icon");
 const btnToggleFullscreen = document.getElementById("btn-toggle-fullscreen");
 
 const btnFireGlitter = document.getElementById("btn-fire-glitter");
-const btnTest10s = document.getElementById("btn-test-10s");
 const btnResetCeremony = document.getElementById("btn-reset-ceremony");
 
+const introCountdownBox = document.getElementById("intro-countdown-box");
+const introLiveSplash = document.getElementById("intro-live-splash");
 const introNumberDisplay = document.getElementById("intro-number-display");
+const introLabelDisplay = document.getElementById("intro-label-display");
 const introSvgProgress = document.getElementById("intro-svg-progress");
 
 const digitHours = document.getElementById("digit-hours");
@@ -55,16 +56,13 @@ const digitSeconds = document.getElementById("digit-seconds");
 const digitCentis = document.getElementById("digit-centis");
 const hackathonProgressBar = document.getElementById("hackathon-progress-bar");
 const elapsedPercentLabel = document.getElementById("elapsed-percent-label");
-const metaStartTime = document.getElementById("meta-start-time");
 
-const milestonesGrid = document.getElementById("milestones-grid");
 const srAnnouncer = document.getElementById("sr-countdown-announcer");
-
 const particleCanvas = document.getElementById("particle-canvas");
 const glitterCanvas = document.getElementById("glitter-canvas");
 
 /**
- * Initialize Branding & Milestones from CONFIG
+ * Initialize Branding from CONFIG
  */
 function initContent() {
   document.title = `${CONFIG.eventName} | 24-Hour Hackathon Launch Countdown`;
@@ -74,22 +72,6 @@ function initContent() {
 
   const collegeTitle = document.getElementById("header-college-title");
   if (collegeTitle) collegeTitle.textContent = `${CONFIG.collegeName}, ${CONFIG.location}`;
-
-  // Render Milestones
-  if (milestonesGrid && CONFIG.milestones) {
-    milestonesGrid.innerHTML = CONFIG.milestones
-      .map(
-        (m) => `
-      <div class="milestone-card">
-        <span class="milestone-badge">${m.badge}</span>
-        <div class="milestone-hours">⏰ ${m.hours}</div>
-        <div class="milestone-name">${m.title}</div>
-        <div class="milestone-desc">${m.desc}</div>
-      </div>
-    `
-      )
-      .join("");
-  }
 }
 
 /**
@@ -133,41 +115,54 @@ export function setScreen(targetState) {
 }
 
 /**
- * SCREEN 2: 3-SECOND INAUGURATION COUNTDOWN
+ * SCREEN 2: 3-2-1 INAUGURATION SEQUENCE (GET -> SET -> GO -> LIVE!)
  */
 function startIntroSequence() {
+  // Reset overlay elements
+  if (introCountdownBox) introCountdownBox.style.display = "flex";
+  if (introLiveSplash) introLiveSplash.style.display = "none";
+
   let count = 3;
-  introNumberDisplay.textContent = count;
-  updateSvgRing(count);
-  sound.playIntroBeep(count);
+  updateIntroStep(count);
 
   if (introInterval) clearInterval(introInterval);
+  if (liveSplashTimeout) clearTimeout(liveSplashTimeout);
 
   introInterval = setInterval(() => {
     count--;
 
     if (count > 0) {
-      introNumberDisplay.textContent = count;
-      sound.playIntroBeep(count);
-
-      // Re-trigger zoom animation
-      introNumberDisplay.style.animation = "none";
-      void introNumberDisplay.offsetWidth;
-      introNumberDisplay.style.animation = "numberZoomFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards";
-
-      updateSvgRing(count);
+      updateIntroStep(count);
     } else {
       clearInterval(introInterval);
       introInterval = null;
 
-      // Inaugurate 24-Hour Clock!
-      if (!isRehearsal10s) {
-        launchTimestamp = saveLaunchTime(Date.now());
-      }
-      triggerGrandGlitterLaunch();
-      setScreen("COUNTDOWN");
+      // 3-2-1 is complete! Show LIVE Message + Glitter explosion!
+      showLiveSplashMessage();
     }
   }, 1000);
+}
+
+function updateIntroStep(count) {
+  const labels = {
+    3: "GET",
+    2: "SET",
+    1: "GO!",
+  };
+
+  introNumberDisplay.textContent = count;
+  introLabelDisplay.textContent = labels[count] || "";
+
+  sound.playIntroBeep(count);
+
+  // Re-trigger zoom animations
+  introNumberDisplay.style.animation = "none";
+  introLabelDisplay.style.animation = "none";
+  void introNumberDisplay.offsetWidth; // Reflow
+  introNumberDisplay.style.animation = "numberZoomFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+  introLabelDisplay.style.animation = "actionWordPop 1s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+
+  updateSvgRing(count);
 }
 
 function updateSvgRing(count) {
@@ -177,26 +172,45 @@ function updateSvgRing(count) {
   introSvgProgress.style.strokeDashoffset = `${offset}`;
 }
 
+/**
+ * DISPLAY "WE ARE LIVE!" MESSAGE + GLITTER EXPLOSION
+ */
+function showLiveSplashMessage() {
+  // Hide 3-2-1 circle, reveal grand LIVE Splash
+  if (introCountdownBox) introCountdownBox.style.display = "none";
+  if (introLiveSplash) introLiveSplash.style.display = "flex";
+
+  // Save the official launch timestamp
+  launchTimestamp = saveLaunchTime(Date.now());
+
+  // Trigger dense glitter explosion
+  if (glitterEngine) {
+    glitterEngine.explodeGlitter(350);
+  }
+
+  // Triumphant ceremonial fanfare
+  sound.playGrandLaunchFanfare();
+
+  // Update header status immediately to LIVE
+  headerStatusBadge.classList.add("status-live");
+  headerStatusText.textContent = "🔴 LIVE: 24-HR COUNTDOWN";
+
+  // Hold the LIVE Message for 1.8 seconds, then transition to 24-Hour Timer
+  liveSplashTimeout = setTimeout(() => {
+    setScreen("COUNTDOWN");
+  }, 1800);
+}
+
 function skipIntro() {
   if (introInterval) {
     clearInterval(introInterval);
     introInterval = null;
   }
-  if (!launchTimestamp) {
-    launchTimestamp = saveLaunchTime(Date.now());
+  if (liveSplashTimeout) {
+    clearTimeout(liveSplashTimeout);
+    liveSplashTimeout = null;
   }
-  triggerGrandGlitterLaunch();
-  setScreen("COUNTDOWN");
-}
-
-/**
- * GLITTER EXPLOSION & TRIUMPHANT SOUND
- */
-function triggerGrandGlitterLaunch() {
-  if (glitterEngine) {
-    glitterEngine.explodeGlitter(300);
-  }
-  sound.playGrandLaunchFanfare();
+  showLiveSplashMessage();
 }
 
 /**
@@ -209,11 +223,7 @@ function start24HourTimer() {
     launchTimestamp = saveLaunchTime(Date.now());
   }
 
-  if (metaStartTime) {
-    metaStartTime.textContent = formatISTDate(launchTimestamp);
-  }
-
-  const durationHours = isRehearsal10s ? 10 / 3600 : CONFIG.durationHours;
+  const durationHours = CONFIG.durationHours || 24;
 
   const updateClock = () => {
     const timeRemaining = get24HourRemaining(launchTimestamp, Date.now(), durationHours);
@@ -282,8 +292,7 @@ function announceScreenReader(message) {
 function initEventListeners() {
   // Principal Launch Button
   btnLaunchNow.addEventListener("click", () => {
-    isRehearsal10s = false;
-    sound.init(); // Initialize audio context on click
+    sound.init(); // Initialize Web Audio API on click gesture
     setScreen("INTRO");
   });
 
@@ -313,17 +322,9 @@ function initEventListeners() {
   // Trigger Glitter Button
   btnFireGlitter.addEventListener("click", () => {
     if (glitterEngine) {
-      glitterEngine.explodeGlitter(280);
+      glitterEngine.explodeGlitter(300);
     }
     sound.playGrandLaunchFanfare();
-  });
-
-  // 10s Rehearsal Mode
-  btnTest10s.addEventListener("click", () => {
-    isRehearsal10s = true;
-    launchTimestamp = Date.now() - (24 * 3600 * 1000 - 10000);
-    saveLaunchTime(launchTimestamp);
-    setScreen("COUNTDOWN");
   });
 
   // Reset Ceremony for Principal Re-launch
@@ -333,9 +334,9 @@ function initEventListeners() {
     );
     if (confirmed) {
       if (countdownInterval) clearInterval(countdownInterval);
+      if (liveSplashTimeout) clearTimeout(liveSplashTimeout);
       clearStoredLaunchTime();
       launchTimestamp = null;
-      isRehearsal10s = false;
       setScreen("LANDING");
     }
   });

@@ -115,18 +115,32 @@
     </section>
 
     <!-- ====================================================================
-         SCREEN 2: 3-SECOND INAUGURATION COUNTDOWN (3-2-1)
+         SCREEN 2: 3-2-1 INAUGURATION COUNTDOWN (GET -> SET -> GO -> LIVE!)
          ==================================================================== -->
     <div id="screen-intro" class="screen" role="dialog" aria-modal="true" aria-label="Inauguration 3-2-1 Sequence">
-      <div class="intro-circle-container">
-        <svg class="intro-svg-ring" viewBox="0 0 220 220" aria-hidden="true">
-          <circle class="intro-ring-track" cx="110" cy="110" r="100"></circle>
-          <circle id="intro-svg-progress" class="intro-ring-progress" cx="110" cy="110" r="100"></circle>
-        </svg>
-        <div id="intro-number-display" class="intro-number">3</div>
+      
+      <!-- 3-2-1 Container -->
+      <div id="intro-countdown-box" class="intro-box">
+        <div class="intro-circle-container">
+          <svg class="intro-svg-ring" viewBox="0 0 220 220" aria-hidden="true">
+            <circle class="intro-ring-track" cx="110" cy="110" r="100"></circle>
+            <circle id="intro-svg-progress" class="intro-ring-progress" cx="110" cy="110" r="100"></circle>
+          </svg>
+          <div id="intro-number-display" class="intro-number">3</div>
+        </div>
+        <!-- For 3s: GET, For 2s: SET, For 1s: GO -->
+        <div id="intro-label-display" class="intro-action-label">GET</div>
       </div>
 
-      <div class="intro-label">INAUGURATING 24-HOUR CLOCK...</div>
+      <!-- Grand "WE ARE LIVE!" Message Display -->
+      <div id="intro-live-splash" class="live-splash-box" style="display: none;">
+        <div class="live-splash-beacon-row">
+          <span class="live-splash-beacon"></span>
+          <span class="live-splash-tag">OFFICIALLY INAUGURATED</span>
+        </div>
+        <h2 class="live-splash-title">WE ARE LIVE!</h2>
+        <p class="live-splash-subtitle">Lakshya 2026 &bull; 24-Hour Hackathon Commences Now</p>
+      </div>
 
       <button id="btn-skip-intro" class="skip-intro-btn" type="button">
         Skip &rarr;
@@ -149,8 +163,9 @@
           24-Hour Hackathon Countdown
         </h2>
 
-        <div class="countdown-event-meta-line" id="live-time-meta">
-          Lakshya 2026 &bull; 5th & 6th November 2026 &bull; Started: <span id="meta-start-time">Calculating...</span>
+        <!-- Event info without started time -->
+        <div class="countdown-event-meta-line">
+          Lakshya 2026 &bull; 5th & 6th November 2026
         </div>
 
         <!-- 3 Big Digital Units: Hours : Minutes : Seconds -->
@@ -190,27 +205,10 @@
           <span>Target: 24:00:00</span>
         </div>
 
-        <!-- 24-Hour Milestones Timeline -->
-        <section class="milestones-section">
-          <h3 class="milestones-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan)">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            24-Hour Hackathon Schedule & Milestones
-          </h3>
-          <div class="milestones-grid" id="milestones-grid">
-            <!-- Dynamic milestones injected from CONFIG -->
-          </div>
-        </section>
-
-        <!-- Organizer / Ceremony Controls -->
+        <!-- Organizer / Ceremony Controls (10s tester removed) -->
         <div class="ceremony-controls">
           <button id="btn-fire-glitter" class="ceremony-btn" type="button" title="Trigger celebration glitter effect">
             ✨ Fire Glitter Shower
-          </button>
-          <button id="btn-test-10s" class="ceremony-btn" type="button" title="Set test 10s timer for rehearsal">
-            ⏱ Test 10s Rehearsal
           </button>
           <button id="btn-reset-ceremony" class="ceremony-btn btn-reset" type="button" title="Reset back to Inauguration screen">
             🔄 Reset Launch Ceremony
