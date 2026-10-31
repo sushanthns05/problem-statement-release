@@ -23,39 +23,34 @@
   <!-- Accessible Screen Reader Announcements -->
   <div id="sr-countdown-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Header Navigation with Official Logos & Department Branding -->
+  <!-- Header Navigation with Official Dignitary & Institutional Banner (matching Image 1) -->
   <header class="site-header" role="banner">
-    <div class="header-inner">
-      <div class="header-branding">
-        <!-- Official College & Department Logos -->
-        <div class="header-logo-group">
-          <!-- Silver Jubilee 25 Years Logo -->
-          <div class="header-logo-badge logo-rect" title="SJBIT Silver Jubilee (25 Years)">
-            <img src="/assets/sjbit-silver-jubilee-logo-clean.png" alt="SJBIT Silver Jubilee 25 Years" />
-          </div>
-          <!-- SJBIT Institutional Crest -->
-          <div class="header-logo-badge" title="SJB Institute of Technology">
-            <img src="/assets/sjbit-logo-clean.png" alt="SJB Institute of Technology" />
-          </div>
-        </div>
+    <div class="header-banner-container">
+      <h1 class="sr-only">SJB Institute of Technology - Department of Information Science and Engineering</h1>
+      <span id="header-dept-title" class="sr-only">DEPARTMENT OF INFORMATION SCIENCE AND ENGINEERING</span>
+      <span id="header-college-title" class="sr-only">SJB Institute of Technology, Bengaluru</span>
 
-        <!-- Department & College Title -->
-        <div class="header-dept-title-group">
-          <span class="header-dept-name" id="header-dept-title">DEPARTMENT OF INFORMATION SCIENCE AND ENGINEERING</span>
-          <span class="header-college-name" id="header-college-title">SJB Institute of Technology, Bengaluru</span>
-        </div>
+      <div class="header-banner-wrapper">
+        <img 
+          src="/assets/official-header-banner.jpg" 
+          alt="Sri Adichunchanagiri Shikshana Trust® - SJB Institute of Technology - Department of Information Science & Engineering" 
+          class="header-official-banner-img"
+          loading="eager"
+        />
       </div>
+    </div>
 
-      <!-- Controls & Status Badge -->
-      <div class="header-controls">
+    <!-- Controls Bar directly below the header banner (matching Image 2) -->
+    <div class="header-sub-controls-bar">
+      <div class="sub-controls-inner">
         <button id="btn-toggle-sound" class="icon-control-btn" type="button" title="Toggle Sound FX">
           <span id="sound-icon">🔊</span>
           <span id="sound-label">Sound</span>
         </button>
 
-        <button id="btn-toggle-fullscreen" class="icon-control-btn" type="button" title="Toggle Fullscreen / Projector Mode">
+        <button id="btn-toggle-fullscreen" class="icon-control-btn" type="button" title="Toggle Fullscreen / Stage Mode">
           <span>⛶</span>
-          <span>Stage Mode</span>
+          <span>Stage</span>
         </button>
 
         <div class="header-status-badge" id="header-status-badge" aria-label="Status: Awaiting Inauguration">
