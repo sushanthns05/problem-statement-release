@@ -175,8 +175,8 @@ async function main() {
 
   const theme2Title = await evaluate(`document.getElementById("theme-title-text").textContent`);
   const rowCountTheme2 = await evaluate(`document.querySelectorAll("#problems-table-body tr").length`);
-  const firstIdTheme2 = await evaluate(`document.querySelector("#problems-table-body tr:first-child .problem-id-code").textContent`);
-  console.log(`Theme 2 Name: "${theme2Title}" | Count: ${rowCountTheme2} | First ID: ${firstIdTheme2}`);
+  const firstChallengeTheme2 = await evaluate(`document.querySelector("#problems-table-body tr:first-child .problem-challenge-text").textContent`);
+  console.log(`Theme 2 Name: "${theme2Title}" | Count: ${rowCountTheme2} | First Challenge: ${firstChallengeTheme2}`);
   await takeScreenshot("test-theme-2-smart-sustainable.png");
 
   console.log("\n--- TEST 4: NAVIGATE TO THEME 3 GOVERNANCE ---");
@@ -185,9 +185,9 @@ async function main() {
 
   const theme3Title = await evaluate(`document.getElementById("theme-title-text").textContent`);
   const rowCountTheme3 = await evaluate(`document.querySelectorAll("#problems-table-body tr").length`);
-  const firstIdTheme3 = await evaluate(`document.querySelector("#problems-table-body tr:first-child .problem-id-code").textContent`);
+  const firstChallengeTheme3 = await evaluate(`document.querySelector("#problems-table-body tr:first-child .problem-challenge-text").textContent`);
   const nextBtnLabel = await evaluate(`document.getElementById("btn-next-label").textContent`);
-  console.log(`Theme 3 Name: "${theme3Title}" | Count: ${rowCountTheme3} | First ID: ${firstIdTheme3}`);
+  console.log(`Theme 3 Name: "${theme3Title}" | Count: ${rowCountTheme3} | First Challenge: ${firstChallengeTheme3}`);
   console.log(`Next Button Label on Final Theme: "${nextBtnLabel}"`);
   await takeScreenshot("test-theme-3-governance.png");
 

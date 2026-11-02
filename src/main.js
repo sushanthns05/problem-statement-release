@@ -296,14 +296,13 @@ function renderTheme(themeIndex) {
     themeCategoryTag.textContent = `${theme.problems.length} Problem Statements`;
   }
 
-  // Render exactly 10 problem statements
+  // Render exactly 10 problem statements (without Problem ID)
   if (problemsTableBody) {
     problemsTableBody.innerHTML = theme.problems
       .map(
         (p) => `
-      <tr class="problem-row" data-problem-id="${escapeHtml(p.id)}">
+      <tr class="problem-row">
         <td class="td-sl"><span class="sl-badge">${p.slNo}</span></td>
-        <td class="td-id"><code class="problem-id-code">${escapeHtml(p.id)}</code></td>
         <td class="td-challenge"><span class="problem-challenge-text">${escapeHtml(p.challenge)}</span></td>
       </tr>`
       )

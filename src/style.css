@@ -1572,14 +1572,7 @@ body.screen-problems-active .site-footer {
 
 .problems-table .th-sl,
 .problems-table .td-sl {
-  width: 58px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.problems-table .th-id,
-.problems-table .td-id {
-  width: 235px;
+  width: 68px;
   text-align: center;
   white-space: nowrap;
 }
@@ -1587,6 +1580,7 @@ body.screen-problems-active .site-footer {
 .problems-table .th-challenge,
 .problems-table .td-challenge {
   text-align: left;
+  padding-left: 18px;
 }
 
 .problems-table tbody tr {
@@ -1616,35 +1610,21 @@ body.screen-problems-active .site-footer {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 800;
   color: #f1f5f9;
 }
 
-.problem-id-code {
-  font-family: var(--font-digital);
-  font-size: clamp(0.72rem, 0.9vw, 0.80rem);
-  font-weight: 700;
-  color: var(--accent-cyan);
-  background: rgba(63, 216, 255, 0.08);
-  border: 1px solid rgba(63, 216, 255, 0.25);
-  border-radius: 4px;
-  padding: 1px 7px;
-  letter-spacing: 0.03em;
-  display: inline-block;
-  white-space: nowrap;
-}
-
 .problem-challenge-text {
-  font-size: clamp(0.78rem, 1.05vw, 0.88rem);
+  font-size: clamp(0.84rem, 1.15vw, 0.98rem);
   font-weight: 700;
   color: #f8fafc;
-  line-height: 1.2;
+  line-height: 1.25;
   display: block;
 }
 
@@ -1780,10 +1760,6 @@ body.screen-problems-active .site-footer {
 @media (max-width: 768px) {
   .theme-step-pill .step-name {
     display: none;
-  }
-  .problems-table .th-id,
-  .problems-table .td-id {
-    width: 170px;
   }
 }
 
