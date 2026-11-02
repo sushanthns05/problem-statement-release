@@ -110,4 +110,22 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(timerStep).toBeDefined();
     expect(timerStep.num).toBe(17);
   });
+
+  it("ensures presenter toolbar is removed from the DOM while keyboard shortcuts remain active", () => {
+    // Create container mock
+    const container = {
+      innerHTML: "",
+      querySelector: () => null,
+      querySelectorAll: () => []
+    };
+    const controller = new CeremonyController({ container });
+    controller.initDOM();
+
+    // Verify presenter toolbar is not in the rendered HTML
+    expect(container.innerHTML).not.toContain('id="ceremony-presenter-bar"');
+    expect(container.innerHTML).not.toContain('Step 1 of 17');
+    expect(container.innerHTML).toContain('id="ceremony-curtain-stage"');
+    expect(container.innerHTML).toContain('id="ceremony-slide-viewport"');
+  });
 });
+

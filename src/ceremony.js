@@ -167,7 +167,7 @@ export class CeremonyController {
   initDOM() {
     if (!this.container) return;
 
-    // Render skeleton: Stage Viewport, Curtain Overlay, Slide Viewer & Presenter Control Bar
+    // Render skeleton: Stage Viewport & Theatrical Velvet Curtain (No floating toolbar)
     this.container.innerHTML = `
       <!-- THEATRICAL VELVET STAGE CURTAIN (Step 1) -->
       <div id="ceremony-curtain-stage" class="ceremony-curtain-stage" aria-label="Auditorium Stage Curtain">
@@ -202,39 +202,6 @@ export class CeremonyController {
       <div id="ceremony-slide-viewport" class="ceremony-slide-viewport" role="region" aria-live="polite">
         <!-- Slide content dynamically rendered here -->
       </div>
-
-      <!-- PRESENTER AUDITORIUM STAGE CONTROLS BAR -->
-      <footer id="ceremony-presenter-bar" class="ceremony-presenter-bar" aria-label="Stage Presenter Controls">
-        <div class="presenter-left">
-          <span class="presenter-step-badge" id="presenter-step-badge">Step 1 of 17</span>
-          <span class="presenter-step-name" id="presenter-step-name">Curtain</span>
-        </div>
-
-        <div class="presenter-center">
-          <button id="btn-pres-prev" class="pres-btn" type="button" title="Previous Slide [Left Arrow]" aria-label="Previous Slide">
-            ⏮ Prev
-          </button>
-          <button id="btn-pres-pause" class="pres-btn pres-btn-play" type="button" title="Pause / Resume Timer [Space]" aria-label="Pause or Resume Timer">
-            <span id="pres-pause-icon">⏸</span>
-            <span id="pres-pause-text">Pause</span>
-          </button>
-          <button id="btn-pres-next" class="pres-btn" type="button" title="Next Slide [Right Arrow]" aria-label="Next Slide">
-            Next ⏭
-          </button>
-        </div>
-
-        <div class="presenter-right">
-          <button id="btn-pres-fullscreen" class="pres-btn-icon" type="button" title="Toggle Fullscreen [F]" aria-label="Toggle Fullscreen">
-            ⛶
-          </button>
-          <button id="btn-pres-mute" class="pres-btn-icon" type="button" title="Toggle Sound [M]" aria-label="Toggle Sound">
-            🔊
-          </button>
-          <button id="btn-pres-skip" class="pres-btn-skip" type="button" title="Skip directly to 24H Live Countdown">
-            Skip to Timer &rarr;
-          </button>
-        </div>
-      </footer>
     `;
 
     this.bindEvents();
@@ -247,36 +214,7 @@ export class CeremonyController {
       btnOpenCurtain.addEventListener("click", () => this.openCurtain());
     }
 
-    const btnPrev = this.container.querySelector("#btn-pres-prev");
-    const btnPause = this.container.querySelector("#btn-pres-pause");
-    const btnNext = this.container.querySelector("#btn-pres-next");
-    const btnSkip = this.container.querySelector("#btn-pres-skip");
-    const btnFs = this.container.querySelector("#btn-pres-fullscreen");
-    const btnMute = this.container.querySelector("#btn-pres-mute");
-
-    if (btnPrev) btnPrev.addEventListener("click", () => this.prevStep());
-    if (btnPause) btnPause.addEventListener("click", () => this.togglePause());
-    if (btnNext) btnNext.addEventListener("click", () => this.nextStep());
-    if (btnSkip) btnSkip.addEventListener("click", () => this.skipToTimer());
-
-    if (btnFs) {
-      btnFs.addEventListener("click", () => {
-        if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch(() => {});
-        } else {
-          document.exitFullscreen().catch(() => {});
-        }
-      });
-    }
-
-    if (btnMute) {
-      btnMute.addEventListener("click", () => {
-        const isMuted = sound.toggleMute();
-        btnMute.textContent = isMuted ? "🔇" : "🔊";
-      });
-    }
-
-    // Keyboard Shortcuts for Presenter
+    // Comprehensive Keyboard Shortcuts (Screen clean, no UI toolbar)
     this.keyHandler = (e) => {
       // Don't intercept if inside input
       if (e.target && ["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
@@ -295,23 +233,39 @@ export class CeremonyController {
         e.preventDefault();
         this.prevStep();
       } else if (e.key === "Enter") {
+        e.preventDefault();
         if (!this.curtainOpen && this.currentStepIndex === 0) {
-          e.preventDefault();
           this.openCurtain();
+        } else if (this.steps[this.currentStepIndex]?.type === "click-on") {
+          // If on Dignitary launch step, Enter triggers release
+          const btnTrigger = this.container.querySelector("#btn-dignitary-trigger");
+          if (btnTrigger) btnTrigger.click();
+        } else {
+          this.nextStep();
+        }
+      } else if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
         }
       } else if (e.key === "m" || e.key === "M") {
         e.preventDefault();
-        const isMuted = sound.toggleMute();
-        if (btnMute) btnMute.textContent = isMuted ? "🔇" : "🔊";
+        sound.toggleMute();
+      } else if (e.key === "Escape") {
+        this.skipToTimer();
       }
     };
 
-    window.addEventListener("keydown", this.keyHandler);
+    if (typeof window !== "undefined") {
+      window.addEventListener("keydown", this.keyHandler);
+    }
   }
 
   destroy() {
     this.clearTimers();
-    if (this.keyHandler) {
+    if (typeof window !== "undefined" && this.keyHandler) {
       window.removeEventListener("keydown", this.keyHandler);
     }
   }
