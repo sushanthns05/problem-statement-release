@@ -7,6 +7,17 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "headers": [
+      {
+        "source": "**/*.@(mpeg|mp3)",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "audio/mpeg"
+          }
+        ]
+      }
+    ],
     "rewrites": [
       {
         "source": "**",
