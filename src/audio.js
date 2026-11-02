@@ -8,6 +8,9 @@ class SoundEffects {
   constructor() {
     this.ctx = null;
     this.muted = false;
+    this.bgmGain = null;
+    this.bgmInterval = null;
+    this.bgmIsPlaying = false;
   }
 
   init() {
@@ -341,8 +344,122 @@ class SoundEffects {
     osc.stop(this.ctx.currentTime + 0.3);
   }
 
+  /**
+   * Ceremonial Ambient BGM
+   * Plays a majestic, uplifting orchestral chord progression and harmonic bells
+   * from the opening screen (Curtain) continuously through the sponsors page.
+   */
+  startCeremonyBgm() {
+    if (this.bgmIsPlaying) return;
+    this.init();
+    if (!this.ctx) return;
+
+    this.bgmIsPlaying = true;
+
+    // Master BGM gain node with gentle fade-in
+    this.bgmGain = this.ctx.createGain();
+    const targetVol = this.muted ? 0.0001 : 0.22;
+    this.bgmGain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+    this.bgmGain.gain.exponentialRampToValueAtTime(targetVol, this.ctx.currentTime + 1.2);
+    this.bgmGain.connect(this.ctx.destination);
+
+    // Chords: Cmaj (C3-G3-C4-E4), Gmaj (G2-D3-G3-B3), Amin (A2-E3-A3-C4), Fmaj (F2-C3-F3-A3)
+    const chords = [
+      { base: 130.81, notes: [130.81, 196.0, 261.63, 329.63, 523.25] },
+      { base: 98.0, notes: [98.0, 146.83, 196.0, 246.94, 392.0] },
+      { base: 110.0, notes: [110.0, 164.81, 220.0, 261.63, 440.0] },
+      { base: 87.31, notes: [87.31, 130.81, 174.61, 220.0, 349.23] },
+    ];
+
+    let chordIdx = 0;
+
+    const playChordBar = () => {
+      if (!this.bgmIsPlaying || !this.ctx) return;
+      const t = this.ctx.currentTime;
+      const chord = chords[chordIdx % chords.length];
+      chordIdx++;
+
+      // Warm analog sustained pad
+      chord.notes.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const padGain = this.ctx.createGain();
+
+        osc.type = idx % 2 === 0 ? "sine" : "triangle";
+        osc.frequency.setValueAtTime(freq, t);
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(500 + idx * 100, t);
+
+        padGain.gain.setValueAtTime(0.001, t);
+        padGain.gain.linearRampToValueAtTime(0.12 / (idx + 1), t + 0.8);
+        padGain.gain.exponentialRampToValueAtTime(0.0001, t + 4.6);
+
+        osc.connect(filter);
+        filter.connect(padGain);
+        padGain.connect(this.bgmGain);
+
+        osc.start(t);
+        osc.stop(t + 4.7);
+      });
+
+      // Gentle ceremonial arpeggiated chime bells
+      chord.notes.slice(1).forEach((freq, idx) => {
+        const chimeTime = t + 0.4 + idx * 0.45;
+        const osc = this.ctx.createOscillator();
+        const chimeGain = this.ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq * 2, chimeTime); // octave higher
+
+        chimeGain.gain.setValueAtTime(0.001, chimeTime);
+        chimeGain.gain.linearRampToValueAtTime(0.06, chimeTime + 0.05);
+        chimeGain.gain.exponentialRampToValueAtTime(0.0001, chimeTime + 1.2);
+
+        osc.connect(chimeGain);
+        chimeGain.connect(this.bgmGain);
+
+        osc.start(chimeTime);
+        osc.stop(chimeTime + 1.3);
+      });
+    };
+
+    // Play first chord immediately, then loop every 4.2 seconds
+    playChordBar();
+    this.bgmInterval = setInterval(playChordBar, 4200);
+  }
+
+  stopCeremonyBgm(fadeSec = 1.5) {
+    if (!this.bgmIsPlaying) return;
+    this.bgmIsPlaying = false;
+
+    if (this.bgmInterval) {
+      clearInterval(this.bgmInterval);
+      this.bgmInterval = null;
+    }
+
+    if (this.bgmGain && this.ctx) {
+      try {
+        this.bgmGain.gain.setValueAtTime(this.bgmGain.gain.value, this.ctx.currentTime);
+        this.bgmGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + fadeSec);
+        setTimeout(() => {
+          if (!this.bgmIsPlaying && this.bgmGain) {
+            try {
+              this.bgmGain.disconnect();
+            } catch {}
+            this.bgmGain = null;
+          }
+        }, fadeSec * 1000 + 100);
+      } catch {}
+    }
+  }
+
   toggleMute() {
     this.muted = !this.muted;
+    if (this.bgmGain && this.ctx) {
+      const vol = this.muted ? 0.0001 : 0.22;
+      this.bgmGain.gain.setValueAtTime(vol, this.ctx.currentTime);
+    }
     return this.muted;
   }
 }

@@ -3,12 +3,12 @@ import { THEMES } from "../src/problemStatements.js";
 import { CeremonyController } from "../src/ceremony.js";
 
 describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
-  it("verifies the 17-step ceremony sequence exists", () => {
+  it("verifies the 15-step ceremony sequence with 35s animated theme tables", () => {
     // Instantiate with mock container
     const controller = new CeremonyController({});
     const steps = controller.buildSteps();
 
-    expect(steps.length).toBeGreaterThanOrEqual(17);
+    expect(steps.length).toBe(15);
 
     // Step 1: Curtain
     expect(steps[0].id).toBe("step-curtain");
@@ -68,62 +68,82 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(steps[9].num).toBe(10);
     expect(steps[9].title).toBe("Click to Release");
 
-    // Step 11: Theme 1 Intro (5s)
-    expect(steps[10].id).toBe("step-theme-1-intro");
+    // Step 11: Theme 1 Table (35s)
+    expect(steps[10].id).toBe("step-theme-table-1");
     expect(steps[10].num).toBe(11);
     expect(steps[10].title).toBe("Theme 1: Agriculture");
-    expect(steps[10].duration).toBe(5000);
+    expect(steps[10].type).toBe("theme-table");
+    expect(steps[10].themeIdx).toBe(0);
+    expect(steps[10].duration).toBe(35000);
 
-    // Theme 1 Statements (1 to 10, each 4 seconds)
-    for (let i = 1; i <= 10; i++) {
-      const s = steps[10 + i];
-      expect(s.type).toBe("statement");
-      expect(s.themeIdx).toBe(0);
-      expect(s.duration).toBe(4000);
-      expect(s.problem.challenge).toBe(THEMES[0].problems[i - 1].challenge);
-    }
+    // Step 12: Theme 2 Table (35s)
+    expect(steps[11].id).toBe("step-theme-table-2");
+    expect(steps[11].num).toBe(12);
+    expect(steps[11].title).toBe("Theme 2: Smart & Sustainable Future");
+    expect(steps[11].type).toBe("theme-table");
+    expect(steps[11].themeIdx).toBe(1);
+    expect(steps[11].duration).toBe(35000);
 
-    // Step 12: Theme 2 Intro (5s)
-    const theme2Intro = steps.find((s) => s.id === "step-theme-2-intro");
-    expect(theme2Intro).toBeDefined();
-    expect(theme2Intro.num).toBe(12);
-    expect(theme2Intro.duration).toBe(5000);
+    // Step 13: Theme 3 Table (35s)
+    expect(steps[12].id).toBe("step-theme-table-3");
+    expect(steps[12].num).toBe(13);
+    expect(steps[12].title).toBe("Theme 3: Governance");
+    expect(steps[12].type).toBe("theme-table");
+    expect(steps[12].themeIdx).toBe(2);
+    expect(steps[12].duration).toBe(35000);
 
-    // Theme 2 Statements (1 to 10, each 4 seconds)
-    const theme2Statements = steps.filter((s) => s.type === "statement" && s.themeIdx === 1);
-    expect(theme2Statements.length).toBe(10);
-    theme2Statements.forEach((s, idx) => {
-      expect(s.duration).toBe(4000);
-      expect(s.problem.challenge).toBe(THEMES[1].problems[idx].challenge);
+    // Step 14: Countdown 5 to 1
+    expect(steps[13].id).toBe("step-countdown-5to1");
+    expect(steps[13].num).toBe(14);
+    expect(steps[13].type).toBe("countdown");
+
+    // Step 15: Display Timer
+    expect(steps[14].id).toBe("step-display-timer");
+    expect(steps[14].num).toBe(15);
+    expect(steps[14].type).toBe("complete");
+  });
+
+  it("verifies renderThemeTableSlide renders all 10 statements of the theme in a table with animation classes", () => {
+    const controller = new CeremonyController({});
+    const steps = controller.buildSteps();
+
+    // Check Theme 1 Table HTML
+    const theme1Step = steps[10];
+    const theme1Html = controller.renderThemeTableSlide(theme1Step);
+
+    expect(theme1Html).toContain("anim-table-theme-1");
+    expect(theme1Html).toContain("THEME 1 OF 3");
+    expect(theme1Html).toContain("AGRICULTURE");
+    expect(theme1Html).toContain("ceremony-statements-table");
+
+    // Verify all 10 problem statements of Theme 1 are in the table
+    THEMES[0].problems.forEach((p) => {
+      const escaped = p.challenge.replace(/&/g, "&amp;");
+      expect(theme1Html).toContain(escaped);
     });
 
-    // Step 14: Theme 3 Intro (5s)
-    const theme3Intro = steps.find((s) => s.id === "step-theme-3-intro");
-    expect(theme3Intro).toBeDefined();
-    expect(theme3Intro.num).toBe(14);
-    expect(theme3Intro.duration).toBe(5000);
-
-    // Theme 3 Statements (1 to 10, each 4 seconds)
-    const theme3Statements = steps.filter((s) => s.type === "statement" && s.themeIdx === 2);
-    expect(theme3Statements.length).toBe(10);
-    theme3Statements.forEach((s, idx) => {
-      expect(s.duration).toBe(4000);
-      expect(s.problem.challenge).toBe(THEMES[2].problems[idx].challenge);
+    // Verify Theme 2 Table HTML
+    const theme2Step = steps[11];
+    const theme2Html = controller.renderThemeTableSlide(theme2Step);
+    expect(theme2Html).toContain("anim-table-theme-2");
+    expect(theme2Html).toContain("SMART &amp; SUSTAINABLE FUTURE");
+    THEMES[1].problems.forEach((p) => {
+      const escaped = p.challenge.replace(/&/g, "&amp;");
+      expect(theme2Html).toContain(escaped);
     });
 
-    // Step 16: Countdown 5 to 1
-    const countdownStep = steps.find((s) => s.id === "step-countdown-5to1");
-    expect(countdownStep).toBeDefined();
-    expect(countdownStep.num).toBe(16);
-
-    // Step 17: Display Timer
-    const timerStep = steps.find((s) => s.id === "step-display-timer");
-    expect(timerStep).toBeDefined();
-    expect(timerStep.num).toBe(17);
+    // Verify Theme 3 Table HTML
+    const theme3Step = steps[12];
+    const theme3Html = controller.renderThemeTableSlide(theme3Step);
+    expect(theme3Html).toContain("anim-table-theme-3");
+    expect(theme3Html).toContain("GOVERNANCE");
+    THEMES[2].problems.forEach((p) => {
+      const escaped = p.challenge.replace(/&/g, "&amp;");
+      expect(theme3Html).toContain(escaped);
+    });
   });
 
   it("ensures presenter toolbar is removed from the DOM while keyboard shortcuts remain active", () => {
-    // Create container mock
     const container = {
       innerHTML: "",
       querySelector: () => null,
@@ -134,9 +154,7 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
 
     // Verify presenter toolbar is not in the rendered HTML
     expect(container.innerHTML).not.toContain('id="ceremony-presenter-bar"');
-    expect(container.innerHTML).not.toContain('Step 1 of 17');
     expect(container.innerHTML).toContain('id="ceremony-curtain-stage"');
     expect(container.innerHTML).toContain('id="ceremony-slide-viewport"');
   });
 });
-

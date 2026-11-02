@@ -1,29 +1,36 @@
 import { THEMES } from "./problemStatements.js";
 import { sound } from "./audio.js";
 
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 /**
  * ====================================================================
  * LAKSHYA 2026 BIG SCREEN AUDITORIUM CEREMONY CONTROLLER
  * 
- * Implements the exact 17-step auditorium presentation flow:
- * 1. Curtain (Grand velvet ceremonial stage curtain)
- * 2. S J B Institute Of Technology
- * 3. Campus Photo
- * 4. Swamiji Photos(3)
- * 5. 25 year logo
- * 6. ISE Department
- * 7. Lakhsya
- * 8. Sponsers-DLithe & ALL Logos
- * 9. Problem Statement-Big Screen
+ * Implements the exact 15-step auditorium presentation flow:
+ * 1. Curtain (Grand velvet ceremonial stage curtain - manual open, begins BGM)
+ * 2. S J B Institute Of Technology (5s)
+ * 3. Campus Photo (5s)
+ * 4. Swamiji Photos(3) (5s)
+ * 5. 25 year logo (5s)
+ * 6. ISE Department (5s)
+ * 7. Lakshya 2026 (5s)
+ * 8. Sponsors-DLithe & ALL Logos (5s - BGM plays continuously from Step 1 to 8, fades out here)
+ * 9. Problem Statement-Big Screen Title (5s)
  * 10. Click on (Interactive Dignitary Launch Trigger)
- * 11. Big Screen- Theme 1: Agriculture (Intro)
- * 11b. 10 Problem Statements one by one for 3 seconds each
- * 12. Big Screen- Theme 2: Smart & Sustainable Future Clean (Intro)
- * 13. 10 Problem Statements one by one for 3 seconds each
- * 14. Big Screen- Theme 3: Governance (Intro)
- * 15. 10 Problem Statements one by one for 3 seconds each
- * 16. Then show countdown 5 to 1
- * 17. Then display timer ("WE ARE LIVE!" + 24-Hour Timer)
+ * 11. Big Screen- Theme 1: Agriculture (Table with all 10 problem statements, 35s animated showcase)
+ * 12. Big Screen- Theme 2: Smart & Sustainable Future (Table with all 10 problem statements, 35s animated showcase)
+ * 13. Big Screen- Theme 3: Governance (Table with all 10 problem statements, 35s animated showcase)
+ * 14. Then show countdown 5 to 1 (Curious mass beats)
+ * 15. Then display timer ("WE ARE LIVE!" + 24-Hour Timer)
  * ====================================================================
  */
 
@@ -39,9 +46,11 @@ export class CeremonyController {
     this.stepTimer = null;
     this.progressInterval = null;
     this.countdownTimer = null;
-    this.statementTimeRemaining = 3000;
-    this.statementStartTime = 0;
-    this.statementDuration = 3000; // 3 seconds per problem statement
+
+    // Theme table timer state (35 seconds per theme)
+    this.themeTableDuration = 35000;
+    this.themeTableTimeRemaining = 35000;
+    this.themeTableStartTime = 0;
 
     this.steps = this.buildSteps();
     if (this.container) {
@@ -50,7 +59,7 @@ export class CeremonyController {
   }
 
   buildSteps() {
-    const list = [
+    return [
       // 1. Curtain
       { id: "step-curtain", num: 1, title: "Curtain", type: "curtain", autoAdvance: false },
       // 2. S J B Institute Of Technology
@@ -65,109 +74,29 @@ export class CeremonyController {
       { id: "step-ise", num: 6, title: "ISE Department", type: "ise", duration: 5000 },
       // 7. Lakshya
       { id: "step-lakshya", num: 7, title: "Lakshya 2026", type: "lakshya", duration: 5000 },
-      // 8. Sponsors-DLithe ALL Logos
+      // 8. Sponsors-DLithe ALL Logos (Ceremonial BGM plays continuously from Curtain to here)
       { id: "step-sponsors", num: 8, title: "Sponsors & Accreditations", type: "sponsors", duration: 5000 },
-      // 9. Problem Statement-Big Screen
+      // 9. Problem Statement-Big Screen (BGM fades out smoothly)
       { id: "step-problem-title", num: 9, title: "Problem Statements", type: "problem-title", duration: 5000 },
-      // 10. Click on
+      // 10. Click on (Interactive Dignitary Launch Trigger)
       { id: "step-click-on", num: 10, title: "Click to Release", type: "click-on", autoAdvance: false },
-      // 11. Big Screen- Theme 1: Agriculture Intro
-      { id: "step-theme-1-intro", num: 11, title: "Theme 1: Agriculture", type: "theme-intro", themeIdx: 0, duration: 5000 },
+      // 11. Big Screen- Theme 1: Agriculture (Table with 10 problem statements, 35s)
+      { id: "step-theme-table-1", num: 11, title: "Theme 1: Agriculture", type: "theme-table", themeIdx: 0, duration: 35000 },
+      // 12. Big Screen- Theme 2: Smart & Sustainable Future (Table with 10 problem statements, 35s)
+      { id: "step-theme-table-2", num: 12, title: "Theme 2: Smart & Sustainable Future", type: "theme-table", themeIdx: 1, duration: 35000 },
+      // 13. Big Screen- Theme 3: Governance (Table with 10 problem statements, 35s)
+      { id: "step-theme-table-3", num: 13, title: "Theme 3: Governance", type: "theme-table", themeIdx: 2, duration: 35000 },
+      // 14. Then show countdown 5 to 1
+      { id: "step-countdown-5to1", num: 14, title: "Countdown 5 to 1", type: "countdown", duration: 5500 },
+      // 15. Then display timer
+      { id: "step-display-timer", num: 15, title: "Display Timer", type: "complete", duration: 2000 },
     ];
-
-    // 11b. Display Theme 1 problem statements one by one for 4 seconds
-    const theme1 = THEMES[0];
-    theme1.problems.forEach((p, idx) => {
-      list.push({
-        id: `step-theme-1-p-${idx + 1}`,
-        num: "11." + (idx + 1),
-        title: `Agriculture Challenge ${idx + 1}/10`,
-        type: "statement",
-        themeIdx: 0,
-        problem: p,
-        indexInTheme: idx + 1,
-        totalInTheme: 10,
-        duration: 4000,
-      });
-    });
-
-    // 12. Big Screen- Theme 2: Smart & Sustainable Future Clean Intro
-    list.push({
-      id: "step-theme-2-intro",
-      num: 12,
-      title: "Theme 2: Smart & Sustainable Future",
-      type: "theme-intro",
-      themeIdx: 1,
-      duration: 5000,
-    });
-
-    // 13. Display Theme 2 problem statements one by one for 4 seconds
-    const theme2 = THEMES[1];
-    theme2.problems.forEach((p, idx) => {
-      list.push({
-        id: `step-theme-2-p-${idx + 1}`,
-        num: "13." + (idx + 1),
-        title: `Smart & Sustainable Challenge ${idx + 1}/10`,
-        type: "statement",
-        themeIdx: 1,
-        problem: p,
-        indexInTheme: idx + 1,
-        totalInTheme: 10,
-        duration: 4000,
-      });
-    });
-
-    // 14. Big Screen- Theme 3: Governance Intro
-    list.push({
-      id: "step-theme-3-intro",
-      num: 14,
-      title: "Theme 3: Governance",
-      type: "theme-intro",
-      themeIdx: 2,
-      duration: 5000,
-    });
-
-    // 15. Display Theme 3 problem statements one by one for 4 seconds
-    const theme3 = THEMES[2];
-    theme3.problems.forEach((p, idx) => {
-      list.push({
-        id: `step-theme-3-p-${idx + 1}`,
-        num: "15." + (idx + 1),
-        title: `Governance Challenge ${idx + 1}/10`,
-        type: "statement",
-        themeIdx: 2,
-        problem: p,
-        indexInTheme: idx + 1,
-        totalInTheme: 10,
-        duration: 4000,
-      });
-    });
-
-    // 16. Then show countdown 5 to 1
-    list.push({
-      id: "step-countdown-5to1",
-      num: 16,
-      title: "Countdown 5 to 1",
-      type: "countdown",
-      duration: 5500,
-    });
-
-    // 17. Then display timer
-    list.push({
-      id: "step-display-timer",
-      num: 17,
-      title: "Display Timer",
-      type: "complete",
-      duration: 2000,
-    });
-
-    return list;
   }
 
   initDOM() {
     if (!this.container) return;
 
-    // Render skeleton: Stage Viewport & Theatrical Velvet Curtain (No floating toolbar)
+    // Render skeleton: Stage Viewport & Theatrical Velvet Curtain
     this.container.innerHTML = `
       <!-- THEATRICAL VELVET STAGE CURTAIN (Step 1) -->
       <div id="ceremony-curtain-stage" class="ceremony-curtain-stage" aria-label="Auditorium Stage Curtain">
@@ -265,6 +194,7 @@ export class CeremonyController {
 
   destroy() {
     this.clearTimers();
+    sound.stopCeremonyBgm(0.5);
     if (typeof window !== "undefined" && this.keyHandler) {
       window.removeEventListener("keydown", this.keyHandler);
     }
@@ -285,6 +215,8 @@ export class CeremonyController {
 
     sound.init();
     sound.playCurtainOpen();
+    // BGM starts when stage curtain opens and plays continuously till sponsors page
+    sound.startCeremonyBgm();
 
     const curtainStage = this.container.querySelector("#ceremony-curtain-stage");
     if (curtainStage) {
@@ -310,6 +242,16 @@ export class CeremonyController {
 
     if (index < 0) index = 0;
     this.currentStepIndex = index;
+
+    // BGM Management:
+    // Plays from opening (Curtain) continuously through sponsors page (Steps 1 to 7/8).
+    // Fades out when advancing to Step 9 (Problem Statements Title) or beyond.
+    if (this.currentStepIndex >= 1 && this.currentStepIndex <= 7) {
+      sound.startCeremonyBgm();
+    } else if (this.currentStepIndex >= 8) {
+      sound.stopCeremonyBgm(1.5);
+    }
+
     this.renderCurrentStep();
   }
 
@@ -344,8 +286,8 @@ export class CeremonyController {
       this.clearTimers();
     } else {
       // Resume timer
-      if (step.type === "statement") {
-        this.startStatementTimer(this.statementTimeRemaining);
+      if (step.type === "theme-table") {
+        this.startThemeTableTimer(this.themeTableTimeRemaining);
       } else if (step.duration) {
         this.stepTimer = setTimeout(() => this.nextStep(), step.duration);
       }
@@ -353,9 +295,9 @@ export class CeremonyController {
   }
 
   updatePauseButton() {
-    const btn = this.container.querySelector("#btn-pres-pause");
-    const icon = this.container.querySelector("#pres-pause-icon");
-    const text = this.container.querySelector("#pres-pause-text");
+    const btn = this.container?.querySelector("#btn-pres-pause");
+    const icon = this.container?.querySelector("#pres-pause-icon");
+    const text = this.container?.querySelector("#pres-pause-text");
     if (!btn) return;
 
     if (this.isPaused) {
@@ -370,15 +312,11 @@ export class CeremonyController {
   }
 
   updatePresenterStatus(step) {
-    const badge = this.container.querySelector("#presenter-step-badge");
-    const name = this.container.querySelector("#presenter-step-name");
+    const badge = this.container?.querySelector("#presenter-step-badge");
+    const name = this.container?.querySelector("#presenter-step-name");
 
     if (badge) {
-      if (typeof step.num === "number") {
-        badge.textContent = `Step ${step.num} of 17`;
-      } else {
-        badge.textContent = `Step ${step.num} / 17`;
-      }
+      badge.textContent = `Step ${step.num} of 15`;
     }
     if (name) {
       name.textContent = step.title;
@@ -387,12 +325,12 @@ export class CeremonyController {
 
   renderCurrentStep() {
     const step = this.steps[this.currentStepIndex];
-    const viewport = this.container.querySelector("#ceremony-slide-viewport");
+    const viewport = this.container?.querySelector("#ceremony-slide-viewport");
     if (!viewport) return;
 
     this.updatePresenterStatus(step);
 
-    // Render matching slide HTML
+    // Render matching slide HTML with unique page animations
     switch (step.type) {
       case "curtain":
         viewport.innerHTML = "";
@@ -443,16 +381,11 @@ export class CeremonyController {
         this.bindClickOnButton();
         break;
 
-      case "theme-intro":
-        viewport.innerHTML = this.renderThemeIntroSlide(step.themeIdx);
+      case "theme-table":
+        viewport.innerHTML = this.renderThemeTableSlide(step);
         sound.playThemeTransition();
-        this.scheduleAutoAdvance(step.duration);
-        break;
-
-      case "statement":
-        viewport.innerHTML = this.renderStatementSlide(step);
-        sound.playStatementTick();
-        this.startStatementTimer(step.duration || 4000);
+        this.bindThemeTableControls();
+        this.startThemeTableTimer(step.duration || 35000);
         break;
 
       case "countdown":
@@ -476,31 +409,36 @@ export class CeremonyController {
     }, duration);
   }
 
-  startStatementTimer(durationMs = 4000) {
-    this.statementDuration = durationMs;
-    this.statementTimeRemaining = durationMs;
-    this.statementStartTime = Date.now();
+  /**
+   * 35-Second Theme Table Showcase Timer
+   * Smoothly animates bottom progress bar and countdown readout.
+   * Auto-advances when 35s completes.
+   */
+  startThemeTableTimer(durationMs = 35000) {
+    this.themeTableDuration = durationMs;
+    this.themeTableTimeRemaining = durationMs;
+    this.themeTableStartTime = Date.now();
 
-    const progressBar = this.container.querySelector("#statement-timer-fill");
-    const timeDisplay = this.container.querySelector("#statement-seconds-num");
+    const progressBar = this.container?.querySelector("#theme-table-timer-fill");
+    const timeDisplay = this.container?.querySelector("#theme-table-seconds-num");
 
     const updateInterval = 50; // smooth 50ms tick
     this.progressInterval = setInterval(() => {
       if (this.isPaused) return;
 
-      const elapsed = Date.now() - this.statementStartTime;
-      this.statementTimeRemaining = Math.max(0, durationMs - elapsed);
-      const remainingSecs = (this.statementTimeRemaining / 1000).toFixed(1);
+      const elapsed = Date.now() - this.themeTableStartTime;
+      this.themeTableTimeRemaining = Math.max(0, durationMs - elapsed);
+      const remainingSecs = (this.themeTableTimeRemaining / 1000).toFixed(1);
 
       if (progressBar) {
-        const percent = (this.statementTimeRemaining / durationMs) * 100;
+        const percent = (this.themeTableTimeRemaining / durationMs) * 100;
         progressBar.style.width = `${percent}%`;
       }
       if (timeDisplay) {
         timeDisplay.textContent = remainingSecs;
       }
 
-      if (this.statementTimeRemaining <= 0) {
+      if (this.themeTableTimeRemaining <= 0) {
         clearInterval(this.progressInterval);
         this.progressInterval = null;
         this.nextStep();
@@ -508,14 +446,47 @@ export class CeremonyController {
     }, updateInterval);
   }
 
+  bindThemeTableControls() {
+    const btnPrev = this.container?.querySelector("#btn-theme-prev");
+    const btnNext = this.container?.querySelector("#btn-theme-next");
+    const btnPause = this.container?.querySelector("#btn-theme-pause");
+
+    if (btnPrev) {
+      btnPrev.addEventListener("click", () => {
+        sound.playThemeTransition();
+        this.prevStep();
+      });
+    }
+
+    if (btnNext) {
+      btnNext.addEventListener("click", () => {
+        sound.playThemeTransition();
+        this.nextStep();
+      });
+    }
+
+    if (btnPause) {
+      btnPause.addEventListener("click", () => {
+        this.togglePause();
+        if (this.isPaused) {
+          btnPause.textContent = "▶ Resume";
+          btnPause.classList.add("theme-btn-active");
+        } else {
+          btnPause.textContent = "⏸ Pause";
+          btnPause.classList.remove("theme-btn-active");
+        }
+      });
+    }
+  }
+
   bindClickOnButton() {
-    const btn = this.container.querySelector("#btn-dignitary-trigger");
+    const btn = this.container?.querySelector("#btn-dignitary-trigger");
     if (btn) {
       btn.addEventListener("click", () => {
         sound.init();
         sound.playRevealChime();
         this.onGlitter();
-        // Advance to Theme 1
+        // Advance to Theme 1 Table
         this.nextStep();
       });
     }
@@ -523,8 +494,8 @@ export class CeremonyController {
 
   start5to1Countdown() {
     let count = 5;
-    const digitDisplay = this.container.querySelector("#countdown-5to1-digit");
-    const labelDisplay = this.container.querySelector("#countdown-5to1-label");
+    const digitDisplay = this.container?.querySelector("#countdown-5to1-digit");
+    const labelDisplay = this.container?.querySelector("#countdown-5to1-label");
 
     const updateDisplay = (c) => {
       if (digitDisplay) {
@@ -558,21 +529,24 @@ export class CeremonyController {
 
   completeCeremony() {
     this.clearTimers();
+    sound.stopCeremonyBgm(0.5);
     this.onComplete();
   }
 
   skipToTimer() {
     this.clearTimers();
+    sound.stopCeremonyBgm(0.5);
     this.onComplete();
   }
 
   /**
    * ====================================================================
    * SLIDE TEMPLATES (Ceremonial Grand Big Screen)
+   * Each slide has a distinct, customized entrance animation!
    * ====================================================================
    */
 
-  // Step 2: S J B Institute Of Technology
+  // Step 2: S J B Institute Of Technology (Royal Gold Crest Ascent)
   renderSjbitSlide() {
     return `
       <div class="ceremony-slide slide-sjbit">
@@ -600,7 +574,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 3: Campus Photo
+  // Step 3: Campus Photo (Panoramic Cinematic Aperture Reveal)
   renderCampusSlide() {
     return `
       <div class="ceremony-slide slide-campus">
@@ -619,7 +593,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 4: Swamiji Photos(3) - "Jai Sri Gurudev", "With the blessings of" & Authentic Swamiji Names
+  // Step 4: Swamiji Photos(3) (Divine Blessing Radiant Aura Entrance)
   renderSwamijiSlide() {
     return `
       <div class="ceremony-slide slide-swamiji">
@@ -664,7 +638,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 5: 25 year logo
+  // Step 5: 25 year logo (Jubilee Spiral Burst & Radial Sunburst Aura)
   renderJubileeSlide() {
     return `
       <div class="ceremony-slide slide-jubilee">
@@ -684,7 +658,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 6: ISE Department
+  // Step 6: ISE Department (Cyber Matrix Hex Scanline Entrance)
   renderIseSlide() {
     return `
       <div class="ceremony-slide slide-ise">
@@ -706,7 +680,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 7: Lakshya
+  // Step 7: Lakshya (Epic Mountain Dawn Ascent)
   renderLakshyaSlide() {
     return `
       <div class="ceremony-slide slide-lakshya">
@@ -726,7 +700,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 8: Sponsors-DLithe ALL Logos
+  // Step 8: Sponsors-DLithe ALL Logos (3D Card Unfold & Specular Metallic Sheen)
   renderSponsorsSlide() {
     return `
       <div class="ceremony-slide slide-sponsors">
@@ -760,7 +734,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 9: Problem Statement-Big Screen
+  // Step 9: Problem Statement-Big Screen Title (Cosmic Portal Expansion)
   renderProblemTitleSlide() {
     return `
       <div class="ceremony-slide slide-problem-title">
@@ -798,7 +772,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 10: Click on
+  // Step 10: Click to Release (Reactor Core Button Ignition Pulse)
   renderClickOnSlide() {
     return `
       <div class="ceremony-slide slide-click-on">
@@ -816,72 +790,94 @@ export class CeremonyController {
         </button>
 
         <div class="click-action-note">
-          30 Innovation Challenges will be unveiled theme-wise on the big screen
+          30 Innovation Challenges will be unveiled theme-wise on the big screen (35s showcase per theme)
         </div>
       </div>
     `;
   }
 
-  // Step 11, 12, 14: Theme Intro Cards
-  renderThemeIntroSlide(themeIdx) {
-    const theme = THEMES[themeIdx];
-    return `
-      <div class="ceremony-slide slide-theme-intro" style="--theme-color: ${theme.accentColor};">
-        <div class="theme-intro-card">
-          <div class="theme-intro-badge-row">
-            <span class="theme-intro-pill">${theme.badge}</span>
-            <span class="theme-intro-count">10 Problem Statements &bull; 4s Per Challenge</span>
-          </div>
-
-          <div class="theme-intro-icon">${theme.icon}</div>
-          <h1 class="theme-intro-title">${theme.name}</h1>
-          <p class="theme-intro-summary">${theme.summary}</p>
-
-          <div class="theme-intro-timer-hint">
-            <span>Displaying Problem Statements One by One on Big Screen (4s each)...</span>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  // Step 11b, 13, 15: Problem Statement (1 by 1 for 4 seconds)
-  renderStatementSlide(step) {
+  // Steps 11, 12, 13: THEME TABLE SLIDES (All 10 statements displayed in animated table for 35s)
+  renderThemeTableSlide(step) {
     const theme = THEMES[step.themeIdx];
+    const tableAnimClass = `anim-table-theme-${step.themeIdx + 1}`;
+    const isLastTheme = step.themeIdx === 2;
+    const isFirstTheme = step.themeIdx === 0;
+
     return `
-      <div class="ceremony-slide slide-statement" style="--theme-color: ${theme.accentColor};">
-        <!-- Top Theme Header -->
-        <div class="statement-top-bar">
-          <div class="statement-theme-tag">
-            <span class="statement-icon">${theme.icon}</span>
-            <span class="statement-theme-name">${theme.name}</span>
+      <div class="ceremony-slide slide-theme-table slide-theme-table-${step.themeIdx + 1}" style="--theme-accent: ${theme.accentColor};">
+        <!-- Slide Ambient Glow Backdrop -->
+        <div class="theme-table-ambient-glow" style="background: radial-gradient(circle at 50% 20%, ${theme.accentColor}25 0%, transparent 65%);"></div>
+
+        <!-- Theme Header Bar -->
+        <div class="theme-table-header-bar">
+          <div class="theme-table-badge-row">
+            <span class="theme-table-pill" style="border-color: ${theme.accentColor}; color: ${theme.accentColor};">
+              <span class="pill-dot" style="background: ${theme.accentColor};"></span>
+              THEME ${step.themeIdx + 1} OF 3
+            </span>
+            <span class="theme-table-count-tag">10 Innovation Challenges &bull; 35-Second Showcase</span>
           </div>
-          <div class="statement-counter-pill">
-            Challenge ${step.indexInTheme} of ${step.totalInTheme}
-          </div>
+          <h1 class="theme-table-main-title">
+            <span class="theme-table-title-icon">${theme.icon}</span>
+            <span class="theme-table-title-text" style="--title-color: ${theme.accentColor};">${escapeHtml(theme.name.toUpperCase())}</span>
+          </h1>
+          <p class="theme-table-summary">${escapeHtml(theme.summary)}</p>
         </div>
 
-        <!-- Center Problem Statement in Massive Legible Font -->
-        <div class="statement-center-box">
-          <div class="statement-quote-badge">PROBLEM STATEMENT</div>
-          <h1 class="statement-challenge-text">${step.problem.challenge}</h1>
+        <!-- The Animated Table Card -->
+        <div class="ceremony-theme-table-card ${tableAnimClass}">
+          <table class="ceremony-statements-table" role="table" aria-label="${theme.name} Problem Statements">
+            <thead>
+              <tr>
+                <th class="th-challenge-header" scope="col">
+                  <span class="th-accent-dot" style="background: ${theme.accentColor};"></span>
+                  <span>PROBLEM STATEMENTS / INDUSTRY CHALLENGES</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              ${theme.problems.map((p, idx) => `
+                <tr class="ceremony-theme-table-row" style="--row-i: ${idx};">
+                  <td class="td-challenge-cell">
+                    <span class="row-glow-bullet" style="color: ${theme.accentColor};">&bull;</span>
+                    <span class="row-challenge-text">${escapeHtml(p.challenge)}</span>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
         </div>
 
-        <!-- 4-Second Visual Progress Indicator Bar -->
-        <div class="statement-bottom-timer-bar">
-          <div class="statement-timer-track">
-            <div id="statement-timer-fill" class="statement-timer-fill"></div>
+        <!-- Bottom Showcase Bar: Progress Bar & Arrow Controls -->
+        <div class="theme-table-bottom-bar">
+          <div class="theme-table-timer-track">
+            <div id="theme-table-timer-fill" class="theme-table-timer-fill" style="background: linear-gradient(90deg, ${theme.accentColor}, #ffd700); box-shadow: 0 0 14px ${theme.accentColor};"></div>
           </div>
-          <div class="statement-timer-meta">
-            <span class="timer-meta-label">4-SECOND BIG SCREEN DISPLAY</span>
-            <span class="timer-meta-time"><strong id="statement-seconds-num">4.0</strong>s</span>
+
+          <div class="theme-table-controls-row">
+            <button id="btn-theme-prev" class="theme-nav-btn ${isFirstTheme ? 'nav-disabled' : ''}" type="button" ${isFirstTheme ? 'disabled' : ''} aria-label="Previous Theme">
+              <span class="nav-arrow">&larr;</span>
+              <span>PREV THEME</span>
+            </button>
+
+            <div class="theme-table-timer-status">
+              <span class="status-clock-icon">&bull;</span>
+              <span class="status-clock-label">SHOWCASE TIMER:</span>
+              <span class="status-clock-digits"><strong id="theme-table-seconds-num">35.0</strong>s</span>
+              <button id="btn-theme-pause" class="theme-pause-btn" type="button" aria-label="Pause Theme Showcase">⏸ Pause</button>
+            </div>
+
+            <button id="btn-theme-next" class="theme-nav-btn theme-next-btn" type="button" aria-label="Next Theme">
+              <span>${isLastTheme ? 'LAUNCH FINAL COUNTDOWN 5..1' : 'NEXT THEME'}</span>
+              <span class="nav-arrow">&rarr;</span>
+            </button>
           </div>
         </div>
       </div>
     `;
   }
 
-  // Step 16: Countdown 5 to 1
+  // Step 14: Countdown 5 to 1 (High Energy Shockwave Pulse with Curious Mass Beats)
   renderCountdownSlide() {
     return `
       <div class="ceremony-slide slide-countdown-5to1">
@@ -895,7 +891,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 17: We Are Live Splash
+  // Step 15: We Are Live Splash (Confetti Boom & Fanfare)
   renderWeAreLiveSplash() {
     return `
       <div class="ceremony-slide slide-we-are-live">

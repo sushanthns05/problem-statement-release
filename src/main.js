@@ -124,9 +124,12 @@ export function setScreen(targetState) {
   if (screenProblems) screenProblems.classList.remove("active");
   screenCountdown.classList.remove("active");
 
-  // If leaving ceremony, stop any active ceremony timer
-  if (targetState !== "CEREMONY" && ceremonyController) {
-    ceremonyController.clearTimers();
+  // If leaving ceremony, stop any active ceremony timer and BGM
+  if (targetState !== "CEREMONY") {
+    if (ceremonyController) {
+      ceremonyController.clearTimers();
+    }
+    sound.stopCeremonyBgm(1.0);
   }
 
   // Update header status indicators
