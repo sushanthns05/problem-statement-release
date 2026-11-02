@@ -1563,24 +1563,19 @@ body.screen-problems-active .site-footer {
   border-bottom: 2px solid rgba(255, 215, 0, 0.45);
   color: var(--gold);
   font-family: var(--font-display);
-  font-size: clamp(0.72rem, 0.95vw, 0.80rem);
+  font-size: clamp(0.74rem, 1vw, 0.84rem);
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: clamp(4px, 0.6vh, 6px) 10px;
-}
-
-.problems-table .th-sl,
-.problems-table .td-sl {
-  width: 68px;
-  text-align: center;
-  white-space: nowrap;
+  letter-spacing: 0.08em;
+  padding: clamp(5px, 0.7vh, 8px) 24px;
+  text-align: left;
 }
 
 .problems-table .th-challenge,
 .problems-table .td-challenge {
   text-align: left;
-  padding-left: 18px;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
 .problems-table tbody tr {
@@ -1602,30 +1597,26 @@ body.screen-problems-active .site-footer {
 }
 
 .problems-table tbody td {
-  padding: clamp(2px, 0.35vh, 4px) 10px;
+  padding: clamp(3px, 0.45vh, 5.5px) 24px;
   vertical-align: middle;
 }
 
-.sl-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  font-size: 0.74rem;
-  font-weight: 800;
-  color: #f1f5f9;
-}
-
 .problem-challenge-text {
-  font-size: clamp(0.84rem, 1.15vw, 0.98rem);
+  font-size: clamp(0.86rem, 1.2vw, 1.02rem);
   font-weight: 700;
   color: #f8fafc;
   line-height: 1.25;
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.problem-challenge-text::before {
+  content: "✦";
+  color: var(--theme-accent, #ef4444);
+  font-size: 0.75em;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 5px var(--theme-accent, #ef4444));
 }
 
 /* Bottom Navigation Bar */
