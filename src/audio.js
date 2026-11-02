@@ -137,36 +137,189 @@ class SoundEffects {
     });
   }
 
+  /**
+   * Curious Mass Beats Countdown Synthesizer
+   * Produces an electrifying South Indian cinema trailer / mass build-up
+   * featuring curious syncopated trailer rhythm hits (taps / dhum)
+   * followed by an explosive sub-bass 808 drop, dhol / war-drum transient punch,
+   * and an escalating suspense tension riser from 5 down to 1.
+   */
   playCountdown5to1(count) {
     if (this.muted) return;
     this.init();
     if (!this.ctx) return;
 
-    // Dramatic descending/ascending frequencies:
-    // 5 -> 440Hz, 4 -> 554Hz, 3 -> 659Hz, 2 -> 880Hz, 1 -> 1174Hz
-    const freqs = { 5: 440, 4: 554.37, 3: 659.25, 2: 880.0, 1: 1174.66 };
-    const freq = freqs[count] || 880;
+    const t = this.ctx.currentTime;
 
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
+    // 1. Heavy Mass Sub-Bass Drop (808 / Cinematic Boom)
+    const playSubBassDrop = (startTime, startFreq, endFreq, peakGain, decaySec) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
 
-    osc.type = "sawtooth";
-    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(startFreq, startTime);
+      osc.frequency.exponentialRampToValueAtTime(endFreq, startTime + decaySec);
 
-    // Warm low-pass filter for theatrical presence
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.setValueAtTime(1400, this.ctx.currentTime);
+      gain.gain.setValueAtTime(0.001, startTime);
+      gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + decaySec);
 
-    gain.gain.setValueAtTime(0.28, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.7);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
 
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(this.ctx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + decaySec + 0.05);
+    };
 
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.75);
+    // 2. Punchy War Drum / Dhol transient impact (Mass Kick)
+    const playDrumImpact = (startTime, pitch, peakGain) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(pitch, startTime);
+      osc.frequency.exponentialRampToValueAtTime(35, startTime + 0.18);
+
+      gain.gain.setValueAtTime(peakGain, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.22);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + 0.25);
+
+      // Noise punch for tactile skin impact
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.05);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(450, startTime);
+      filter.Q.setValueAtTime(2.5, startTime);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(peakGain * 0.7, startTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.055);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.ctx.destination);
+
+      noise.start(startTime);
+      noise.stop(startTime + 0.06);
+    };
+
+    // 3. Curious Suspense Pre-Beat Tap (syncopated trailer rhythm: tak / dhum)
+    const playCuriousTap = (startTime, freq, vol) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, startTime);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.5, startTime + 0.05);
+
+      gain.gain.setValueAtTime(vol, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.06);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + 0.07);
+    };
+
+    // 4. Suspense Tension Drone / Metallic Riser
+    const playSuspenseRiser = (startTime, baseFreq, duration, vol) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(baseFreq, startTime);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, startTime + duration);
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(600, startTime);
+      filter.frequency.exponentialRampToValueAtTime(1800, startTime + duration);
+
+      gain.gain.setValueAtTime(0.001, startTime);
+      gain.gain.linearRampToValueAtTime(vol, startTime + duration * 0.3);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration + 0.02);
+    };
+
+    // Escalating curious mass beat patterns per count:
+    switch (count) {
+      case 5:
+        // Count 5: Curious opening pulse + deep resonant mass strike
+        playCuriousTap(t, 420, 0.18);
+        playCuriousTap(t + 0.15, 520, 0.22);
+        playDrumImpact(t + 0.3, 110, 0.35);
+        playSubBassDrop(t + 0.3, 115, 42, 0.38, 0.65);
+        playSuspenseRiser(t + 0.3, 220, 0.65, 0.08);
+        break;
+
+      case 4:
+        // Count 4: Double curiosity syncopation + heavier punch
+        playCuriousTap(t, 480, 0.2);
+        playCuriousTap(t + 0.12, 600, 0.24);
+        playCuriousTap(t + 0.24, 720, 0.26);
+        playDrumImpact(t + 0.36, 125, 0.4);
+        playSubBassDrop(t + 0.36, 130, 40, 0.42, 0.6);
+        playSuspenseRiser(t + 0.36, 277, 0.6, 0.1);
+        break;
+
+      case 3:
+        // Count 3: Triple curiosity rhythm + deep chest thud
+        playCuriousTap(t, 550, 0.22);
+        playCuriousTap(t + 0.1, 700, 0.26);
+        playCuriousTap(t + 0.2, 850, 0.28);
+        playDrumImpact(t + 0.3, 140, 0.45);
+        playSubBassDrop(t + 0.3, 150, 38, 0.48, 0.65);
+        playSuspenseRiser(t + 0.3, 330, 0.65, 0.12);
+        break;
+
+      case 2:
+        // Count 2: Rapid driving curious roll + hard war drum hit
+        playCuriousTap(t, 620, 0.24);
+        playCuriousTap(t + 0.08, 780, 0.26);
+        playCuriousTap(t + 0.16, 940, 0.3);
+        playCuriousTap(t + 0.24, 1100, 0.32);
+        playDrumImpact(t + 0.32, 160, 0.5);
+        playSubBassDrop(t + 0.32, 175, 36, 0.52, 0.65);
+        playSuspenseRiser(t + 0.32, 440, 0.65, 0.14);
+        break;
+
+      case 1:
+        // Count 1: Maximum mass trailer climax - ta-ka-dhum into explosive sub-bass
+        playCuriousTap(t, 750, 0.28);
+        playCuriousTap(t + 0.06, 950, 0.3);
+        playCuriousTap(t + 0.12, 1150, 0.34);
+        playCuriousTap(t + 0.18, 1400, 0.38);
+        // Colossal Mass Impact
+        playDrumImpact(t + 0.24, 190, 0.6);
+        playSubBassDrop(t + 0.24, 210, 32, 0.6, 0.75);
+        playSuspenseRiser(t + 0.24, 554, 0.75, 0.18);
+        break;
+
+      default:
+        playDrumImpact(t, 120, 0.4);
+        playSubBassDrop(t, 120, 40, 0.4, 0.6);
+        break;
+    }
   }
 
   playStatementTick() {

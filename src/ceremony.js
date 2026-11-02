@@ -58,7 +58,7 @@ export class CeremonyController {
       // 3. Campus Photo
       { id: "step-campus", num: 3, title: "Campus Photo", type: "campus", duration: 5000 },
       // 4. Swamiji Photos(3)
-      { id: "step-swamiji", num: 4, title: "Revered Swamijis", type: "swamiji", duration: 5500 },
+      { id: "step-swamiji", num: 4, title: "Revered Swamijis", type: "swamiji", duration: 5000 },
       // 5. 25 year logo
       { id: "step-jubilee", num: 5, title: "25 Year Silver Jubilee", type: "jubilee", duration: 5000 },
       // 6. ISE Department
@@ -66,16 +66,16 @@ export class CeremonyController {
       // 7. Lakshya
       { id: "step-lakshya", num: 7, title: "Lakshya 2026", type: "lakshya", duration: 5000 },
       // 8. Sponsors-DLithe ALL Logos
-      { id: "step-sponsors", num: 8, title: "Sponsors & Accreditations", type: "sponsors", duration: 5500 },
+      { id: "step-sponsors", num: 8, title: "Sponsors & Accreditations", type: "sponsors", duration: 5000 },
       // 9. Problem Statement-Big Screen
-      { id: "step-problem-title", num: 9, title: "Problem Statements", type: "problem-title", duration: 4500 },
+      { id: "step-problem-title", num: 9, title: "Problem Statements", type: "problem-title", duration: 5000 },
       // 10. Click on
       { id: "step-click-on", num: 10, title: "Click to Release", type: "click-on", autoAdvance: false },
       // 11. Big Screen- Theme 1: Agriculture Intro
-      { id: "step-theme-1-intro", num: 11, title: "Theme 1: Agriculture", type: "theme-intro", themeIdx: 0, duration: 3000 },
+      { id: "step-theme-1-intro", num: 11, title: "Theme 1: Agriculture", type: "theme-intro", themeIdx: 0, duration: 5000 },
     ];
 
-    // 11b. Display Theme 1 problem statements one by one for 3 seconds
+    // 11b. Display Theme 1 problem statements one by one for 4 seconds
     const theme1 = THEMES[0];
     theme1.problems.forEach((p, idx) => {
       list.push({
@@ -87,7 +87,7 @@ export class CeremonyController {
         problem: p,
         indexInTheme: idx + 1,
         totalInTheme: 10,
-        duration: 3000,
+        duration: 4000,
       });
     });
 
@@ -98,10 +98,10 @@ export class CeremonyController {
       title: "Theme 2: Smart & Sustainable Future",
       type: "theme-intro",
       themeIdx: 1,
-      duration: 3000,
+      duration: 5000,
     });
 
-    // 13. Display Theme 2 problem statements one by one for 3 seconds
+    // 13. Display Theme 2 problem statements one by one for 4 seconds
     const theme2 = THEMES[1];
     theme2.problems.forEach((p, idx) => {
       list.push({
@@ -113,7 +113,7 @@ export class CeremonyController {
         problem: p,
         indexInTheme: idx + 1,
         totalInTheme: 10,
-        duration: 3000,
+        duration: 4000,
       });
     });
 
@@ -124,10 +124,10 @@ export class CeremonyController {
       title: "Theme 3: Governance",
       type: "theme-intro",
       themeIdx: 2,
-      duration: 3000,
+      duration: 5000,
     });
 
-    // 15. Display Theme 3 problem statements one by one for 3 seconds
+    // 15. Display Theme 3 problem statements one by one for 4 seconds
     const theme3 = THEMES[2];
     theme3.problems.forEach((p, idx) => {
       list.push({
@@ -139,7 +139,7 @@ export class CeremonyController {
         problem: p,
         indexInTheme: idx + 1,
         totalInTheme: 10,
-        duration: 3000,
+        duration: 4000,
       });
     });
 
@@ -452,7 +452,7 @@ export class CeremonyController {
       case "statement":
         viewport.innerHTML = this.renderStatementSlide(step);
         sound.playStatementTick();
-        this.startStatementTimer(3000);
+        this.startStatementTimer(step.duration || 4000);
         break;
 
       case "countdown":
@@ -476,7 +476,7 @@ export class CeremonyController {
     }, duration);
   }
 
-  startStatementTimer(durationMs) {
+  startStatementTimer(durationMs = 4000) {
     this.statementDuration = durationMs;
     this.statementTimeRemaining = durationMs;
     this.statementStartTime = Date.now();
@@ -619,51 +619,39 @@ export class CeremonyController {
     `;
   }
 
-  // Step 4: Swamiji Photos(3)
+  // Step 4: Swamiji Photos(3) - Clean glowing portraits fitting frame of website
   renderSwamijiSlide() {
     return `
       <div class="ceremony-slide slide-swamiji">
         <div class="swamiji-blessing-header">
           <span class="swamiji-gold-tag">DIVINE BLESSINGS &amp; PATRONAGE</span>
-          <h2 class="swamiji-main-title">REVERED SWAMIJIS &amp; TRUSTEES</h2>
+          <h2 class="swamiji-main-title">REVERED SWAMIJIS &amp; DIGNITARIES</h2>
           <p class="swamiji-lead-sub">Guiding SJB Institute of Technology towards Academic Excellence and Moral Eminence</p>
         </div>
 
-        <div class="swamiji-trio-grid">
+        <div class="swamiji-portraits-row">
           <!-- 1. Jagadguru Dr. Nirmalanandanatha Mahaswamiji -->
-          <div class="swamiji-card swamiji-card-primary">
-            <div class="swamiji-portrait-halo">
+          <div class="swamiji-portrait-col">
+            <div class="swamiji-portrait-circle">
               <img src="/assets/dignitary-nirmalanandanatha-clean.png" alt="His Holiness Jagadguru Sri Sri Sri Dr. Nirmalanandanatha Mahaswamiji" />
             </div>
-            <h3 class="swamiji-name">His Holiness Jagadguru Sri Sri Sri<br/>Dr. Nirmalanandanatha Mahaswamiji</h3>
-            <div class="swamiji-designation">
-              Pontiff, Sri Adichunchanagiri Mahasamsthana Math<br/>
-              President, Sri Adichunchanagiri Shikshana Trust&reg;
-            </div>
+            <h3 class="swamiji-title-name">His Holiness Jagadguru Sri Sri Sri<br/>Dr. Nirmalanandanatha Mahaswamiji</h3>
           </div>
 
           <!-- 2. Revered Sri Sri Prakashnath Swamiji -->
-          <div class="swamiji-card">
-            <div class="swamiji-portrait-halo">
+          <div class="swamiji-portrait-col">
+            <div class="swamiji-portrait-circle">
               <img src="/assets/dignitary-prakashnath-clean.png" alt="Revered Sri Sri Prakashnath Swamiji" />
             </div>
-            <h3 class="swamiji-name">Revered Sri Sri<br/>Prakashnath Swamiji</h3>
-            <div class="swamiji-designation">
-              Managing Director<br/>
-              BGS &amp; SJB Group of Institutions
-            </div>
+            <h3 class="swamiji-title-name">Revered Sri Sri<br/>Prakashnath Swamiji</h3>
           </div>
 
           <!-- 3. Revered Trustee / Secretary -->
-          <div class="swamiji-card">
-            <div class="swamiji-portrait-halo">
-              <img src="/assets/dignitary-trustee-clean.png" alt="Revered Trustee / Secretary" />
+          <div class="swamiji-portrait-col">
+            <div class="swamiji-portrait-circle">
+              <img src="/assets/dignitary-trustee-clean.png" alt="Revered Trustee & Secretary" />
             </div>
-            <h3 class="swamiji-name">Revered Trustee &amp;<br/>Secretary</h3>
-            <div class="swamiji-designation">
-              Sri Adichunchanagiri Shikshana Trust&reg;<br/>
-              Bengaluru
-            </div>
+            <h3 class="swamiji-title-name">Revered Trustee &amp;<br/>Secretary</h3>
           </div>
         </div>
       </div>
@@ -836,7 +824,7 @@ export class CeremonyController {
         <div class="theme-intro-card">
           <div class="theme-intro-badge-row">
             <span class="theme-intro-pill">${theme.badge}</span>
-            <span class="theme-intro-count">10 Problem Statements &bull; 3s Per Challenge</span>
+            <span class="theme-intro-count">10 Problem Statements &bull; 4s Per Challenge</span>
           </div>
 
           <div class="theme-intro-icon">${theme.icon}</div>
@@ -844,14 +832,14 @@ export class CeremonyController {
           <p class="theme-intro-summary">${theme.summary}</p>
 
           <div class="theme-intro-timer-hint">
-            <span>Displaying Problem Statements One by One on Big Screen...</span>
+            <span>Displaying Problem Statements One by One on Big Screen (4s each)...</span>
           </div>
         </div>
       </div>
     `;
   }
 
-  // Step 11b, 13, 15: Problem Statement (1 by 1 for 3 seconds)
+  // Step 11b, 13, 15: Problem Statement (1 by 1 for 4 seconds)
   renderStatementSlide(step) {
     const theme = THEMES[step.themeIdx];
     return `
@@ -873,14 +861,14 @@ export class CeremonyController {
           <h1 class="statement-challenge-text">${step.problem.challenge}</h1>
         </div>
 
-        <!-- 3-Second Visual Progress Indicator Bar -->
+        <!-- 4-Second Visual Progress Indicator Bar -->
         <div class="statement-bottom-timer-bar">
           <div class="statement-timer-track">
             <div id="statement-timer-fill" class="statement-timer-fill"></div>
           </div>
           <div class="statement-timer-meta">
-            <span class="timer-meta-label">3-SECOND BIG SCREEN DISPLAY</span>
-            <span class="timer-meta-time"><strong id="statement-seconds-num">3.0</strong>s</span>
+            <span class="timer-meta-label">4-SECOND BIG SCREEN DISPLAY</span>
+            <span class="timer-meta-time"><strong id="statement-seconds-num">4.0</strong>s</span>
           </div>
         </div>
       </div>
