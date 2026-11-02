@@ -261,6 +261,14 @@ export class CeremonyController {
       sound.stopCeremonyBgm(1.2);
     }
 
+    // Trigger subtle stage viewport ambient flash
+    const viewport = this.container?.querySelector("#ceremony-slide-viewport");
+    if (viewport) {
+      viewport.classList.remove("viewport-transition-sweep");
+      void viewport.offsetWidth;
+      viewport.classList.add("viewport-transition-sweep");
+    }
+
     this.renderCurrentStep();
   }
 
@@ -551,6 +559,12 @@ export class CeremonyController {
         digitDisplay.style.animation = "none";
         void digitDisplay.offsetWidth;
         digitDisplay.style.animation = "zoomPulse5to1 1s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+      }
+      const ring = this.container?.querySelector(".countdown-5to1-ring-container");
+      if (ring) {
+        ring.style.animation = "none";
+        void ring.offsetWidth;
+        ring.style.animation = "countdownShockwaveBlast 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards";
       }
       if (labelDisplay) {
         const cues = { 5: "READY", 4: "PREPARE", 3: "GET", 2: "SET", 1: "LAUNCH!" };
