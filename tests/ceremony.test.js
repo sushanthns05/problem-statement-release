@@ -197,4 +197,22 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(container.innerHTML).toContain('id="ceremony-curtain-stage"');
     expect(container.innerHTML).toContain('id="ceremony-slide-viewport"');
   });
+
+  it("verifies audio.mpeg background BGM integration and state controls", async () => {
+    const { sound } = await import("../src/audio.js");
+
+    expect(sound.audioSourceUrl).toBe("/assets/audio.mpeg");
+    expect(sound.bgmIsPlaying).toBe(false);
+
+    sound.startCeremonyBgm();
+    expect(sound.bgmIsPlaying).toBe(true);
+
+    sound.stopCeremonyBgm(0.01);
+    expect(sound.bgmIsPlaying).toBe(false);
+
+    const initialMute = sound.muted;
+    const toggled = sound.toggleMute();
+    expect(toggled).toBe(!initialMute);
+    sound.toggleMute(); // restore
+  });
 });

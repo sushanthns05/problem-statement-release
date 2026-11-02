@@ -16,6 +16,8 @@ const MIME_TYPES = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".json": "application/json",
+  ".mpeg": "audio/mpeg",
+  ".mp3": "audio/mpeg",
 };
 
 const server = http.createServer((req, res) => {

@@ -11,17 +11,36 @@ class SoundEffects {
     this.bgmGain = null;
     this.bgmInterval = null;
     this.bgmIsPlaying = false;
+    this.bgmAudio = null;
+    this.bgmFadeInterval = null;
+    this.audioSourceUrl = "/assets/audio.mpeg";
   }
 
   init() {
     if (!this.ctx) {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      const AudioContextClass = typeof window !== "undefined" ? (window.AudioContext || window.webkitAudioContext) : null;
       if (AudioContextClass) {
         this.ctx = new AudioContextClass();
       }
     }
     if (this.ctx && this.ctx.state === "suspended") {
       this.ctx.resume();
+    }
+    // Preload audio.mpeg track for the starting part
+    if (typeof window !== "undefined" && typeof Audio !== "undefined" && !this.bgmAudio) {
+      try {
+        this.bgmAudio = new Audio(this.audioSourceUrl);
+        this.bgmAudio.loop = true;
+        this.bgmAudio.preload = "auto";
+        this.bgmAudio.volume = this.muted ? 0 : 0.75;
+        this.bgmAudio.addEventListener("error", () => {
+          if (this.bgmAudio && this.bgmAudio.src.endsWith(".mpeg")) {
+            this.bgmAudio.src = "/assets/audio.mp3";
+          }
+        }, { once: true });
+      } catch (err) {
+        console.warn("HTML5 Audio preload warning:", err);
+      }
     }
   }
 
@@ -346,18 +365,115 @@ class SoundEffects {
 
   /**
    * Continuous Soft Ceremonial Music (BGM)
-   * Plays a warm, gentle ambient orchestral pad and harmonic chimes
-   * from when "OPEN STAGE CURTAIN" is pressed continuously until
-   * problem statement release.
+   * Plays the official audio.mpeg track for the starting part
+   * (from when "OPEN STAGE CURTAIN" is clicked through all opening slides
+   * up to problem statement release).
    */
   startCeremonyBgm() {
     if (this.bgmIsPlaying) return;
-    this.init();
-    if (!this.ctx) return;
-
     this.bgmIsPlaying = true;
+    this.init();
 
-    // Master BGM gain node with gentle fade-in (soft and non-intrusive)
+    if (this.bgmFadeInterval) {
+      clearInterval(this.bgmFadeInterval);
+      this.bgmFadeInterval = null;
+    }
+
+    const targetVolume = this.muted ? 0 : 0.75;
+
+    // 1. Primary: HTML5 Audio playing Audio.mpeg with smooth fade-in
+    if (typeof window !== "undefined" && typeof Audio !== "undefined") {
+      try {
+        if (!this.bgmAudio) {
+          this.bgmAudio = new Audio(this.audioSourceUrl);
+          this.bgmAudio.loop = true;
+          this.bgmAudio.preload = "auto";
+        }
+
+        this.bgmAudio.muted = this.muted;
+        this.bgmAudio.volume = 0;
+        this.bgmAudio.currentTime = 0;
+
+        const playPromise = this.bgmAudio.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              // Smooth fade-in over ~1.2s
+              let cur = 0;
+              const step = 0.05;
+              this.bgmFadeInterval = setInterval(() => {
+                if (!this.bgmIsPlaying || !this.bgmAudio) {
+                  clearInterval(this.bgmFadeInterval);
+                  this.bgmFadeInterval = null;
+                  return;
+                }
+                cur = Math.min(targetVolume, cur + step);
+                this.bgmAudio.volume = cur;
+                if (cur >= targetVolume) {
+                  clearInterval(this.bgmFadeInterval);
+                  this.bgmFadeInterval = null;
+                }
+              }, 60);
+            })
+            .catch((err) => {
+              console.warn("Audio.mpeg play blocked or failed; falling back to Web Audio pad:", err);
+              this.startSynthCeremonyBgm();
+            });
+        }
+      } catch (err) {
+        console.warn("HTML5 Audio instantiation error, falling back:", err);
+        this.startSynthCeremonyBgm();
+      }
+    } else {
+      this.startSynthCeremonyBgm();
+    }
+  }
+
+  stopCeremonyBgm(fadeSec = 1.2) {
+    if (!this.bgmIsPlaying) return;
+    this.bgmIsPlaying = false;
+
+    if (this.bgmFadeInterval) {
+      clearInterval(this.bgmFadeInterval);
+      this.bgmFadeInterval = null;
+    }
+
+    // Stop synth pad if active
+    this.stopSynthCeremonyBgm(fadeSec);
+
+    // Smooth fade out of HTML5 Audio track
+    if (this.bgmAudio) {
+      const startVol = this.bgmAudio.volume;
+      const steps = 15;
+      const stepTime = Math.max(20, (fadeSec * 1000) / steps);
+      let stepCount = 0;
+
+      this.bgmFadeInterval = setInterval(() => {
+        stepCount++;
+        if (!this.bgmAudio) {
+          clearInterval(this.bgmFadeInterval);
+          this.bgmFadeInterval = null;
+          return;
+        }
+        const newVol = Math.max(0, startVol * (1 - stepCount / steps));
+        this.bgmAudio.volume = newVol;
+
+        if (stepCount >= steps || newVol <= 0.01) {
+          clearInterval(this.bgmFadeInterval);
+          this.bgmFadeInterval = null;
+          try {
+            this.bgmAudio.pause();
+            this.bgmAudio.currentTime = 0;
+          } catch {}
+        }
+      }, stepTime);
+    }
+  }
+
+  startSynthCeremonyBgm() {
+    if (!this.ctx) return;
+    if (this.bgmGain) return; // already active
+
     this.bgmGain = this.ctx.createGain();
     const targetVol = this.muted ? 0.0001 : 0.16;
     this.bgmGain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
@@ -375,7 +491,7 @@ class SoundEffects {
     let chordIdx = 0;
 
     const playChordBar = () => {
-      if (!this.bgmIsPlaying || !this.ctx) return;
+      if (!this.bgmIsPlaying || !this.ctx || !this.bgmGain) return;
       const t = this.ctx.currentTime;
       const chord = chords[chordIdx % chords.length];
       chordIdx++;
@@ -411,7 +527,7 @@ class SoundEffects {
         const chimeGain = this.ctx.createGain();
 
         osc.type = "sine";
-        osc.frequency.setValueAtTime(freq * 2, chimeTime); // octave higher
+        osc.frequency.setValueAtTime(freq * 2, chimeTime);
 
         chimeGain.gain.setValueAtTime(0.001, chimeTime);
         chimeGain.gain.linearRampToValueAtTime(0.035, chimeTime + 0.06);
@@ -430,10 +546,7 @@ class SoundEffects {
     this.bgmInterval = setInterval(playChordBar, 4200);
   }
 
-  stopCeremonyBgm(fadeSec = 1.2) {
-    if (!this.bgmIsPlaying) return;
-    this.bgmIsPlaying = false;
-
+  stopSynthCeremonyBgm(fadeSec = 1.2) {
     if (this.bgmInterval) {
       clearInterval(this.bgmInterval);
       this.bgmInterval = null;
@@ -458,6 +571,10 @@ class SoundEffects {
 
   toggleMute() {
     this.muted = !this.muted;
+    if (this.bgmAudio) {
+      this.bgmAudio.muted = this.muted;
+      this.bgmAudio.volume = this.muted ? 0 : 0.75;
+    }
     if (this.bgmGain && this.ctx) {
       const vol = this.muted ? 0.0001 : 0.16;
       this.bgmGain.gain.setValueAtTime(vol, this.ctx.currentTime);
