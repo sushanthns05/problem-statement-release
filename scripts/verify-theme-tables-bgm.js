@@ -39,7 +39,7 @@ async function main() {
   console.log(`[Test Server] Serving dist on http://127.0.0.1:${PORT}`);
 
   const chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-  const debugPort = 9285;
+  const debugPort = 9292;
   const tempUserDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "cdp-theme-tables-test-"));
 
   const chrome = spawn(
@@ -47,6 +47,8 @@ async function main() {
     [
       "--headless=new",
       "--no-sandbox",
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
       `--remote-debugging-port=${debugPort}`,
       `--user-data-dir=${tempUserDataDir}`,
       "--window-size=1920,1080",

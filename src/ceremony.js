@@ -850,10 +850,6 @@ export class CeremonyController {
           <span class="btn-launch-icon">🚀</span>
           <span class="btn-launch-text">CLICK TO RELEASE PROBLEM STATEMENTS</span>
         </button>
-
-        <div class="click-action-note">
-          Continuous music plays until this release button is pressed. 3 Themes will be unveiled sequentially on the big screen.
-        </div>
       </div>
     `;
   }

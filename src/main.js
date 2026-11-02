@@ -186,6 +186,7 @@ export function setScreen(targetState) {
               }
             },
           });
+          window.ceremonyController = ceremonyController;
         }
       }
       break;
@@ -730,6 +731,23 @@ function init() {
 
   // Default: Theatrical Auditorium Ceremony Mode (Step 1: Curtain)
   setScreen("CEREMONY");
+
+  // Check URL query param or hash for instant step preview (e.g. ?step=10 or #step=12)
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const stepParam = urlParams.get("step") || (window.location.hash.match(/step=(\d+)/) ? window.location.hash.match(/step=(\d+)/)[1] : null);
+    if (stepParam && ceremonyController) {
+      const stepIdx = parseInt(stepParam, 10) - 1; // 1-based to 0-based
+      if (stepIdx >= 0 && stepIdx < ceremonyController.steps.length) {
+        ceremonyController.curtainOpen = true;
+        const curtainWrap = ceremonyController.container.querySelector("#ceremony-stage-curtains");
+        if (curtainWrap) curtainWrap.classList.add("curtain-opened");
+        ceremonyController.goToStep(stepIdx);
+      }
+    }
+  } catch (err) {
+    console.warn("Error parsing step param:", err);
+  }
 }
 
 if (document.readyState === "loading") {
