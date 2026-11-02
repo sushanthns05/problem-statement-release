@@ -619,39 +619,45 @@ export class CeremonyController {
     `;
   }
 
-  // Step 4: Swamiji Photos(3) - Clean glowing portraits fitting frame of website
+  // Step 4: Swamiji Photos(3) - "Jai Sri Gurudev", "With the blessings of" & Authentic Swamiji Names
   renderSwamijiSlide() {
     return `
       <div class="ceremony-slide slide-swamiji">
         <div class="swamiji-blessing-header">
-          <span class="swamiji-gold-tag">DIVINE BLESSINGS &amp; PATRONAGE</span>
-          <h2 class="swamiji-main-title">REVERED SWAMIJIS &amp; DIGNITARIES</h2>
-          <p class="swamiji-lead-sub">Guiding SJB Institute of Technology towards Academic Excellence and Moral Eminence</p>
+          <div class="swamiji-invocation">|| Jai Sri Gurudev ||</div>
+          <h2 class="swamiji-blessing-title">With the blessings of</h2>
         </div>
 
         <div class="swamiji-portraits-row">
-          <!-- 1. Jagadguru Dr. Nirmalanandanatha Mahaswamiji -->
+          <!-- 1. Sri Sri Sri Dr.Balagangadharanatha Maha Swamiji -->
           <div class="swamiji-portrait-col">
             <div class="swamiji-portrait-circle">
-              <img src="/assets/dignitary-nirmalanandanatha-clean.png" alt="His Holiness Jagadguru Sri Sri Sri Dr. Nirmalanandanatha Mahaswamiji" />
+              <img src="/assets/dignitary-nirmalanandanatha-clean.png" alt="His Divine Soul, Padmabhushana Sri Sri Sri Dr.Balagangadharanatha Maha Swamiji" />
             </div>
-            <h3 class="swamiji-title-name">His Holiness Jagadguru Sri Sri Sri<br/>Dr. Nirmalanandanatha Mahaswamiji</h3>
+            <div class="swamiji-honorific">His Divine Soul, Padmabhushana</div>
+            <h3 class="swamiji-title-name">Sri Sri Sri Dr.Balagangadharanatha Maha Swamiji</h3>
+            <div class="swamiji-designation-text">Founder President, Sri Adichunchanagiri Shikshana Trust&reg;</div>
           </div>
 
-          <!-- 2. Revered Sri Sri Prakashnath Swamiji -->
+          <!-- 2. Sri Sri Sri Dr.Nirmalanandanatha Maha Swamiji -->
           <div class="swamiji-portrait-col">
             <div class="swamiji-portrait-circle">
-              <img src="/assets/dignitary-prakashnath-clean.png" alt="Revered Sri Sri Prakashnath Swamiji" />
+              <img src="/assets/dignitary-prakashnath-clean.png" alt="His Holiness Jagadguru Parama Pujya Sri Sri Sri Dr.Nirmalanandanatha Maha Swamiji" />
             </div>
-            <h3 class="swamiji-title-name">Revered Sri Sri<br/>Prakashnath Swamiji</h3>
+            <div class="swamiji-honorific">His Holiness Jagadguru Parama Pujya</div>
+            <h3 class="swamiji-title-name">Sri Sri Sri Dr.Nirmalanandanatha Maha Swamiji</h3>
+            <div class="swamiji-designation-text">Chief Pontiff, Sri Adichunchanagiri Math &amp; President SACST&reg;</div>
           </div>
 
-          <!-- 3. Revered Trustee / Secretary -->
+          <!-- 3. Sri Sri Dr.Prakashnatha Swamiji -->
           <div class="swamiji-portrait-col">
             <div class="swamiji-portrait-circle">
-              <img src="/assets/dignitary-trustee-clean.png" alt="Revered Trustee & Secretary" />
+              <img src="/assets/dignitary-trustee-clean.png" alt="Revered Sri Sri Dr.Prakashnatha Swamiji" />
             </div>
-            <h3 class="swamiji-title-name">Revered Trustee &amp;<br/>Secretary</h3>
+            <div class="swamiji-presence-tag">In Divine Presence</div>
+            <div class="swamiji-honorific">Revered</div>
+            <h3 class="swamiji-title-name">Sri Sri Dr.Prakashnatha Swamiji</h3>
+            <div class="swamiji-designation-text">Managing Director,<br/>BGS &amp; SJB Group of Institutions &amp; Hospitals</div>
           </div>
         </div>
       </div>
