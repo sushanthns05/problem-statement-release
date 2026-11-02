@@ -17,21 +17,21 @@ function escapeHtml(str) {
  * 
  * Implements the exact 18-step presentation flow:
  * 1. Curtain (Grand velvet ceremonial stage curtain - manual open, begins continuous soft music)
- * 2. S J B Institute Of Technology (5s)
- * 3. Campus Photo (5s)
- * 4. Swamiji Photos(3) (5s)
- * 5. 25 year logo (5s)
- * 6. ISE Department (5s)
- * 7. Lakshya 2026 (5s)
- * 8. Sponsors-DLithe & ALL Logos (5s)
- * 9. Problem Statement-Big Screen Title (5s)
+ * 2. S J B Institute Of Technology (4s)
+ * 3. Campus Photo (4s)
+ * 4. Swamiji Photos(3) (4s)
+ * 5. 25 year logo (4s)
+ * 6. ISE Department (4s)
+ * 7. Lakshya 2026 (4s)
+ * 8. Sponsors-DLithe & ALL Logos (4s)
+ * 9. Problem Statement-Big Screen Title (4s)
  * 10. Click on (Interactive Dignitary Launch Trigger - soft music plays until this release button is clicked!)
- * 11. Big Screen - Theme 1: Agriculture (Heroic Full Screen Showcase, 5s)
- * 12. Theme 1: Agriculture - Statements Table (10 problem statements, 35s animated showcase with progress bar)
- * 13. Big Screen - Theme 2: Smart & Sustainable Future (Heroic Full Screen Showcase, 5s)
- * 14. Theme 2: Smart & Sustainable Future - Statements Table (10 problem statements, 35s animated showcase with progress bar)
- * 15. Big Screen - Theme 3: Governance (Heroic Full Screen Showcase, 5s)
- * 16. Theme 3: Governance - Statements Table (10 problem statements, 35s animated showcase with progress bar)
+ * 11. Big Screen - Theme 1: Agriculture (Heroic Full Screen Showcase, 4s)
+ * 12. Theme 1: Agriculture - Statements Table (10 problem statements, 30s animated showcase with progress bar)
+ * 13. Big Screen - Theme 2: Smart & Sustainable Future (Heroic Full Screen Showcase, 4s)
+ * 14. Theme 2: Smart & Sustainable Future - Statements Table (10 problem statements, 30s animated showcase with progress bar)
+ * 15. Big Screen - Theme 3: Governance (Heroic Full Screen Showcase, 4s)
+ * 16. Theme 3: Governance - Statements Table (10 problem statements, 30s animated showcase with progress bar)
  * 17. Countdown 5 to 1 (Curious mass beats)
  * 18. Display timer ("WE ARE LIVE!" + 24-Hour Countdown Timer)
  * ====================================================================
@@ -50,9 +50,9 @@ export class CeremonyController {
     this.progressInterval = null;
     this.countdownTimer = null;
 
-    // Theme table timer state (35 seconds per theme)
-    this.themeTableDuration = 35000;
-    this.themeTableTimeRemaining = 35000;
+    // Theme table timer state (30 seconds per theme)
+    this.themeTableDuration = 30000;
+    this.themeTableTimeRemaining = 30000;
     this.themeTableStartTime = 0;
 
     this.steps = this.buildSteps();
@@ -65,36 +65,36 @@ export class CeremonyController {
     return [
       // 1. Curtain
       { id: "step-curtain", num: 1, title: "Curtain", type: "curtain", autoAdvance: false },
-      // 2. S J B Institute Of Technology
-      { id: "step-sjbit", num: 2, title: "S J B Institute Of Technology", type: "sjbit", duration: 5000 },
-      // 3. Campus Photo
-      { id: "step-campus", num: 3, title: "Campus Photo", type: "campus", duration: 5000 },
-      // 4. Swamiji Photos(3)
-      { id: "step-swamiji", num: 4, title: "Revered Swamijis", type: "swamiji", duration: 5000 },
-      // 5. 25 year logo
-      { id: "step-jubilee", num: 5, title: "25 Year Silver Jubilee", type: "jubilee", duration: 5000 },
-      // 6. ISE Department
-      { id: "step-ise", num: 6, title: "ISE Department", type: "ise", duration: 5000 },
-      // 7. Lakshya
-      { id: "step-lakshya", num: 7, title: "Lakshya 2026", type: "lakshya", duration: 5000 },
-      // 8. Sponsors-DLithe ALL Logos (Continuous soft music plays through here)
-      { id: "step-sponsors", num: 8, title: "Sponsors & Accreditations", type: "sponsors", duration: 5000 },
-      // 9. Problem Statement-Big Screen Title (Continuous soft music plays through here)
-      { id: "step-problem-title", num: 9, title: "Problem Statements", type: "problem-title", duration: 5000 },
+      // 2. S J B Institute Of Technology (4s)
+      { id: "step-sjbit", num: 2, title: "S J B Institute Of Technology", type: "sjbit", duration: 4000 },
+      // 3. Campus Photo (4s)
+      { id: "step-campus", num: 3, title: "Campus Photo", type: "campus", duration: 4000 },
+      // 4. Swamiji Photos(3) (4s)
+      { id: "step-swamiji", num: 4, title: "Revered Swamijis", type: "swamiji", duration: 4000 },
+      // 5. 25 year logo (4s)
+      { id: "step-jubilee", num: 5, title: "25 Year Silver Jubilee", type: "jubilee", duration: 4000 },
+      // 6. ISE Department (4s)
+      { id: "step-ise", num: 6, title: "ISE Department", type: "ise", duration: 4000 },
+      // 7. Lakshya (4s)
+      { id: "step-lakshya", num: 7, title: "Lakshya 2026", type: "lakshya", duration: 4000 },
+      // 8. Sponsors-DLithe ALL Logos (4s, Continuous soft music plays through here)
+      { id: "step-sponsors", num: 8, title: "Sponsors & Accreditations", type: "sponsors", duration: 4000 },
+      // 9. Problem Statement-Big Screen Title (4s, Continuous soft music plays through here)
+      { id: "step-problem-title", num: 9, title: "Problem Statements", type: "problem-title", duration: 4000 },
       // 10. Click to Release (Continuous soft music plays until dignitary clicks to release!)
       { id: "step-click-on", num: 10, title: "Click to Release", type: "click-on", autoAdvance: false },
-      // 11. Big Screen - Theme 1: Agriculture (5s)
-      { id: "step-theme-1-intro", num: 11, title: "Theme 1: Agriculture - Big Screen", type: "theme-intro", themeIdx: 0, duration: 5000 },
-      // 12. Theme 1: Agriculture - Table of 10 PS (35s)
-      { id: "step-theme-1-table", num: 12, title: "Theme 1: Agriculture - Problem Statements Table", type: "theme-table", themeIdx: 0, duration: 35000 },
-      // 13. Big Screen - Theme 2: Smart & Sustainable Future (5s)
-      { id: "step-theme-2-intro", num: 13, title: "Theme 2: Smart & Sustainable Future - Big Screen", type: "theme-intro", themeIdx: 1, duration: 5000 },
-      // 14. Theme 2: Smart & Sustainable Future - Table of 10 PS (35s)
-      { id: "step-theme-2-table", num: 14, title: "Theme 2: Smart & Sustainable Future - Problem Statements Table", type: "theme-table", themeIdx: 1, duration: 35000 },
-      // 15. Big Screen - Theme 3: Governance (5s)
-      { id: "step-theme-3-intro", num: 15, title: "Theme 3: Governance - Big Screen", type: "theme-intro", themeIdx: 2, duration: 5000 },
-      // 16. Theme 3: Governance - Table of 10 PS (35s)
-      { id: "step-theme-3-table", num: 16, title: "Theme 3: Governance - Problem Statements Table", type: "theme-table", themeIdx: 2, duration: 35000 },
+      // 11. Big Screen - Theme 1: Agriculture (4s)
+      { id: "step-theme-1-intro", num: 11, title: "Theme 1: Agriculture - Big Screen", type: "theme-intro", themeIdx: 0, duration: 4000 },
+      // 12. Theme 1: Agriculture - Table of 10 PS (30s)
+      { id: "step-theme-1-table", num: 12, title: "Theme 1: Agriculture - Problem Statements Table", type: "theme-table", themeIdx: 0, duration: 30000 },
+      // 13. Big Screen - Theme 2: Smart & Sustainable Future (4s)
+      { id: "step-theme-2-intro", num: 13, title: "Theme 2: Smart & Sustainable Future - Big Screen", type: "theme-intro", themeIdx: 1, duration: 4000 },
+      // 14. Theme 2: Smart & Sustainable Future - Table of 10 PS (30s)
+      { id: "step-theme-2-table", num: 14, title: "Theme 2: Smart & Sustainable Future - Problem Statements Table", type: "theme-table", themeIdx: 1, duration: 30000 },
+      // 15. Big Screen - Theme 3: Governance (4s)
+      { id: "step-theme-3-intro", num: 15, title: "Theme 3: Governance - Big Screen", type: "theme-intro", themeIdx: 2, duration: 4000 },
+      // 16. Theme 3: Governance - Table of 10 PS (30s)
+      { id: "step-theme-3-table", num: 16, title: "Theme 3: Governance - Problem Statements Table", type: "theme-table", themeIdx: 2, duration: 30000 },
       // 17. Countdown 5 to 1
       { id: "step-countdown-5to1", num: 17, title: "Countdown 5 to 1", type: "countdown", duration: 5500 },
       // 18. Display Timer
@@ -402,14 +402,14 @@ export class CeremonyController {
         viewport.innerHTML = this.renderThemeIntroSlide(step.themeIdx);
         sound.playThemeTransition();
         this.bindThemeIntroButton();
-        this.scheduleAutoAdvance(step.duration || 5000);
+        this.scheduleAutoAdvance(step.duration || 4000);
         break;
 
       case "theme-table":
         viewport.innerHTML = this.renderThemeTableSlide(step);
         sound.playThemeTransition();
         this.bindThemeTableControls(step);
-        this.startThemeTableTimer(step.duration || 35000);
+        this.startThemeTableTimer(step.duration || 30000);
         break;
 
       case "countdown":
@@ -434,11 +434,11 @@ export class CeremonyController {
   }
 
   /**
-   * 35-Second Theme Table Showcase Timer
+   * 30-Second Theme Table Showcase Timer
    * Smoothly animates bottom progress bar and countdown readout.
-   * Auto-advances when 35s completes.
+   * Auto-advances when 30s completes.
    */
-  startThemeTableTimer(durationMs = 35000) {
+  startThemeTableTimer(durationMs = 30000) {
     this.themeTableDuration = durationMs;
     this.themeTableTimeRemaining = durationMs;
     this.themeTableStartTime = Date.now();
@@ -919,7 +919,7 @@ export class CeremonyController {
               <span class="pill-dot" style="background: ${theme.accentColor};"></span>
               THEME ${step.themeIdx + 1} OF 3
             </span>
-            <span class="theme-table-count-tag">10 Innovation Challenges &bull; 35-Second Showcase</span>
+            <span class="theme-table-count-tag">10 Innovation Challenges &bull; 30-Second Showcase</span>
           </div>
           <h1 class="theme-table-main-title">
             <span class="theme-table-title-icon">${theme.icon}</span>
