@@ -74,6 +74,47 @@ class SoundEffects {
     });
   }
 
+  playRevealChime() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    // Harmonious reveal chime: E5 -> A5 -> B5 -> E6
+    const freqs = [659.25, 880.0, 987.77, 1318.51];
+    freqs.forEach((freq, i) => {
+      const t = this.ctx.currentTime + i * 0.07;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.2, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.65);
+    });
+  }
+
+  playThemeTransition() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    // Crisp high-tech tick: 880Hz to 1200Hz short blip
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.09);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.1);
+  }
+
   toggleMute() {
     this.muted = !this.muted;
     return this.muted;

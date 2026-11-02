@@ -189,7 +189,81 @@
       </div>
     </section>
 
+    <!-- ====================================================================
+         SCREEN 2: OFFICIAL PROBLEM STATEMENTS RELEASE SCREEN (Theme-wise 10 per page)
+         ==================================================================== -->
+    <section id="screen-problems" class="screen" aria-labelledby="problems-main-title">
+      <div class="problems-layout-container">
 
+        <!-- Top Title & Theme Header Row -->
+        <div class="problems-header-banner">
+          <div class="problems-heading-group">
+            <h2 id="problems-main-title" class="problems-main-title">Problem Statements</h2>
+            <div class="problems-release-pill">
+              <span class="live-dot-pulse"></span>
+              <span>Official Release</span>
+            </div>
+          </div>
+
+          <!-- Active Theme Badge and Title -->
+          <div class="active-theme-card" id="active-theme-card">
+            <div class="theme-badge-row">
+              <span class="theme-index-badge" id="theme-index-badge">Theme 1 of 3</span>
+              <span class="theme-category-tag" id="theme-category-tag">10 Problem Statements</span>
+            </div>
+            <h3 class="theme-title-text" id="theme-title-text">Agriculture</h3>
+          </div>
+        </div>
+
+        <!-- Problem Statements Table Container (Fits 10 rows on single screen) -->
+        <div class="problems-table-wrapper" role="region" aria-label="Problem Statements Table" tabindex="0">
+          <table class="problems-table" id="problems-table">
+            <thead>
+              <tr>
+                <th scope="col" class="th-sl">Sl no</th>
+                <th scope="col" class="th-id">Problem ID</th>
+                <th scope="col" class="th-challenge">Problem / Industry Challenge</th>
+              </tr>
+            </thead>
+            <tbody id="problems-table-body">
+              <!-- Dynamically rendered via JavaScript: 10 rows per theme -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bottom Arrow Navigation Bar -->
+        <div class="theme-nav-bar" role="navigation" aria-label="Theme Pagination Navigation">
+          <!-- Previous Theme Arrow Button -->
+          <button id="btn-prev-theme" class="theme-arrow-btn btn-arrow-prev" type="button" aria-label="Previous Theme">
+            <span class="arrow-symbol" aria-hidden="true">&larr;</span>
+            <span class="arrow-btn-label">Previous Theme</span>
+          </button>
+
+          <!-- Theme Step Indicators / Quick Jumps -->
+          <div class="theme-step-indicators" id="theme-step-indicators" role="tablist" aria-label="Hackathon Themes">
+            <button class="theme-step-pill active" data-theme-idx="0" type="button" role="tab" aria-selected="true">
+              <span class="step-num">1</span>
+              <span class="step-name">Agriculture</span>
+            </button>
+            <button class="theme-step-pill" data-theme-idx="1" type="button" role="tab" aria-selected="false">
+              <span class="step-num">2</span>
+              <span class="step-name">Smart &amp; Sustainable</span>
+            </button>
+            <button class="theme-step-pill" data-theme-idx="2" type="button" role="tab" aria-selected="false">
+              <span class="step-num">3</span>
+              <span class="step-name">Governance</span>
+            </button>
+          </div>
+
+          <!-- Next Theme / We Are Live Arrow Button -->
+          <button id="btn-next-theme" class="theme-arrow-btn btn-arrow-next" type="button" aria-label="Next Theme">
+            <span class="arrow-btn-label" id="btn-next-label">Next Theme</span>
+            <span class="arrow-symbol" aria-hidden="true">&rarr;</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
 
     <!-- ====================================================================
          SCREEN 3: LIVE 24-HOUR COUNTDOWN SCREEN
@@ -251,6 +325,9 @@
 
         <!-- Organizer / Ceremony Controls (10s tester removed) -->
         <div class="ceremony-controls">
+          <button id="btn-view-problems" class="ceremony-btn btn-view-problems" type="button" title="View released problem statements">
+            📋 View Problem Statements
+          </button>
           <button id="btn-fire-glitter" class="ceremony-btn" type="button" title="Trigger celebration glitter effect">
             ✨ Fire Glitter Shower
           </button>

@@ -1,4 +1,5 @@
 import { CONFIG } from "./config.js";
+import { THEMES } from "./problemStatements.js";
 import {
   getStoredLaunchTime,
   saveLaunchTime,
@@ -13,12 +14,13 @@ import { sound } from "./audio.js";
 
 /**
  * ====================================================================
- * APPLICATION CONTROLLER
+ * APPLICATION CONTROLLER (Lakshya 2026 Hackathon)
  * ====================================================================
  */
 
 // State
 let currentScreen = "LANDING";
+let currentThemeIndex = 0;
 let launchTimestamp = getStoredLaunchTime();
 let countdownInterval = null;
 let introInterval = null;
@@ -30,26 +32,37 @@ let lastAnnouncedMinute = null;
 // DOM Elements
 const screenLanding = document.getElementById("screen-landing");
 const screenIntro = document.getElementById("screen-intro");
+const screenProblems = document.getElementById("screen-problems");
 const screenCountdown = document.getElementById("screen-countdown");
 
 const headerStatusBadge = document.getElementById("header-status-badge");
 const headerStatusText = document.getElementById("header-status-text");
 
+// Landing Elements
 const btnLaunchNow = document.getElementById("btn-launch-now");
 const btnSkipIntro = document.getElementById("btn-skip-intro");
 const btnToggleSound = document.getElementById("btn-toggle-sound");
 const soundIcon = document.getElementById("sound-icon");
 const btnToggleFullscreen = document.getElementById("btn-toggle-fullscreen");
 
-const btnFireGlitter = document.getElementById("btn-fire-glitter");
-const btnResetCeremony = document.getElementById("btn-reset-ceremony");
-
+// 3-2-1 Overlay Elements
 const introCountdownBox = document.getElementById("intro-countdown-box");
 const introLiveSplash = document.getElementById("intro-live-splash");
 const introNumberDisplay = document.getElementById("intro-number-display");
 const introLabelDisplay = document.getElementById("intro-label-display");
 const introSvgProgress = document.getElementById("intro-svg-progress");
 
+// Problem Statements Elements
+const problemsTableBody = document.getElementById("problems-table-body");
+const themeIndexBadge = document.getElementById("theme-index-badge");
+const themeTitleText = document.getElementById("theme-title-text");
+const themeCategoryTag = document.getElementById("theme-category-tag");
+const btnPrevTheme = document.getElementById("btn-prev-theme");
+const btnNextTheme = document.getElementById("btn-next-theme");
+const btnNextLabel = document.getElementById("btn-next-label");
+const themeStepIndicators = document.getElementById("theme-step-indicators");
+
+// 24-Hour Countdown Screen Elements
 const digitHours = document.getElementById("digit-hours");
 const digitMinutes = document.getElementById("digit-minutes");
 const digitSeconds = document.getElementById("digit-seconds");
@@ -57,9 +70,26 @@ const digitCentis = document.getElementById("digit-centis");
 const hackathonProgressBar = document.getElementById("hackathon-progress-bar");
 const elapsedPercentLabel = document.getElementById("elapsed-percent-label");
 
+const btnFireGlitter = document.getElementById("btn-fire-glitter");
+const btnResetCeremony = document.getElementById("btn-reset-ceremony");
+const btnViewProblems = document.getElementById("btn-view-problems");
+
 const srAnnouncer = document.getElementById("sr-countdown-announcer");
 const particleCanvas = document.getElementById("particle-canvas");
 const glitterCanvas = document.getElementById("glitter-canvas");
+
+/**
+ * Utility: Safe HTML Escape
+ */
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 /**
  * Initialize Branding from CONFIG
@@ -76,20 +106,36 @@ function initContent() {
 
 /**
  * Switch Active Screen
- * @param {'LANDING' | 'INTRO' | 'COUNTDOWN'} targetState
+ * @param {'LANDING' | 'INTRO' | 'PROBLEMS' | 'COUNTDOWN'} targetState
  */
 export function setScreen(targetState) {
   currentScreen = targetState;
 
+  // Toggle body class for adaptive layout compacting
+  document.body.classList.toggle("screen-problems-active", targetState === "PROBLEMS");
+
   screenLanding.classList.remove("active");
   screenIntro.classList.remove("active");
+  if (screenProblems) screenProblems.classList.remove("active");
   screenCountdown.classList.remove("active");
 
+  // Update header status indicators
   if (targetState === "COUNTDOWN") {
     if (headerStatusText) headerStatusText.textContent = "🔴 LIVE: 24-HR COUNTDOWN";
     if (headerStatusBadge) {
       headerStatusBadge.classList.add("status-live");
       headerStatusBadge.setAttribute("aria-label", "Status: 24-Hour Hackathon is Officially Live");
+    }
+  } else if (targetState === "PROBLEMS") {
+    if (headerStatusText) {
+      headerStatusText.textContent = launchTimestamp
+        ? "🔴 LIVE • PROBLEM STATEMENTS"
+        : `📋 PROBLEM STATEMENTS: THEME ${currentThemeIndex + 1}/3`;
+    }
+    if (headerStatusBadge) {
+      if (launchTimestamp) headerStatusBadge.classList.add("status-live");
+      else headerStatusBadge.classList.remove("status-live");
+      headerStatusBadge.setAttribute("aria-label", "Status: Problem Statements Released");
     }
   } else {
     if (headerStatusText) headerStatusText.textContent = "AWAITING INAUGURATION";
@@ -110,6 +156,14 @@ export function setScreen(targetState) {
       startIntroSequence();
       break;
 
+    case "PROBLEMS":
+      if (screenProblems) {
+        screenProblems.classList.add("active");
+        renderTheme(currentThemeIndex);
+      }
+      if (particleBg) particleBg.start();
+      break;
+
     case "COUNTDOWN":
       screenCountdown.classList.add("active");
       if (particleBg) particleBg.start();
@@ -119,10 +173,13 @@ export function setScreen(targetState) {
 }
 
 /**
- * SCREEN 2: 3-2-1 INAUGURATION SEQUENCE (GET -> SET -> GO -> LIVE!)
+ * ====================================================================
+ * SCREEN 2: 3-2-1 INAUGURATION SEQUENCE (GET -> SET -> GO)
+ * When 3, 2, 1 completes -> Problem Statements are released!
+ * ====================================================================
  */
 function startIntroSequence() {
-  // Reset overlay elements
+  // Ensure 3-2-1 box is visible, hide splash overlay
   if (introCountdownBox) introCountdownBox.style.display = "flex";
   if (introLiveSplash) introLiveSplash.style.display = "none";
 
@@ -141,8 +198,8 @@ function startIntroSequence() {
       clearInterval(introInterval);
       introInterval = null;
 
-      // 3-2-1 is complete! Show LIVE Message + Glitter explosion!
-      showLiveSplashMessage();
+      // 3-2-1 is complete! Release problem statements!
+      releaseProblemStatements();
     }
   }, 1000);
 }
@@ -154,17 +211,22 @@ function updateIntroStep(count) {
     1: "GO!",
   };
 
-  introNumberDisplay.textContent = count;
-  introLabelDisplay.textContent = labels[count] || "";
+  if (introNumberDisplay) introNumberDisplay.textContent = count;
+  if (introLabelDisplay) introLabelDisplay.textContent = labels[count] || "";
 
   sound.playIntroBeep(count);
 
   // Re-trigger zoom animations
-  introNumberDisplay.style.animation = "none";
-  introLabelDisplay.style.animation = "none";
-  void introNumberDisplay.offsetWidth; // Reflow
-  introNumberDisplay.style.animation = "numberZoomFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards";
-  introLabelDisplay.style.animation = "actionWordPop 1s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+  if (introNumberDisplay) {
+    introNumberDisplay.style.animation = "none";
+    void introNumberDisplay.offsetWidth;
+    introNumberDisplay.style.animation = "numberZoomFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+  }
+  if (introLabelDisplay) {
+    introLabelDisplay.style.animation = "none";
+    void introLabelDisplay.offsetWidth;
+    introLabelDisplay.style.animation = "actionWordPop 1s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+  }
 
   updateSvgRing(count);
 }
@@ -177,35 +239,9 @@ function updateSvgRing(count) {
 }
 
 /**
- * DISPLAY "WE ARE LIVE!" MESSAGE + GLITTER EXPLOSION
+ * UNLOCK & RELEASE PROBLEM STATEMENTS (Theme 1: Agriculture)
  */
-function showLiveSplashMessage() {
-  // Hide 3-2-1 circle, reveal grand LIVE Splash
-  if (introCountdownBox) introCountdownBox.style.display = "none";
-  if (introLiveSplash) introLiveSplash.style.display = "flex";
-
-  // Save the official launch timestamp
-  launchTimestamp = saveLaunchTime(Date.now());
-
-  // Trigger dense glitter explosion
-  if (glitterEngine) {
-    glitterEngine.explodeGlitter(350);
-  }
-
-  // Triumphant ceremonial fanfare
-  sound.playGrandLaunchFanfare();
-
-  // Update header status immediately to LIVE
-  headerStatusBadge.classList.add("status-live");
-  headerStatusText.textContent = "🔴 LIVE: 24-HR COUNTDOWN";
-
-  // Hold the LIVE Message for 1.8 seconds, then transition to 24-Hour Timer
-  liveSplashTimeout = setTimeout(() => {
-    setScreen("COUNTDOWN");
-  }, 1800);
-}
-
-function skipIntro() {
+function releaseProblemStatements() {
   if (introInterval) {
     clearInterval(introInterval);
     introInterval = null;
@@ -214,11 +250,189 @@ function skipIntro() {
     clearTimeout(liveSplashTimeout);
     liveSplashTimeout = null;
   }
+
+  // Auditory chime and glitter celebration on release
+  sound.playRevealChime();
+  if (glitterEngine) {
+    glitterEngine.explodeGlitter(260);
+  }
+
+  // Announce for accessibility
+  announceScreenReader("Problem statements officially released! Showing Theme 1: Agriculture.");
+
+  // Switch to Problem Statements screen with Theme 1
+  currentThemeIndex = 0;
+  setScreen("PROBLEMS");
+}
+
+function skipIntro() {
+  releaseProblemStatements();
+}
+
+/**
+ * ====================================================================
+ * PROBLEM STATEMENTS CONTROLLER (10 per theme, Arrow Navigation)
+ * ====================================================================
+ */
+function renderTheme(themeIndex) {
+  currentThemeIndex = Math.max(0, Math.min(themeIndex, THEMES.length - 1));
+  const theme = THEMES[currentThemeIndex];
+  if (!theme) return;
+
+  // Header status indicator
+  if (headerStatusText && !launchTimestamp) {
+    headerStatusText.textContent = `📋 PROBLEM STATEMENTS: THEME ${currentThemeIndex + 1}/3`;
+  }
+
+  // Update Theme Header
+  if (themeIndexBadge) {
+    themeIndexBadge.textContent = theme.badge;
+  }
+  if (themeTitleText) {
+    themeTitleText.textContent = theme.name;
+    themeTitleText.style.setProperty("--theme-accent", theme.accentColor);
+  }
+  if (themeCategoryTag) {
+    themeCategoryTag.textContent = `${theme.problems.length} Problem Statements`;
+  }
+
+  // Render exactly 10 problem statements
+  if (problemsTableBody) {
+    problemsTableBody.innerHTML = theme.problems
+      .map(
+        (p) => `
+      <tr class="problem-row" data-problem-id="${escapeHtml(p.id)}">
+        <td class="td-sl"><span class="sl-badge">${p.slNo}</span></td>
+        <td class="td-id"><code class="problem-id-code">${escapeHtml(p.id)}</code></td>
+        <td class="td-challenge"><span class="problem-challenge-text">${escapeHtml(p.challenge)}</span></td>
+      </tr>`
+      )
+      .join("");
+  }
+
+  // Update Previous Button state
+  if (btnPrevTheme) {
+    if (currentThemeIndex === 0) {
+      btnPrevTheme.disabled = true;
+      btnPrevTheme.classList.add("nav-disabled");
+    } else {
+      btnPrevTheme.disabled = false;
+      btnPrevTheme.classList.remove("nav-disabled");
+    }
+  }
+
+  // Update Next Button text & style
+  if (btnNextTheme && btnNextLabel) {
+    if (currentThemeIndex < THEMES.length - 1) {
+      const nextTheme = THEMES[currentThemeIndex + 1];
+      btnNextLabel.textContent = `Next Theme: ${nextTheme.name}`;
+      btnNextTheme.classList.remove("btn-we-are-live");
+      btnNextTheme.setAttribute("aria-label", `Navigate to Theme ${currentThemeIndex + 2}: ${nextTheme.name}`);
+    } else {
+      // Final theme (Theme 3: Governance)
+      if (launchTimestamp) {
+        btnNextLabel.textContent = "Return to 24H Live Countdown";
+        btnNextTheme.classList.add("btn-we-are-live");
+        btnNextTheme.setAttribute("aria-label", "Return to 24-Hour Live Countdown Screen");
+      } else {
+        btnNextLabel.textContent = "Start 24-Hr Hackathon: We Are Live";
+        btnNextTheme.classList.add("btn-we-are-live");
+        btnNextTheme.setAttribute("aria-label", "Inaugurate 24-Hour Hackathon and Show We Are Live");
+      }
+    }
+  }
+
+  // Update Pagination / Step Indicator Pills
+  if (themeStepIndicators) {
+    const pills = themeStepIndicators.querySelectorAll(".theme-step-pill");
+    pills.forEach((pill, idx) => {
+      const isSelected = idx === currentThemeIndex;
+      pill.classList.toggle("active", isSelected);
+      pill.setAttribute("aria-selected", isSelected ? "true" : "false");
+    });
+  }
+
+  // Announce for screen reader
+  announceScreenReader(`Showing Theme ${currentThemeIndex + 1} of 3: ${theme.name}. 10 problem statements.`);
+}
+
+function handleNextTheme() {
+  if (currentThemeIndex < THEMES.length - 1) {
+    currentThemeIndex++;
+    sound.playThemeTransition();
+    renderTheme(currentThemeIndex);
+  } else {
+    // If hackathon is already running, return directly to Countdown
+    if (launchTimestamp) {
+      setScreen("COUNTDOWN");
+    } else {
+      // User is on the final theme and clicked forward: Trigger automated "WE ARE LIVE" function!
+      triggerAutomatedWeAreLive();
+    }
+  }
+}
+
+function handlePrevTheme() {
+  if (currentThemeIndex > 0) {
+    currentThemeIndex--;
+    sound.playThemeTransition();
+    renderTheme(currentThemeIndex);
+  }
+}
+
+/**
+ * ====================================================================
+ * AUTOMATED "WE ARE LIVE!" FUNCTION
+ * Displays triumphant splash screen + fanfare + glitter, then starts 24H countdown
+ * ====================================================================
+ */
+function triggerAutomatedWeAreLive() {
+  // Switch to Intro overlay with LIVE splash screen active
+  screenLanding.classList.remove("active");
+  if (screenProblems) screenProblems.classList.remove("active");
+  screenCountdown.classList.remove("active");
+  screenIntro.classList.add("active");
+
   showLiveSplashMessage();
 }
 
 /**
+ * DISPLAY "WE ARE LIVE!" MESSAGE + GLITTER EXPLOSION
+ */
+function showLiveSplashMessage() {
+  // Hide 3-2-1 circle, reveal grand LIVE Splash
+  if (introCountdownBox) introCountdownBox.style.display = "none";
+  if (introLiveSplash) introLiveSplash.style.display = "flex";
+
+  // Save the official launch timestamp
+  if (!launchTimestamp) {
+    launchTimestamp = saveLaunchTime(Date.now());
+  }
+
+  // Trigger dense glitter explosion
+  if (glitterEngine) {
+    glitterEngine.explodeGlitter(380);
+  }
+
+  // Triumphant ceremonial fanfare
+  sound.playGrandLaunchFanfare();
+
+  // Update header status immediately to LIVE
+  if (headerStatusBadge) headerStatusBadge.classList.add("status-live");
+  if (headerStatusText) headerStatusText.textContent = "🔴 LIVE: 24-HR COUNTDOWN";
+
+  announceScreenReader("Lakshya 2026 is officially live! 24-hour hackathon countdown commenced.");
+
+  // Hold the LIVE Message for 1.8 seconds, then transition to 24-Hour Timer
+  liveSplashTimeout = setTimeout(() => {
+    setScreen("COUNTDOWN");
+  }, 1800);
+}
+
+/**
+ * ====================================================================
  * SCREEN 3: LIVE 24-HOUR COUNTDOWN ENGINE
+ * ====================================================================
  */
 function start24HourTimer() {
   if (countdownInterval) clearInterval(countdownInterval);
@@ -266,7 +480,7 @@ function start24HourTimer() {
       clearInterval(countdownInterval);
       countdownInterval = null;
       if (glitterEngine) glitterEngine.explodeGlitter(150);
-      headerStatusText.textContent = "⏱ TIME COMPLETED";
+      if (headerStatusText) headerStatusText.textContent = "⏱ TIME COMPLETED";
     }
   };
 
@@ -320,6 +534,17 @@ function initEventListeners() {
         });
       }
     }
+
+    // Keyboard Arrow navigation for problem statements
+    if (currentScreen === "PROBLEMS") {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        handleNextTheme();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        handlePrevTheme();
+      }
+    }
   });
 
   // Principal Launch Button
@@ -330,9 +555,39 @@ function initEventListeners() {
     });
   }
 
-  // Skip Intro
+  // Skip Intro Button
   if (btnSkipIntro) {
     btnSkipIntro.addEventListener("click", skipIntro);
+  }
+
+  // Problem Statements Navigation: Prev / Next Arrow buttons
+  if (btnPrevTheme) {
+    btnPrevTheme.addEventListener("click", handlePrevTheme);
+  }
+  if (btnNextTheme) {
+    btnNextTheme.addEventListener("click", handleNextTheme);
+  }
+
+  // Problem Statements Theme Step Indicator Click
+  if (themeStepIndicators) {
+    themeStepIndicators.addEventListener("click", (e) => {
+      const pill = e.target.closest(".theme-step-pill");
+      if (!pill) return;
+      const targetIdx = parseInt(pill.getAttribute("data-theme-idx"), 10);
+      if (!isNaN(targetIdx) && targetIdx !== currentThemeIndex) {
+        currentThemeIndex = targetIdx;
+        sound.playThemeTransition();
+        renderTheme(currentThemeIndex);
+      }
+    });
+  }
+
+  // View Problem Statements from Countdown Screen
+  if (btnViewProblems) {
+    btnViewProblems.addEventListener("click", () => {
+      sound.init();
+      setScreen("PROBLEMS");
+    });
   }
 
   // Optional Sound FX Toggle (if present)
@@ -360,26 +615,31 @@ function initEventListeners() {
   }
 
   // Trigger Glitter Button
-  btnFireGlitter.addEventListener("click", () => {
-    if (glitterEngine) {
-      glitterEngine.explodeGlitter(300);
-    }
-    sound.playGrandLaunchFanfare();
-  });
+  if (btnFireGlitter) {
+    btnFireGlitter.addEventListener("click", () => {
+      if (glitterEngine) {
+        glitterEngine.explodeGlitter(300);
+      }
+      sound.playGrandLaunchFanfare();
+    });
+  }
 
   // Reset Ceremony for Principal Re-launch
-  btnResetCeremony.addEventListener("click", () => {
-    const confirmed = window.confirm(
-      "Reset Hackathon Launch Ceremony back to the Inauguration screen?"
-    );
-    if (confirmed) {
-      if (countdownInterval) clearInterval(countdownInterval);
-      if (liveSplashTimeout) clearTimeout(liveSplashTimeout);
-      clearStoredLaunchTime();
-      launchTimestamp = null;
-      setScreen("LANDING");
-    }
-  });
+  if (btnResetCeremony) {
+    btnResetCeremony.addEventListener("click", () => {
+      const confirmed = window.confirm(
+        "Reset Hackathon Launch Ceremony back to the Inauguration screen?"
+      );
+      if (confirmed) {
+        if (countdownInterval) clearInterval(countdownInterval);
+        if (liveSplashTimeout) clearTimeout(liveSplashTimeout);
+        clearStoredLaunchTime();
+        launchTimestamp = null;
+        currentThemeIndex = 0;
+        setScreen("LANDING");
+      }
+    });
+  }
 }
 
 /**
