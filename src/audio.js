@@ -115,6 +115,79 @@ class SoundEffects {
     osc.stop(this.ctx.currentTime + 0.1);
   }
 
+  playCurtainOpen() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    // Deep ceremonial swelling chord: Low C3 (130.81Hz) + G3 (196Hz) + C4 (261.63Hz) + E4 (329.63Hz)
+    const freqs = [130.81, 196.0, 261.63, 329.63, 523.25];
+    freqs.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.18 / (idx + 1), this.ctx.currentTime + 0.5);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 2.5);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 2.6);
+    });
+  }
+
+  playCountdown5to1(count) {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    // Dramatic descending/ascending frequencies:
+    // 5 -> 440Hz, 4 -> 554Hz, 3 -> 659Hz, 2 -> 880Hz, 1 -> 1174Hz
+    const freqs = { 5: 440, 4: 554.37, 3: 659.25, 2: 880.0, 1: 1174.66 };
+    const freq = freqs[count] || 880;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+    // Warm low-pass filter for theatrical presence
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1400, this.ctx.currentTime);
+
+    gain.gain.setValueAtTime(0.28, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.7);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.75);
+  }
+
+  playStatementTick() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    // Pleasant high-tech chime for problem statement switch
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(987.77, this.ctx.currentTime); // B5
+    osc.frequency.exponentialRampToValueAtTime(1318.51, this.ctx.currentTime + 0.12); // E6
+    gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.28);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.3);
+  }
+
   toggleMute() {
     this.muted = !this.muted;
     return this.muted;

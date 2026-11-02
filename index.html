@@ -149,9 +149,24 @@
   <main class="screens-container">
 
     <!-- ====================================================================
+         SCREEN 0: BIG SCREEN AUDITORIUM CEREMONY (17 Steps with Stage Curtains)
+         Follows the exact 17-step ceremonial flow for big screen/projector:
+         1. Curtain | 2. SJBIT | 3. Campus Photo | 4. Swamiji Photos(3)
+         5. 25 year logo | 6. ISE Dept | 7. Lakshya | 8. Sponsors-DLithe ALL Logos
+         9. Problem Statement-Big Screen | 10. Click on
+         11. Theme 1: Agriculture (10 statements, 3s each on big screen)
+         12. Theme 2: Smart & Sustainable Future Clean (10 statements, 3s each)
+         14. Theme 3: Governance (10 statements, 3s each)
+         16. Countdown 5 to 1 | 17. Display Timer (WE ARE LIVE! + 24H Countdown)
+         ==================================================================== -->
+    <section id="screen-ceremony" class="screen screen-ceremony-container active" aria-label="Lakshya 2026 Grand Inauguration Ceremony">
+      <!-- Populated and managed by CeremonyController in src/ceremony.js -->
+    </section>
+
+    <!-- ====================================================================
          SCREEN 1: GRAND INAUGURATION & PRE-LAUNCH SCREEN
          ==================================================================== -->
-    <section id="screen-landing" class="screen active" aria-labelledby="landing-title-id">
+    <section id="screen-landing" class="screen" aria-labelledby="landing-title-id">
       <div class="landing-center-halo" aria-hidden="true"></div>
 
       <!-- Badges: Event Name & Dates -->
@@ -323,6 +338,9 @@
 
         <!-- Organizer / Ceremony Controls (10s tester removed) -->
         <div class="ceremony-controls">
+          <button id="btn-replay-ceremony" class="ceremony-btn btn-replay-ceremony" type="button" title="Replay Big Screen 17-Step Inauguration Ceremony">
+            🎭 Replay Big Screen Ceremony
+          </button>
           <button id="btn-view-problems" class="ceremony-btn btn-view-problems" type="button" title="View released problem statements">
             📋 View Problem Statements
           </button>

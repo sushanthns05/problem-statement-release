@@ -11,6 +11,7 @@ import {
 import { ParticleBackground } from "./particles.js";
 import { GlitterEngine } from "./glitter.js";
 import { sound } from "./audio.js";
+import { CeremonyController } from "./ceremony.js";
 
 /**
  * ====================================================================
@@ -19,7 +20,7 @@ import { sound } from "./audio.js";
  */
 
 // State
-let currentScreen = "LANDING";
+let currentScreen = "CEREMONY";
 let currentThemeIndex = 0;
 let launchTimestamp = getStoredLaunchTime();
 let countdownInterval = null;
@@ -27,9 +28,11 @@ let introInterval = null;
 let liveSplashTimeout = null;
 let particleBg = null;
 let glitterEngine = null;
+let ceremonyController = null;
 let lastAnnouncedMinute = null;
 
 // DOM Elements
+const screenCeremony = document.getElementById("screen-ceremony");
 const screenLanding = document.getElementById("screen-landing");
 const screenIntro = document.getElementById("screen-intro");
 const screenProblems = document.getElementById("screen-problems");
@@ -106,18 +109,25 @@ function initContent() {
 
 /**
  * Switch Active Screen
- * @param {'LANDING' | 'INTRO' | 'PROBLEMS' | 'COUNTDOWN'} targetState
+ * @param {'CEREMONY' | 'LANDING' | 'INTRO' | 'PROBLEMS' | 'COUNTDOWN'} targetState
  */
 export function setScreen(targetState) {
   currentScreen = targetState;
 
-  // Toggle body class for adaptive layout compacting
+  // Toggle body classes for screen specific layouts
   document.body.classList.toggle("screen-problems-active", targetState === "PROBLEMS");
+  document.body.classList.toggle("screen-ceremony-active", targetState === "CEREMONY");
 
+  if (screenCeremony) screenCeremony.classList.remove("active");
   screenLanding.classList.remove("active");
   screenIntro.classList.remove("active");
   if (screenProblems) screenProblems.classList.remove("active");
   screenCountdown.classList.remove("active");
+
+  // If leaving ceremony, stop any active ceremony timer
+  if (targetState !== "CEREMONY" && ceremonyController) {
+    ceremonyController.clearTimers();
+  }
 
   // Update header status indicators
   if (targetState === "COUNTDOWN") {
@@ -137,6 +147,12 @@ export function setScreen(targetState) {
       else headerStatusBadge.classList.remove("status-live");
       headerStatusBadge.setAttribute("aria-label", "Status: Problem Statements Released");
     }
+  } else if (targetState === "CEREMONY") {
+    if (headerStatusText) headerStatusText.textContent = "🎭 AUDITORIUM CEREMONY MODE";
+    if (headerStatusBadge) {
+      headerStatusBadge.classList.remove("status-live");
+      headerStatusBadge.setAttribute("aria-label", "Status: Ceremony Mode");
+    }
   } else {
     if (headerStatusText) headerStatusText.textContent = "AWAITING INAUGURATION";
     if (headerStatusBadge) {
@@ -146,6 +162,31 @@ export function setScreen(targetState) {
   }
 
   switch (targetState) {
+    case "CEREMONY":
+      if (screenCeremony) {
+        screenCeremony.classList.add("active");
+        if (!ceremonyController) {
+          ceremonyController = new CeremonyController({
+            container: screenCeremony,
+            onComplete: () => {
+              if (!launchTimestamp) {
+                launchTimestamp = saveLaunchTime(Date.now());
+              }
+              if (glitterEngine) {
+                glitterEngine.explodeGlitter(380);
+              }
+              setScreen("COUNTDOWN");
+            },
+            onGlitter: () => {
+              if (glitterEngine) {
+                glitterEngine.explodeGlitter(300);
+              }
+            },
+          });
+        }
+      }
+      break;
+
     case "LANDING":
       screenLanding.classList.add("active");
       if (particleBg) particleBg.start();
@@ -545,11 +586,26 @@ function initEventListeners() {
     }
   });
 
-  // Principal Launch Button
+  // Principal Launch Button -> Starts 17-Step Big Screen Ceremony
   if (btnLaunchNow) {
     btnLaunchNow.addEventListener("click", () => {
       sound.init(); // Initialize Web Audio API on click gesture
-      setScreen("INTRO");
+      setScreen("CEREMONY");
+      if (ceremonyController) {
+        ceremonyController.goToStep(0);
+      }
+    });
+  }
+
+  // Replay Big Screen Ceremony Button from 24H countdown screen
+  const btnReplayCeremony = document.getElementById("btn-replay-ceremony");
+  if (btnReplayCeremony) {
+    btnReplayCeremony.addEventListener("click", () => {
+      sound.init();
+      setScreen("CEREMONY");
+      if (ceremonyController) {
+        ceremonyController.goToStep(0);
+      }
     });
   }
 
@@ -626,7 +682,7 @@ function initEventListeners() {
   if (btnResetCeremony) {
     btnResetCeremony.addEventListener("click", () => {
       const confirmed = window.confirm(
-        "Reset Hackathon Launch Ceremony back to the Inauguration screen?"
+        "Reset Hackathon Launch Ceremony back to the Stage Curtain?"
       );
       if (confirmed) {
         if (countdownInterval) clearInterval(countdownInterval);
@@ -634,7 +690,10 @@ function initEventListeners() {
         clearStoredLaunchTime();
         launchTimestamp = null;
         currentThemeIndex = 0;
-        setScreen("LANDING");
+        setScreen("CEREMONY");
+        if (ceremonyController) {
+          ceremonyController.goToStep(0);
+        }
       }
     });
   }
@@ -666,8 +725,8 @@ function init() {
     }
   }
 
-  // Default: Inauguration Landing Screen
-  setScreen("LANDING");
+  // Default: Theatrical Auditorium Ceremony Mode (Step 1: Curtain)
+  setScreen("CEREMONY");
 }
 
 if (document.readyState === "loading") {
