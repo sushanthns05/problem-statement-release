@@ -157,60 +157,82 @@ async function main() {
   console.log("Verifying Step 2: SJBIT...");
   await screenshot(path.join(artDir, "test-theme-step2-sjbit.png"));
 
-  // Jump directly to Step 11: Theme 1 Table (Agriculture) by setting step
-  console.log("Navigating to Step 11: Theme 1 Agriculture Table...");
-  // Use Enter or ArrowRight or keyboard handler
-  for (let i = 0; i < 9; i++) {
+  // Jump directly to Step 10: Click on (Release)
+  console.log("Navigating to Step 10: Click on Release...");
+  for (let i = 0; i < 8; i++) {
     await evalCode(`window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));`);
-    await delay(300);
+    await delay(200);
   }
+  await delay(800);
+  await screenshot(path.join(artDir, "test-theme-step10-click-release.png"));
+
+  // Trigger release button to stop soft music and reveal Theme 1 Big Screen!
+  console.log("Triggering Problem Statement Release...");
+  await evalCode(`document.getElementById("btn-dignitary-trigger").click();`);
+  await delay(1200);
+
+  // 11. Theme 1 Big Screen (Agriculture)
+  const bigScreenTitle1 = await evalCode(`document.querySelector(".theme-bigscreen-title-text")?.textContent`);
+  console.log(`Step 11 Big Screen Title: ${bigScreenTitle1}`);
+  await screenshot(path.join(artDir, "test-theme-step11-bigscreen-agriculture.png"));
+
+  // Click VIEW STATEMENTS TABLE to advance to Step 12: Theme 1 Table
+  console.log("Advancing to Step 12: Theme 1 Agriculture Table...");
+  await evalCode(`document.getElementById("btn-intro-skip-to-table").click();`);
   await delay(1000);
 
-  // Check current step name
-  const stepName1 = await evalCode(`document.querySelector(".theme-table-title-text")?.textContent`);
-  console.log(`Current step title: ${stepName1}`);
-
-  // Take screenshot of Theme 1 Table
-  console.log("Verifying Theme 1 Table (Agriculture) with 10 problem statements & 35s timer...");
-  await screenshot(path.join(artDir, "test-theme-step11-table-agriculture.png"));
-
-  // Check how many rows are rendered in Theme 1 Table
+  const tableTitle1 = await evalCode(`document.querySelector(".theme-table-title-text")?.textContent`);
   const rowCount1 = await evalCode(`document.querySelectorAll(".ceremony-theme-table-row").length`);
-  console.log(`Theme 1 Table rows rendered: ${rowCount1} (Expected: 10)`);
-
   const secondsRemaining1 = await evalCode(`document.getElementById("theme-table-seconds-num")?.textContent`);
-  console.log(`Theme 1 seconds remaining: ${secondsRemaining1}s`);
+  console.log(`Step 12 Table Title: ${tableTitle1}, rows: ${rowCount1}, seconds left: ${secondsRemaining1}s`);
+  await screenshot(path.join(artDir, "test-theme-step12-table-agriculture.png"));
 
-  // Navigate to Theme 2 Table (Smart & Sustainable Future)
-  console.log("Navigating to Theme 2 Table via Next Theme button...");
+  // Advance to Step 13: Big Screen Theme 2
+  console.log("Advancing to Step 13: Big Screen Theme 2...");
   await evalCode(`document.getElementById("btn-theme-next")?.click();`);
-  await delay(800);
+  await delay(1000);
 
-  const stepName2 = await evalCode(`document.querySelector(".theme-table-title-text")?.textContent`);
-  console.log(`Current step title: ${stepName2}`);
+  const bigScreenTitle2 = await evalCode(`document.querySelector(".theme-bigscreen-title-text")?.textContent`);
+  console.log(`Step 13 Big Screen Title: ${bigScreenTitle2}`);
+  await screenshot(path.join(artDir, "test-theme-step13-bigscreen-sustainable.png"));
+
+  // Advance to Step 14: Theme 2 Table
+  console.log("Advancing to Step 14: Theme 2 Table...");
+  await evalCode(`document.getElementById("btn-intro-skip-to-table").click();`);
+  await delay(1000);
+
+  const tableTitle2 = await evalCode(`document.querySelector(".theme-table-title-text")?.textContent`);
   const rowCount2 = await evalCode(`document.querySelectorAll(".ceremony-theme-table-row").length`);
-  console.log(`Theme 2 Table rows rendered: ${rowCount2} (Expected: 10)`);
-  await screenshot(path.join(artDir, "test-theme-step12-table-sustainable.png"));
+  console.log(`Step 14 Table Title: ${tableTitle2}, rows: ${rowCount2}`);
+  await screenshot(path.join(artDir, "test-theme-step14-table-sustainable.png"));
 
-  // Navigate to Theme 3 Table (Governance)
-  console.log("Navigating to Theme 3 Table via Next Theme button...");
+  // Advance to Step 15: Big Screen Theme 3
+  console.log("Advancing to Step 15: Big Screen Theme 3...");
   await evalCode(`document.getElementById("btn-theme-next")?.click();`);
-  await delay(800);
+  await delay(1000);
 
-  const stepName3 = await evalCode(`document.querySelector(".theme-table-title-text")?.textContent`);
-  console.log(`Current step title: ${stepName3}`);
+  const bigScreenTitle3 = await evalCode(`document.querySelector(".theme-bigscreen-title-text")?.textContent`);
+  console.log(`Step 15 Big Screen Title: ${bigScreenTitle3}`);
+  await screenshot(path.join(artDir, "test-theme-step15-bigscreen-governance.png"));
+
+  // Advance to Step 16: Theme 3 Table
+  console.log("Advancing to Step 16: Theme 3 Table...");
+  await evalCode(`document.getElementById("btn-intro-skip-to-table").click();`);
+  await delay(1000);
+
+  const tableTitle3 = await evalCode(`document.querySelector(".theme-table-title-text")?.textContent`);
   const rowCount3 = await evalCode(`document.querySelectorAll(".ceremony-theme-table-row").length`);
-  console.log(`Theme 3 Table rows rendered: ${rowCount3} (Expected: 10)`);
-  await screenshot(path.join(artDir, "test-theme-step13-table-governance.png"));
+  console.log(`Step 16 Table Title: ${tableTitle3}, rows: ${rowCount3}`);
+  await screenshot(path.join(artDir, "test-theme-step16-table-governance.png"));
 
-  // Advance to Countdown 5 to 1
+  // Advance to Step 17: Countdown 5 to 1
   console.log("Advancing to Countdown 5 to 1...");
   await evalCode(`document.getElementById("btn-theme-next")?.click();`);
   await delay(1200);
 
   const countdownDigit = await evalCode(`document.getElementById("countdown-5to1-digit")?.textContent`);
   console.log(`Countdown digit: ${countdownDigit}`);
-  await screenshot(path.join(artDir, "test-theme-step14-countdown.png"));
+  await screenshot(path.join(artDir, "test-theme-step17-countdown.png"));
 
   console.log("Verification finished successfully!");
   cleanup();

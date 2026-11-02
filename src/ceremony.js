@@ -15,22 +15,25 @@ function escapeHtml(str) {
  * ====================================================================
  * LAKSHYA 2026 BIG SCREEN AUDITORIUM CEREMONY CONTROLLER
  * 
- * Implements the exact 15-step auditorium presentation flow:
- * 1. Curtain (Grand velvet ceremonial stage curtain - manual open, begins BGM)
+ * Implements the exact 18-step presentation flow:
+ * 1. Curtain (Grand velvet ceremonial stage curtain - manual open, begins continuous soft music)
  * 2. S J B Institute Of Technology (5s)
  * 3. Campus Photo (5s)
  * 4. Swamiji Photos(3) (5s)
  * 5. 25 year logo (5s)
  * 6. ISE Department (5s)
  * 7. Lakshya 2026 (5s)
- * 8. Sponsors-DLithe & ALL Logos (5s - BGM plays continuously from Step 1 to 8, fades out here)
+ * 8. Sponsors-DLithe & ALL Logos (5s)
  * 9. Problem Statement-Big Screen Title (5s)
- * 10. Click on (Interactive Dignitary Launch Trigger)
- * 11. Big Screen- Theme 1: Agriculture (Table with all 10 problem statements, 35s animated showcase)
- * 12. Big Screen- Theme 2: Smart & Sustainable Future (Table with all 10 problem statements, 35s animated showcase)
- * 13. Big Screen- Theme 3: Governance (Table with all 10 problem statements, 35s animated showcase)
- * 14. Then show countdown 5 to 1 (Curious mass beats)
- * 15. Then display timer ("WE ARE LIVE!" + 24-Hour Timer)
+ * 10. Click on (Interactive Dignitary Launch Trigger - soft music plays until this release button is clicked!)
+ * 11. Big Screen - Theme 1: Agriculture (Heroic Full Screen Showcase, 5s)
+ * 12. Theme 1: Agriculture - Statements Table (10 problem statements, 35s animated showcase with progress bar)
+ * 13. Big Screen - Theme 2: Smart & Sustainable Future (Heroic Full Screen Showcase, 5s)
+ * 14. Theme 2: Smart & Sustainable Future - Statements Table (10 problem statements, 35s animated showcase with progress bar)
+ * 15. Big Screen - Theme 3: Governance (Heroic Full Screen Showcase, 5s)
+ * 16. Theme 3: Governance - Statements Table (10 problem statements, 35s animated showcase with progress bar)
+ * 17. Countdown 5 to 1 (Curious mass beats)
+ * 18. Display timer ("WE ARE LIVE!" + 24-Hour Countdown Timer)
  * ====================================================================
  */
 
@@ -74,22 +77,28 @@ export class CeremonyController {
       { id: "step-ise", num: 6, title: "ISE Department", type: "ise", duration: 5000 },
       // 7. Lakshya
       { id: "step-lakshya", num: 7, title: "Lakshya 2026", type: "lakshya", duration: 5000 },
-      // 8. Sponsors-DLithe ALL Logos (Ceremonial BGM plays continuously from Curtain to here)
+      // 8. Sponsors-DLithe ALL Logos (Continuous soft music plays through here)
       { id: "step-sponsors", num: 8, title: "Sponsors & Accreditations", type: "sponsors", duration: 5000 },
-      // 9. Problem Statement-Big Screen (BGM fades out smoothly)
+      // 9. Problem Statement-Big Screen Title (Continuous soft music plays through here)
       { id: "step-problem-title", num: 9, title: "Problem Statements", type: "problem-title", duration: 5000 },
-      // 10. Click on (Interactive Dignitary Launch Trigger)
+      // 10. Click to Release (Continuous soft music plays until dignitary clicks to release!)
       { id: "step-click-on", num: 10, title: "Click to Release", type: "click-on", autoAdvance: false },
-      // 11. Big Screen- Theme 1: Agriculture (Table with 10 problem statements, 35s)
-      { id: "step-theme-table-1", num: 11, title: "Theme 1: Agriculture", type: "theme-table", themeIdx: 0, duration: 35000 },
-      // 12. Big Screen- Theme 2: Smart & Sustainable Future (Table with 10 problem statements, 35s)
-      { id: "step-theme-table-2", num: 12, title: "Theme 2: Smart & Sustainable Future", type: "theme-table", themeIdx: 1, duration: 35000 },
-      // 13. Big Screen- Theme 3: Governance (Table with 10 problem statements, 35s)
-      { id: "step-theme-table-3", num: 13, title: "Theme 3: Governance", type: "theme-table", themeIdx: 2, duration: 35000 },
-      // 14. Then show countdown 5 to 1
-      { id: "step-countdown-5to1", num: 14, title: "Countdown 5 to 1", type: "countdown", duration: 5500 },
-      // 15. Then display timer
-      { id: "step-display-timer", num: 15, title: "Display Timer", type: "complete", duration: 2000 },
+      // 11. Big Screen - Theme 1: Agriculture (5s)
+      { id: "step-theme-1-intro", num: 11, title: "Theme 1: Agriculture - Big Screen", type: "theme-intro", themeIdx: 0, duration: 5000 },
+      // 12. Theme 1: Agriculture - Table of 10 PS (35s)
+      { id: "step-theme-1-table", num: 12, title: "Theme 1: Agriculture - Problem Statements Table", type: "theme-table", themeIdx: 0, duration: 35000 },
+      // 13. Big Screen - Theme 2: Smart & Sustainable Future (5s)
+      { id: "step-theme-2-intro", num: 13, title: "Theme 2: Smart & Sustainable Future - Big Screen", type: "theme-intro", themeIdx: 1, duration: 5000 },
+      // 14. Theme 2: Smart & Sustainable Future - Table of 10 PS (35s)
+      { id: "step-theme-2-table", num: 14, title: "Theme 2: Smart & Sustainable Future - Problem Statements Table", type: "theme-table", themeIdx: 1, duration: 35000 },
+      // 15. Big Screen - Theme 3: Governance (5s)
+      { id: "step-theme-3-intro", num: 15, title: "Theme 3: Governance - Big Screen", type: "theme-intro", themeIdx: 2, duration: 5000 },
+      // 16. Theme 3: Governance - Table of 10 PS (35s)
+      { id: "step-theme-3-table", num: 16, title: "Theme 3: Governance - Problem Statements Table", type: "theme-table", themeIdx: 2, duration: 35000 },
+      // 17. Countdown 5 to 1
+      { id: "step-countdown-5to1", num: 17, title: "Countdown 5 to 1", type: "countdown", duration: 5500 },
+      // 18. Display Timer
+      { id: "step-display-timer", num: 18, title: "Display Timer", type: "complete", duration: 2000 },
     ];
   }
 
@@ -215,7 +224,7 @@ export class CeremonyController {
 
     sound.init();
     sound.playCurtainOpen();
-    // BGM starts when stage curtain opens and plays continuously till sponsors page
+    // Continuous soft music starts playing immediately when open stage curtain is pressed
     sound.startCeremonyBgm();
 
     const curtainStage = this.container.querySelector("#ceremony-curtain-stage");
@@ -243,13 +252,13 @@ export class CeremonyController {
     if (index < 0) index = 0;
     this.currentStepIndex = index;
 
-    // BGM Management:
-    // Plays from opening (Curtain) continuously through sponsors page (Steps 1 to 7/8).
-    // Fades out when advancing to Step 9 (Problem Statements Title) or beyond.
-    if (this.currentStepIndex >= 1 && this.currentStepIndex <= 7) {
+    // Continuous soft music management:
+    // Plays from Curtain (Step 1) continuously through Steps 1 to 10 (till problem statement release).
+    // Fades out when advancing to Step 11 (Theme 1 Big Screen) or beyond.
+    if (this.curtainOpen && this.currentStepIndex >= 1 && this.currentStepIndex <= 9) {
       sound.startCeremonyBgm();
-    } else if (this.currentStepIndex >= 8) {
-      sound.stopCeremonyBgm(1.5);
+    } else if (this.currentStepIndex >= 10) {
+      sound.stopCeremonyBgm(1.2);
     }
 
     this.renderCurrentStep();
@@ -316,7 +325,7 @@ export class CeremonyController {
     const name = this.container?.querySelector("#presenter-step-name");
 
     if (badge) {
-      badge.textContent = `Step ${step.num} of 15`;
+      badge.textContent = `Step ${step.num} of 18`;
     }
     if (name) {
       name.textContent = step.title;
@@ -381,10 +390,17 @@ export class CeremonyController {
         this.bindClickOnButton();
         break;
 
+      case "theme-intro":
+        viewport.innerHTML = this.renderThemeIntroSlide(step.themeIdx);
+        sound.playThemeTransition();
+        this.bindThemeIntroButton();
+        this.scheduleAutoAdvance(step.duration || 5000);
+        break;
+
       case "theme-table":
         viewport.innerHTML = this.renderThemeTableSlide(step);
         sound.playThemeTransition();
-        this.bindThemeTableControls();
+        this.bindThemeTableControls(step);
         this.startThemeTableTimer(step.duration || 35000);
         break;
 
@@ -446,7 +462,17 @@ export class CeremonyController {
     }, updateInterval);
   }
 
-  bindThemeTableControls() {
+  bindThemeIntroButton() {
+    const btnAdvance = this.container?.querySelector("#btn-intro-skip-to-table");
+    if (btnAdvance) {
+      btnAdvance.addEventListener("click", () => {
+        sound.playThemeTransition();
+        this.nextStep();
+      });
+    }
+  }
+
+  bindThemeTableControls(step) {
     const btnPrev = this.container?.querySelector("#btn-theme-prev");
     const btnNext = this.container?.querySelector("#btn-theme-next");
     const btnPause = this.container?.querySelector("#btn-theme-pause");
@@ -454,14 +480,34 @@ export class CeremonyController {
     if (btnPrev) {
       btnPrev.addEventListener("click", () => {
         sound.playThemeTransition();
-        this.prevStep();
+        if (step.themeIdx === 1) {
+          // From Theme 2 Table -> back to Theme 1 Table (step index 11)
+          this.goToStep(11);
+        } else if (step.themeIdx === 2) {
+          // From Theme 3 Table -> back to Theme 2 Table (step index 13)
+          this.goToStep(13);
+        } else {
+          // From Theme 1 Table -> back to Theme 1 Big Screen (step index 10)
+          this.goToStep(10);
+        }
       });
     }
 
     if (btnNext) {
       btnNext.addEventListener("click", () => {
         sound.playThemeTransition();
-        this.nextStep();
+        if (step.themeIdx === 0) {
+          // From Theme 1 Table -> advance to Theme 2 Big Screen (step index 12)
+          this.goToStep(12);
+        } else if (step.themeIdx === 1) {
+          // From Theme 2 Table -> advance to Theme 3 Big Screen (step index 14)
+          this.goToStep(14);
+        } else if (step.themeIdx === 2) {
+          // From Theme 3 Table -> advance to Countdown 5 to 1 (step index 16)
+          this.goToStep(16);
+        } else {
+          this.nextStep();
+        }
       });
     }
 
@@ -484,9 +530,11 @@ export class CeremonyController {
     if (btn) {
       btn.addEventListener("click", () => {
         sound.init();
+        // Official Problem Statement Release: Stop continuous soft music with smooth fade
+        sound.stopCeremonyBgm(1.2);
         sound.playRevealChime();
         this.onGlitter();
-        // Advance to Theme 1 Table
+        // Advance to Step 11: Big Screen for Theme 1: Agriculture!
         this.nextStep();
       });
     }
@@ -790,13 +838,59 @@ export class CeremonyController {
         </button>
 
         <div class="click-action-note">
-          30 Innovation Challenges will be unveiled theme-wise on the big screen (35s showcase per theme)
+          Continuous music plays until this release button is pressed. 3 Themes will be unveiled sequentially on the big screen.
         </div>
       </div>
     `;
   }
 
-  // Steps 11, 12, 13: THEME TABLE SLIDES (All 10 statements displayed in animated table for 35s)
+  // Steps 11, 13, 15: BIG SCREEN FOR THEMES (Grand Full-Screen Showcase)
+  renderThemeIntroSlide(themeIdx) {
+    const theme = THEMES[themeIdx];
+    const themeNum = themeIdx + 1;
+    const animClass = `anim-theme-bigscreen-${themeNum}`;
+
+    return `
+      <div class="ceremony-slide slide-theme-bigscreen slide-theme-bigscreen-${themeNum}" style="--theme-color: ${theme.accentColor};">
+        <div class="theme-bigscreen-ambient" style="background: radial-gradient(circle at 50% 40%, ${theme.accentColor}35 0%, transparent 70%);"></div>
+
+        <div class="theme-bigscreen-card ${animClass}">
+          <div class="theme-bigscreen-badge-row">
+            <span class="theme-bigscreen-pill" style="border-color: ${theme.accentColor}; color: ${theme.accentColor};">
+              <span class="theme-bigscreen-pulse-dot" style="background: ${theme.accentColor};"></span>
+              THEME ${themeNum} OF 3 &bull; OFFICIAL RELEASE
+            </span>
+            <span class="theme-bigscreen-count">10 Innovation Challenges</span>
+          </div>
+
+          <div class="theme-bigscreen-icon-wrap">
+            <span class="theme-bigscreen-icon">${theme.icon}</span>
+          </div>
+
+          <h1 class="theme-bigscreen-title">
+            <span class="theme-bigscreen-title-text" style="--title-accent: ${theme.accentColor};">${escapeHtml(theme.name.toUpperCase())}</span>
+          </h1>
+
+          <div class="theme-bigscreen-divider" style="background: linear-gradient(90deg, transparent, ${theme.accentColor}, transparent);"></div>
+
+          <p class="theme-bigscreen-summary">${escapeHtml(theme.summary)}</p>
+
+          <div class="theme-bigscreen-action-row">
+            <div class="theme-bigscreen-hint">
+              <span class="hint-pulse-beacon" style="background: ${theme.accentColor};"></span>
+              <span>Displaying 10 Problem Statements Table...</span>
+            </div>
+            <button id="btn-intro-skip-to-table" class="btn-theme-intro-advance" type="button" aria-label="View Problem Statements Table">
+              <span>VIEW STATEMENTS TABLE</span>
+              <span class="btn-intro-arrow">&rarr;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Steps 12, 14, 16: THEME TABLE SLIDES (All 10 statements displayed in animated table for 35s)
   renderThemeTableSlide(step) {
     const theme = THEMES[step.themeIdx];
     const tableAnimClass = `anim-table-theme-${step.themeIdx + 1}`;
@@ -877,7 +971,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 14: Countdown 5 to 1 (High Energy Shockwave Pulse with Curious Mass Beats)
+  // Step 17: Countdown 5 to 1 (High Energy Shockwave Pulse with Curious Mass Beats)
   renderCountdownSlide() {
     return `
       <div class="ceremony-slide slide-countdown-5to1">
@@ -891,7 +985,7 @@ export class CeremonyController {
     `;
   }
 
-  // Step 15: We Are Live Splash (Confetti Boom & Fanfare)
+  // Step 18: We Are Live Splash (Confetti Boom & Fanfare)
   renderWeAreLiveSplash() {
     return `
       <div class="ceremony-slide slide-we-are-live">
