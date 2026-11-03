@@ -143,6 +143,21 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(theme3Screen).toContain("anim-theme-bigscreen-3");
   });
 
+  it("verifies renderSponsorsSlide renders DLithe, Divine Designs, and Prrintastic association partners", () => {
+    const controller = new CeremonyController({});
+    const html = controller.renderSponsorsSlide();
+
+    expect(html).toContain("IN ASSOCIATION WITH");
+    expect(html).toContain("DLithe");
+    expect(html).toContain("Divine Designs");
+    expect(html).toContain("Prrintastic");
+    expect(html).toContain("divine-designs-logo.svg");
+    expect(html).toContain("prrintastic-logo.svg");
+    expect(html).toContain("dlithe-logo-clean.png");
+    expect(html).toContain("Creative &amp; Branding Partner");
+    expect(html).toContain("Print &amp; Merchandising Partner");
+  });
+
   it("verifies renderThemeTableSlide renders all 10 statements of the theme in a table with animation classes", () => {
     const controller = new CeremonyController({});
     const steps = controller.buildSteps();

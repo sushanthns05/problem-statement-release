@@ -771,13 +771,37 @@ export class CeremonyController {
           <h2 class="sponsors-title">OUR SPONSORS &amp; ACCREDITATIONS</h2>
         </div>
 
-        <!-- In Association with DLithe (Large prominent card) -->
+        <!-- In Association with DLithe, Divine Designs & Prrintastic -->
         <div class="assoc-dlithe-card">
           <div class="assoc-label">IN ASSOCIATION WITH</div>
-          <div class="assoc-dlithe-logo-wrap">
-            <img src="/assets/dlithe-logo-clean.png" alt="DLithe - Be Agile..Be in Demand" class="assoc-dlithe-logo" />
+          <div class="assoc-partners-grid">
+            <!-- DLithe -->
+            <div class="assoc-partner-col">
+              <div class="assoc-partner-logo-box">
+                <img src="/assets/dlithe-logo-clean.png" alt="DLithe - Be Agile..Be in Demand" class="assoc-partner-logo" />
+              </div>
+              <div class="assoc-partner-name">DLithe</div>
+              <div class="assoc-partner-role">Empowering Next-Gen Tech Talent &bull; Be Agile..Be in Demand</div>
+            </div>
+
+            <!-- Divine Designs -->
+            <div class="assoc-partner-col">
+              <div class="assoc-partner-logo-box">
+                <img src="/assets/divine-designs-logo.svg" alt="Divine Designs - Creative &amp; Branding" class="assoc-partner-logo" />
+              </div>
+              <div class="assoc-partner-name">Divine Designs</div>
+              <div class="assoc-partner-role">Creative &amp; Branding Partner</div>
+            </div>
+
+            <!-- Prrintastic -->
+            <div class="assoc-partner-col">
+              <div class="assoc-partner-logo-box">
+                <img src="/assets/prrintastic-logo.svg" alt="Prrintastic - Print &amp; Merchandising" class="assoc-partner-logo" />
+              </div>
+              <div class="assoc-partner-name">Prrintastic</div>
+              <div class="assoc-partner-role">Print &amp; Merchandising Partner</div>
+            </div>
           </div>
-          <div class="assoc-tagline">Empowering Next-Gen Tech Talent &bull; Be Agile..Be in Demand</div>
         </div>
 
         <!-- All Institutional Accreditations -->

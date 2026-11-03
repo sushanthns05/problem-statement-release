@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 90" width="300" height="90">
+  <defs>
+    <!-- CMYK Gradients -->
+    <linearGradient id="cmykCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C0FF"/>
+      <stop offset="100%" stop-color="#0077CC"/>
+    </linearGradient>
+    <linearGradient id="cmykMagenta" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF2E93"/>
+      <stop offset="100%" stop-color="#C70068"/>
+    </linearGradient>
+    <linearGradient id="cmykYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFDE00"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="cmykDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(10, 10)">
+    <!-- Dynamic CMYK Print Ribbon / Geometric Prism Emblem -->
+    <g transform="translate(6, 6)">
+      <!-- 4 Overlapping CMYK Print Petals / Swatches -->
+      <!-- Cyan Leaf -->
+      <path d="M 26 6 C 36 6, 44 14, 44 24 C 44 34, 36 42, 26 42 C 26 30, 26 18, 26 6 Z" fill="url(#cmykCyan)" opacity="0.9"/>
+      <!-- Magenta Leaf -->
+      <path d="M 26 42 C 16 42, 8 34, 8 24 C 8 14, 16 6, 26 6 C 26 18, 26 30, 26 42 Z" fill="url(#cmykMagenta)" opacity="0.9"/>
+      <!-- Yellow Fold -->
+      <circle cx="26" cy="24" r="10" fill="url(#cmykYellow)" opacity="0.92"/>
+      <!-- Central CMYK Core -->
+      <circle cx="26" cy="24" r="5" fill="url(#cmykDark)"/>
+      <circle cx="26" cy="24" r="2" fill="#FFFFFF"/>
+      
+      <!-- Precision Print Registration Marks -->
+      <line x1="26" y1="0" x2="26" y2="5" stroke="#0077CC" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="26" y1="43" x2="26" y2="48" stroke="#C70068" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="2" y1="24" x2="7" y2="24" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="45" y1="24" x2="50" y2="24" stroke="#00C0FF" stroke-width="1.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- Typography -->
+    <g transform="translate(74, 5)">
+      <!-- Top Micro Tag -->
+      <text x="0" y="11" font-family="'Inter', 'Montserrat', 'Segoe UI', system-ui, sans-serif" font-size="7.5" font-weight="700" fill="#0077CC" letter-spacing="2.8">SOLUTIONS</text>
+
+      <!-- Main Brand Name: PRRINTASTIC -->
+      <text x="0" y="35" font-family="'Montserrat', 'Outfit', 'Inter', system-ui, -apple-system, sans-serif" font-size="20" font-weight="900" fill="#0F172A" letter-spacing="1">
+        PRRINT<tspan fill="#FF2E93">ASTIC</tspan>
+      </text>
+
+      <!-- Color underline bar using CMYK stripes -->
+      <g transform="translate(0, 43)">
+        <rect x="0" y="0" width="38" height="2.5" rx="1.25" fill="#00C0FF"/>
+        <rect x="42" y="0" width="38" height="2.5" rx="1.25" fill="#FF2E93"/>
+        <rect x="84" y="0" width="38" height="2.5" rx="1.25" fill="#FFDE00"/>
+        <rect x="126" y="0" width="46" height="2.5" rx="1.25" fill="#0F172A"/>
+      </g>
+
+      <!-- Descriptor Subtitle -->
+      <text x="0" y="58" font-family="'Inter', 'Montserrat', 'Segoe UI', system-ui, sans-serif" font-size="7.5" font-weight="700" fill="#64748B" letter-spacing="2.6">
+        PRINT &amp; MERCHANDISING
+      </text>
+    </g>
+  </g>
+</svg>

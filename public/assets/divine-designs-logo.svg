@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 90" width="300" height="90">
+  <defs>
+    <!-- Metallic Gold Gradient for Luxury Emblem -->
+    <linearGradient id="divineGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C59B27"/>
+      <stop offset="30%" stop-color="#FDF0A6"/>
+      <stop offset="70%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#9A7B1C"/>
+    </linearGradient>
+    <linearGradient id="divineGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    <filter id="goldDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(10, 10)">
+    <!-- Elegant Luxury Monogram Crest Emblem -->
+    <g transform="translate(4, 3)">
+      <!-- Outer diamond frame -->
+      <rect x="14" y="0" width="36" height="36" rx="7" transform="rotate(45 32 18)" fill="url(#divineGlow)" opacity="0.08"/>
+      <rect x="14" y="0" width="36" height="36" rx="6" transform="rotate(45 32 18)" fill="none" stroke="url(#divineGold)" stroke-width="1.8"/>
+      
+      <!-- Center Divine 4-point radiant star -->
+      <path d="M 32 4 Q 32 18 46 18 Q 32 18 32 32 Q 32 18 18 18 Q 32 18 32 4 Z" fill="url(#divineGold)" filter="url(#goldDrop)"/>
+      <!-- Inner star core -->
+      <circle cx="32" cy="18" r="2.2" fill="#FFFFFF"/>
+      <circle cx="32" cy="8" r="1.2" fill="#FFFFFF"/>
+      <circle cx="32" cy="28" r="1.2" fill="#FFFFFF"/>
+      <circle cx="22" cy="18" r="1.2" fill="#FFFFFF"/>
+      <circle cx="42" cy="18" r="1.2" fill="#FFFFFF"/>
+    </g>
+
+    <!-- Brand Typography -->
+    <g transform="translate(74, 2)">
+      <!-- Top Micro Tag -->
+      <text x="0" y="14" font-family="'Cinzel', 'Trajan Pro', 'Georgia', serif" font-size="8" font-weight="700" fill="#9A7B1C" letter-spacing="3.2">STUDIO</text>
+      
+      <!-- Main Brand Name: Single line text with tspan so spacing is 100% natural and never overlaps -->
+      <text x="0" y="38" font-family="'Cinzel', 'Playfair Display', 'Georgia', 'Times New Roman', serif" font-size="19" font-weight="800" fill="#0F172A" letter-spacing="1.2">DIVINE <tspan fill="#C59B27" font-weight="700">DESIGNS</tspan></text>
+
+      <!-- Divider line with center diamond -->
+      <line x1="0" y1="48" x2="200" y2="48" stroke="url(#divineGold)" stroke-width="1" opacity="0.6"/>
+      <polygon points="100,46 102,48 100,50 98,48" fill="#D4AF37"/>
+
+      <!-- Category / Descriptor -->
+      <text x="0" y="62" font-family="'Inter', 'Montserrat', 'Segoe UI', system-ui, sans-serif" font-size="7.5" font-weight="700" fill="#5A6578" letter-spacing="2.8">CREATIVE &amp; BRANDING</text>
+    </g>
+  </g>
+</svg>

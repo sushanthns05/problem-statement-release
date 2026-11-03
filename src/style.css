@@ -2867,14 +2867,14 @@ body.screen-ceremony-active {
 }
 
 .slide-sponsors .assoc-dlithe-card {
-  background: rgba(8, 16, 32, 0.85);
+  background: rgba(8, 16, 32, 0.88);
   border: 2px solid rgba(255, 215, 0, 0.45);
   border-radius: var(--border-radius-md);
-  padding: clamp(20px, 3vh, 32px) clamp(28px, 4vw, 48px);
-  margin-bottom: clamp(16px, 2.5vh, 28px);
-  max-width: min(92vw, 1080px);
+  padding: clamp(16px, 2.5vh, 26px) clamp(20px, 3vw, 36px);
+  margin-bottom: clamp(14px, 2vh, 22px);
+  max-width: min(94vw, 1140px);
   width: 100%;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65), inset 0 0 20px rgba(255, 215, 0, 0.05);
   animation: animDlitheCardFoldIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
 }
 @keyframes animDlitheCardFoldIn {
@@ -2884,12 +2884,79 @@ body.screen-ceremony-active {
 
 .slide-sponsors .assoc-label {
   font-family: var(--font-cert);
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
   font-style: italic;
   font-weight: 800;
   color: var(--gold);
-  letter-spacing: 0.05em;
-  margin-bottom: 12px;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+}
+
+.slide-sponsors .assoc-partners-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(12px, 1.8vw, 24px);
+  align-items: stretch;
+  width: 100%;
+}
+
+.slide-sponsors .assoc-partner-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-sm);
+  padding: clamp(10px, 1.6vh, 16px) clamp(10px, 1.2vw, 16px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.slide-sponsors .assoc-partner-col:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 215, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 215, 0, 0.06);
+}
+
+.slide-sponsors .assoc-partner-logo-box {
+  width: 100%;
+  max-width: 250px;
+  height: clamp(52px, 7.5vh, 68px);
+  background: #ffffff;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  margin-bottom: 8px;
+}
+
+.slide-sponsors .assoc-partner-logo {
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.slide-sponsors .assoc-partner-name {
+  font-family: var(--font-cert);
+  font-size: clamp(0.95rem, 1.25vw, 1.15rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  margin-bottom: 3px;
+  text-align: center;
+}
+
+.slide-sponsors .assoc-partner-role {
+  font-size: clamp(0.72rem, 0.9vw, 0.82rem);
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.35;
 }
 
 .slide-sponsors .assoc-dlithe-logo-wrap {
@@ -2917,8 +2984,8 @@ body.screen-ceremony-active {
   background: rgba(8, 16, 32, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--border-radius-md);
-  padding: clamp(16px, 2.5vh, 26px) clamp(24px, 3.5vw, 40px);
-  max-width: min(92vw, 1080px);
+  padding: clamp(14px, 2.2vh, 22px) clamp(20px, 3vw, 36px);
+  max-width: min(94vw, 1140px);
   width: 100%;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   animation: animLogosCardFoldIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
@@ -2955,6 +3022,13 @@ body.screen-ceremony-active {
 .slide-sponsors .all-logos-subtext {
   font-size: 0.78rem;
   color: var(--text-muted);
+}
+
+@media (max-width: 720px) {
+  .slide-sponsors .assoc-partners-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 /* Slide 9: Problem Statements Title */
