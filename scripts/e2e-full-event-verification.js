@@ -213,6 +213,8 @@ async function runE2E() {
   const sponsorsData = await evalExpr(`
     (() => {
       const names = Array.from(document.querySelectorAll('.assoc-partner-name')).map(el => el.textContent.trim());
+      const dlithe = document.querySelector('.assoc-partner-logo[src*="dlithe"]');
+      if (dlithe) names.unshift("DLithe");
       const accreditations = document.querySelector('.all-logos-img');
       return {
         partners: names,

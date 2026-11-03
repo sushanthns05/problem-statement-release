@@ -164,18 +164,16 @@ async function main() {
   // Evaluate visible elements
   const info = await evalExpr(`
     (() => {
-      const badges = Array.from(document.querySelectorAll('.assoc-partner-badge')).map(el => el.textContent.trim());
+      const dlitheLogo = document.querySelector('.assoc-partner-logo[src*="dlithe"]');
       const names = Array.from(document.querySelectorAll('.assoc-partner-name')).map(el => el.textContent.trim());
       const roles = Array.from(document.querySelectorAll('.assoc-partner-role')).map(el => el.textContent.trim());
       const cols = Array.from(document.querySelectorAll('.assoc-partner-col')).map(el => {
         const r = el.getBoundingClientRect();
         return { w: Math.round(r.width), h: Math.round(r.height) };
       });
-      const logos = document.querySelectorAll('.assoc-partner-logo').length;
 
       return {
-        hasLogos: logos > 0,
-        badges,
+        hasDlitheLogo: !!dlitheLogo && dlitheLogo.naturalWidth > 0,
         names,
         roles,
         cols
@@ -183,7 +181,7 @@ async function main() {
     })()
   `);
 
-  console.log("[Test Result] Step 8 Typographic Partner Data:\n", JSON.stringify(info, null, 2));
+  console.log("[Test Result] Step 8 Partner Data:\n", JSON.stringify(info, null, 2));
 
   // Capture full screenshot
   const shot = await sendPage("Page.captureScreenshot", { format: "png" });
