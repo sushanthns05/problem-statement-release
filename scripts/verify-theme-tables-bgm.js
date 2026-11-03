@@ -183,7 +183,9 @@ async function main() {
   // Click VIEW STATEMENTS TABLE to advance to Step 12: Theme 1 Table
   console.log("Advancing to Step 12: Theme 1 Agriculture Table...");
   await evalCode(`document.getElementById("btn-intro-skip-to-table").click();`);
-  await delay(1000);
+  await delay(600);
+  // Pause table timer to allow inspection
+  await evalCode(`document.getElementById("btn-theme-pause")?.click();`);
 
   const tableTitle1 = await evalCode(`document.querySelector(".theme-table-title-text")?.textContent`);
   const rowCount1 = await evalCode(`document.querySelectorAll(".ceremony-theme-table-row").length`);
@@ -194,7 +196,7 @@ async function main() {
   // Advance to Step 13: Big Screen Theme 2
   console.log("Advancing to Step 13: Big Screen Theme 2...");
   await evalCode(`document.getElementById("btn-theme-next")?.click();`);
-  await delay(1000);
+  await delay(600);
 
   const bigScreenTitle2 = await evalCode(`document.querySelector(".theme-bigscreen-title-text")?.textContent`);
   console.log(`Step 13 Big Screen Title: ${bigScreenTitle2}`);
@@ -203,7 +205,8 @@ async function main() {
   // Advance to Step 14: Theme 2 Table
   console.log("Advancing to Step 14: Theme 2 Table...");
   await evalCode(`document.getElementById("btn-intro-skip-to-table").click();`);
-  await delay(1000);
+  await delay(600);
+  await evalCode(`document.getElementById("btn-theme-pause")?.click();`);
 
   const tableTitle2 = await evalCode(`document.querySelector(".theme-table-title-text")?.textContent`);
   const rowCount2 = await evalCode(`document.querySelectorAll(".ceremony-theme-table-row").length`);
@@ -213,7 +216,7 @@ async function main() {
   // Advance to Step 15: Big Screen Theme 3
   console.log("Advancing to Step 15: Big Screen Theme 3...");
   await evalCode(`document.getElementById("btn-theme-next")?.click();`);
-  await delay(1000);
+  await delay(600);
 
   const bigScreenTitle3 = await evalCode(`document.querySelector(".theme-bigscreen-title-text")?.textContent`);
   console.log(`Step 15 Big Screen Title: ${bigScreenTitle3}`);
@@ -222,7 +225,8 @@ async function main() {
   // Advance to Step 16: Theme 3 Table
   console.log("Advancing to Step 16: Theme 3 Table...");
   await evalCode(`document.getElementById("btn-intro-skip-to-table").click();`);
-  await delay(1000);
+  await delay(600);
+  await evalCode(`document.getElementById("btn-theme-pause")?.click();`);
 
   const tableTitle3 = await evalCode(`document.querySelector(".theme-table-title-text")?.textContent`);
   const rowCount3 = await evalCode(`document.querySelectorAll(".ceremony-theme-table-row").length`);
