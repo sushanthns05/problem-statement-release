@@ -27,11 +27,11 @@ function escapeHtml(str) {
  * 9. Problem Statement-Big Screen Title (4s)
  * 10. Click on (Interactive Dignitary Launch Trigger - soft music plays until this release button is clicked!)
  * 11. Big Screen - Theme 1: Agriculture (Heroic Full Screen Showcase, 4s)
- * 12. Theme 1: Agriculture - Statements Table (10 problem statements, 30s animated showcase with progress bar)
+ * 12. Theme 1: Agriculture - Statements Table (10 problem statements, 5s animated showcase with progress bar)
  * 13. Big Screen - Theme 2: Smart & Sustainable Future (Heroic Full Screen Showcase, 4s)
- * 14. Theme 2: Smart & Sustainable Future - Statements Table (10 problem statements, 30s animated showcase with progress bar)
+ * 14. Theme 2: Smart & Sustainable Future - Statements Table (10 problem statements, 5s animated showcase with progress bar)
  * 15. Big Screen - Theme 3: Governance (Heroic Full Screen Showcase, 4s)
- * 16. Theme 3: Governance - Statements Table (10 problem statements, 30s animated showcase with progress bar)
+ * 16. Theme 3: Governance - Statements Table (10 problem statements, 5s animated showcase with progress bar)
  * 17. Countdown 5 to 1 (Curious mass beats)
  * 18. Display timer ("WE ARE LIVE!" + 24-Hour Countdown Timer)
  * ====================================================================
@@ -50,9 +50,9 @@ export class CeremonyController {
     this.progressInterval = null;
     this.countdownTimer = null;
 
-    // Theme table timer state (30 seconds per theme)
-    this.themeTableDuration = 30000;
-    this.themeTableTimeRemaining = 30000;
+    // Theme table timer state (5 seconds per theme)
+    this.themeTableDuration = 5000;
+    this.themeTableTimeRemaining = 5000;
     this.themeTableStartTime = 0;
 
     this.steps = this.buildSteps();
@@ -85,16 +85,16 @@ export class CeremonyController {
       { id: "step-click-on", num: 10, title: "Click to Release", type: "click-on", autoAdvance: false },
       // 11. Big Screen - Theme 1: Agriculture (4s)
       { id: "step-theme-1-intro", num: 11, title: "Theme 1: Agriculture - Big Screen", type: "theme-intro", themeIdx: 0, duration: 4000 },
-      // 12. Theme 1: Agriculture - Table of 10 PS (30s)
-      { id: "step-theme-1-table", num: 12, title: "Theme 1: Agriculture - Problem Statements Table", type: "theme-table", themeIdx: 0, duration: 30000 },
+      // 12. Theme 1: Agriculture - Table of 10 PS (5s)
+      { id: "step-theme-1-table", num: 12, title: "Theme 1: Agriculture - Problem Statements Table", type: "theme-table", themeIdx: 0, duration: 5000 },
       // 13. Big Screen - Theme 2: Smart & Sustainable Future (4s)
       { id: "step-theme-2-intro", num: 13, title: "Theme 2: Smart & Sustainable Future - Big Screen", type: "theme-intro", themeIdx: 1, duration: 4000 },
-      // 14. Theme 2: Smart & Sustainable Future - Table of 10 PS (30s)
-      { id: "step-theme-2-table", num: 14, title: "Theme 2: Smart & Sustainable Future - Problem Statements Table", type: "theme-table", themeIdx: 1, duration: 30000 },
+      // 14. Theme 2: Smart & Sustainable Future - Table of 10 PS (5s)
+      { id: "step-theme-2-table", num: 14, title: "Theme 2: Smart & Sustainable Future - Problem Statements Table", type: "theme-table", themeIdx: 1, duration: 5000 },
       // 15. Big Screen - Theme 3: Governance (4s)
       { id: "step-theme-3-intro", num: 15, title: "Theme 3: Governance - Big Screen", type: "theme-intro", themeIdx: 2, duration: 4000 },
-      // 16. Theme 3: Governance - Table of 10 PS (30s)
-      { id: "step-theme-3-table", num: 16, title: "Theme 3: Governance - Problem Statements Table", type: "theme-table", themeIdx: 2, duration: 30000 },
+      // 16. Theme 3: Governance - Table of 10 PS (5s)
+      { id: "step-theme-3-table", num: 16, title: "Theme 3: Governance - Problem Statements Table", type: "theme-table", themeIdx: 2, duration: 5000 },
       // 17. Countdown 5 to 1
       { id: "step-countdown-5to1", num: 17, title: "Countdown 5 to 1", type: "countdown", duration: 5500 },
       // 18. Display Timer
@@ -409,7 +409,7 @@ export class CeremonyController {
         viewport.innerHTML = this.renderThemeTableSlide(step);
         sound.playThemeTransition();
         this.bindThemeTableControls(step);
-        this.startThemeTableTimer(step.duration || 30000);
+        this.startThemeTableTimer(step.duration || 5000);
         break;
 
       case "countdown":
@@ -434,11 +434,11 @@ export class CeremonyController {
   }
 
   /**
-   * 30-Second Theme Table Showcase Timer
+   * 5-Second Theme Table Showcase Timer
    * Smoothly animates bottom progress bar and countdown readout.
-   * Auto-advances when 30s completes.
+   * Auto-advances when 5s completes.
    */
-  startThemeTableTimer(durationMs = 30000) {
+  startThemeTableTimer(durationMs = 5000) {
     this.themeTableDuration = durationMs;
     this.themeTableTimeRemaining = durationMs;
     this.themeTableStartTime = Date.now();
@@ -919,7 +919,7 @@ export class CeremonyController {
               <span class="pill-dot" style="background: ${theme.accentColor};"></span>
               THEME ${step.themeIdx + 1} OF 3
             </span>
-            <span class="theme-table-count-tag">10 Innovation Challenges &bull; 30-Second Showcase</span>
+            <span class="theme-table-count-tag">10 Innovation Challenges &bull; 5-Second Showcase</span>
           </div>
           <h1 class="theme-table-main-title">
             <span class="theme-table-title-icon">${theme.icon}</span>
@@ -967,7 +967,7 @@ export class CeremonyController {
             <div class="theme-table-timer-status">
               <span class="status-clock-icon">&bull;</span>
               <span class="status-clock-label">SHOWCASE TIMER:</span>
-              <span class="status-clock-digits"><strong id="theme-table-seconds-num">35.0</strong>s</span>
+              <span class="status-clock-digits"><strong id="theme-table-seconds-num">5.0</strong>s</span>
               <button id="btn-theme-pause" class="theme-pause-btn" type="button" aria-label="Pause Theme Showcase">⏸ Pause</button>
             </div>
 

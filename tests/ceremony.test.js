@@ -75,12 +75,12 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(steps[10].themeIdx).toBe(0);
     expect(steps[10].duration).toBe(4000);
 
-    // Step 12: Theme 1 Table (30s)
+    // Step 12: Theme 1 Table (5s)
     expect(steps[11].id).toBe("step-theme-1-table");
     expect(steps[11].num).toBe(12);
     expect(steps[11].type).toBe("theme-table");
     expect(steps[11].themeIdx).toBe(0);
-    expect(steps[11].duration).toBe(30000);
+    expect(steps[11].duration).toBe(5000);
 
     // Step 13: Big Screen - Theme 2: Smart & Sustainable Future (4s)
     expect(steps[12].id).toBe("step-theme-2-intro");
@@ -89,12 +89,12 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(steps[12].themeIdx).toBe(1);
     expect(steps[12].duration).toBe(4000);
 
-    // Step 14: Theme 2 Table (30s)
+    // Step 14: Theme 2 Table (5s)
     expect(steps[13].id).toBe("step-theme-2-table");
     expect(steps[13].num).toBe(14);
     expect(steps[13].type).toBe("theme-table");
     expect(steps[13].themeIdx).toBe(1);
-    expect(steps[13].duration).toBe(30000);
+    expect(steps[13].duration).toBe(5000);
 
     // Step 15: Big Screen - Theme 3: Governance (4s)
     expect(steps[14].id).toBe("step-theme-3-intro");
@@ -103,12 +103,12 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(steps[14].themeIdx).toBe(2);
     expect(steps[14].duration).toBe(4000);
 
-    // Step 16: Theme 3 Table (30s)
+    // Step 16: Theme 3 Table (5s)
     expect(steps[15].id).toBe("step-theme-3-table");
     expect(steps[15].num).toBe(16);
     expect(steps[15].type).toBe("theme-table");
     expect(steps[15].themeIdx).toBe(2);
-    expect(steps[15].duration).toBe(30000);
+    expect(steps[15].duration).toBe(5000);
 
     // Step 17: Countdown 5 to 1
     expect(steps[16].id).toBe("step-countdown-5to1");
