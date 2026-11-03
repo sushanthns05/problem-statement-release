@@ -164,30 +164,26 @@ async function main() {
   // Evaluate visible elements
   const info = await evalExpr(`
     (() => {
-      const dlithe = document.querySelector('.assoc-partner-logo[src*="dlithe"]');
-      const divine = document.querySelector('.assoc-partner-logo[src*="divine-designs"]');
-      const prrintastic = document.querySelector('.assoc-partner-logo[src*="prrintastic"]');
+      const badges = Array.from(document.querySelectorAll('.assoc-partner-badge')).map(el => el.textContent.trim());
       const names = Array.from(document.querySelectorAll('.assoc-partner-name')).map(el => el.textContent.trim());
       const roles = Array.from(document.querySelectorAll('.assoc-partner-role')).map(el => el.textContent.trim());
-
-      const dlitheRect = dlithe ? dlithe.getBoundingClientRect() : null;
-      const divineRect = divine ? divine.getBoundingClientRect() : null;
-      const prrintasticRect = prrintastic ? prrintastic.getBoundingClientRect() : null;
+      const cols = Array.from(document.querySelectorAll('.assoc-partner-col')).map(el => {
+        const r = el.getBoundingClientRect();
+        return { w: Math.round(r.width), h: Math.round(r.height) };
+      });
+      const logos = document.querySelectorAll('.assoc-partner-logo').length;
 
       return {
-        hasDlithe: !!dlithe,
-        hasDivine: !!divine,
-        hasPrrintastic: !!prrintastic,
+        hasLogos: logos > 0,
+        badges,
         names,
         roles,
-        dlitheRect: dlitheRect ? { w: Math.round(dlitheRect.width), h: Math.round(dlitheRect.height) } : null,
-        divineRect: divineRect ? { w: Math.round(divineRect.width), h: Math.round(divineRect.height) } : null,
-        prrintasticRect: prrintasticRect ? { w: Math.round(prrintasticRect.width), h: Math.round(prrintasticRect.height) } : null,
+        cols
       };
     })()
   `);
 
-  console.log("[Test Result] Step 8 Partner Data:\n", JSON.stringify(info, null, 2));
+  console.log("[Test Result] Step 8 Typographic Partner Data:\n", JSON.stringify(info, null, 2));
 
   // Capture full screenshot
   const shot = await sendPage("Page.captureScreenshot", { format: "png" });

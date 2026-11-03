@@ -776,30 +776,30 @@ export class CeremonyController {
           <div class="assoc-label">IN ASSOCIATION WITH</div>
           <div class="assoc-partners-grid">
             <!-- DLithe -->
-            <div class="assoc-partner-col">
-              <div class="assoc-partner-logo-box">
-                <img src="/assets/dlithe-logo-clean.png" alt="DLithe - Be Agile..Be in Demand" class="assoc-partner-logo" />
-              </div>
-              <div class="assoc-partner-name">DLithe</div>
-              <div class="assoc-partner-role">Empowering Next-Gen Tech Talent &bull; Be Agile..Be in Demand</div>
+            <div class="assoc-partner-col col-dlithe">
+              <div class="assoc-partner-badge">TECHNOLOGY &amp; TALENT</div>
+              <div class="assoc-partner-name name-dlithe">DLithe</div>
+              <div class="assoc-partner-line"></div>
+              <div class="assoc-partner-role">Empowering Next-Gen Tech Talent</div>
+              <div class="assoc-partner-tagline">Be Agile..Be in Demand</div>
             </div>
 
             <!-- Divine Designs -->
-            <div class="assoc-partner-col">
-              <div class="assoc-partner-logo-box">
-                <img src="/assets/divine-designs-logo.svg" alt="Divine Designs - Creative &amp; Branding" class="assoc-partner-logo" />
-              </div>
-              <div class="assoc-partner-name">Divine Designs</div>
+            <div class="assoc-partner-col col-divine">
+              <div class="assoc-partner-badge">CREATIVE &amp; BRANDING</div>
+              <div class="assoc-partner-name name-divine">Divine Designs</div>
+              <div class="assoc-partner-line"></div>
               <div class="assoc-partner-role">Creative &amp; Branding Partner</div>
+              <div class="assoc-partner-tagline">Design Studio &bull; Visual Identity</div>
             </div>
 
             <!-- Prrintastic -->
-            <div class="assoc-partner-col">
-              <div class="assoc-partner-logo-box">
-                <img src="/assets/prrintastic-logo.svg" alt="Prrintastic - Print &amp; Merchandising" class="assoc-partner-logo" />
-              </div>
-              <div class="assoc-partner-name">Prrintastic</div>
+            <div class="assoc-partner-col col-prrintastic">
+              <div class="assoc-partner-badge">PRINT &amp; MERCHANDISING</div>
+              <div class="assoc-partner-name name-prrintastic">Prrintastic</div>
+              <div class="assoc-partner-line"></div>
               <div class="assoc-partner-role">Print &amp; Merchandising Partner</div>
+              <div class="assoc-partner-tagline">Printing &bull; Production Partner</div>
             </div>
           </div>
         </div>
