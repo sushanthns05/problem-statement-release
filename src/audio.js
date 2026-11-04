@@ -19,7 +19,7 @@ class SoundEffects {
     this.countdownAudio = null;
     this.countdownFadeInterval = null;
     this.countdownIsPlaying = false;
-    this.countdownSourceUrl = "/assets/countdown.mp3";
+    this.countdownSourceUrl = "/assets/countdown.wav";
     this.countdownSynthGain = null;
     this.countdownSynthInterval = null;
   }
@@ -579,6 +579,13 @@ class SoundEffects {
     if (this.countdownAudio) {
       this.countdownAudio.muted = this.muted;
       this.countdownAudio.volume = this.muted ? 0 : 0.85;
+    }
+    if (typeof document !== "undefined") {
+      const vid = document.getElementById("countdown-5to1-video");
+      if (vid) {
+        vid.muted = this.muted;
+        vid.volume = this.muted ? 0 : 1.0;
+      }
     }
     if (this.bgmGain && this.ctx) {
       const vol = this.muted ? 0.0001 : 0.16;

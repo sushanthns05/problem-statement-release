@@ -214,11 +214,18 @@ export class CeremonyController {
     if (this.curtainTimer) clearTimeout(this.curtainTimer);
     if (this.stepTimer) clearTimeout(this.stepTimer);
     if (this.progressInterval) clearInterval(this.progressInterval);
-    if (this.countdownTimer) clearInterval(this.countdownTimer);
+    if (this.countdownTimer) {
+      clearTimeout(this.countdownTimer);
+      clearInterval(this.countdownTimer);
+    }
     this.curtainTimer = null;
     this.stepTimer = null;
     this.progressInterval = null;
     this.countdownTimer = null;
+    const activeVideo = this.container?.querySelector("#countdown-5to1-video");
+    if (activeVideo) {
+      try { activeVideo.pause(); } catch {}
+    }
   }
 
   openCurtain() {
@@ -272,6 +279,13 @@ export class CeremonyController {
 
     if (this.currentStepIndex !== 16) {
       sound.stopCountdownBgm(0.5);
+      const activeVideo = this.container?.querySelector("#countdown-5to1-video");
+      if (activeVideo) {
+        try {
+          activeVideo.pause();
+          activeVideo.currentTime = 0;
+        } catch {}
+      }
     }
 
     // Trigger subtle stage viewport ambient flash
@@ -312,6 +326,15 @@ export class CeremonyController {
     this.updatePauseButton();
 
     const step = this.steps[this.currentStepIndex];
+    const countdownVid = this.container?.querySelector("#countdown-5to1-video");
+    if (countdownVid) {
+      if (this.isPaused) {
+        countdownVid.pause();
+      } else {
+        countdownVid.play().catch(() => {});
+      }
+    }
+
     if (this.isPaused) {
       this.clearTimers();
     } else {
@@ -562,6 +585,45 @@ export class CeremonyController {
   }
 
   start5to1Countdown() {
+    const video = this.container?.querySelector("#countdown-5to1-video");
+    const digitFallback = this.container?.querySelector("#countdown-5to1-digit");
+
+    sound.stopCeremonyBgm(0.5);
+
+    if (video) {
+      video.muted = sound.muted;
+      video.volume = sound.muted ? 0 : 1.0;
+      video.currentTime = 0;
+
+      let advanced = false;
+      const advance = () => {
+        if (advanced) return;
+        advanced = true;
+        this.nextStep();
+      };
+
+      video.addEventListener("ended", advance, { once: true });
+
+      // Fallback timer: Video duration is ~15.1s. Ensure advance if ended doesn't fire
+      this.countdownTimer = setTimeout(() => {
+        advance();
+      }, 15500);
+
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn("Countdown video autoplay blocked or failed, falling back to audio+digit:", err);
+          if (video) video.style.display = "none";
+          if (digitFallback) digitFallback.classList.remove("fallback-hidden");
+          this.start5to1FallbackCountdown();
+        });
+      }
+    } else {
+      this.start5to1FallbackCountdown();
+    }
+  }
+
+  start5to1FallbackCountdown() {
     let count = 5;
     const digitDisplay = this.container?.querySelector("#countdown-5to1-digit");
     sound.startCountdownBgm();
@@ -789,10 +851,10 @@ export class CeremonyController {
               <div class="assoc-partner-tagline">Be Agile..Be in Demand</div>
             </div>
 
-            <!-- Divine Designs (Logo - Transparent Gold Seal) -->
+            <!-- Divine Designs (Logo - Authentic Circular Medal Emblem) -->
             <div class="assoc-partner-col col-divine">
               <div class="assoc-partner-top-slot">
-                <img src="/assets/divine-design-seal-gold.png" alt="Divine Design - Urban Planners, Architects & Interior Designers" class="assoc-partner-logo assoc-logo-divine" />
+                <img src="/assets/divine-design-seal-clean.png" alt="Divine Design - Urban Planners, Architects &amp; Interior Designers" class="assoc-partner-logo assoc-logo-divine" />
               </div>
               <div class="assoc-partner-line"></div>
               <div class="assoc-partner-role">Creative &amp; Branding Partner</div>
@@ -1012,11 +1074,19 @@ export class CeremonyController {
     `;
   }
 
-  // Step 17: Countdown 5 to 1 (Clean Numerals with Countdown BGM)
+  // Step 17: Countdown 5 to 1 (Authentic Cinematic Video Countdown with BGM)
   renderCountdownSlide() {
     return `
       <div class="ceremony-slide slide-countdown-5to1">
-        <div id="countdown-5to1-digit" class="countdown-5to1-digit">5</div>
+        <video 
+          id="countdown-5to1-video" 
+          class="countdown-5to1-video" 
+          src="/assets/countdown.mp4" 
+          autoplay 
+          playsinline 
+          preload="auto"
+        ></video>
+        <div id="countdown-5to1-digit" class="countdown-5to1-digit fallback-hidden">5</div>
       </div>
     `;
   }

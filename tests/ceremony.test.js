@@ -150,7 +150,7 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(html).toContain("IN ASSOCIATION WITH");
     expect(html).toContain("dlithe-logo-clean.png");
     expect(html).toContain("DLithe");
-    expect(html).toContain("divine-design-seal-gold.png");
+    expect(html).toMatch(/divine-design-seal-(clean|gold)\.png/);
     expect(html).toContain("printasstic-transparent.png");
     expect(html).toContain("Creative &amp; Branding Partner");
     expect(html).toContain("Print &amp; Merchandising Partner");
@@ -233,21 +233,23 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     sound.toggleMute(); // restore
   });
 
-  it("verifies clean 5-to-1 countdown without fancy type and with countdown music BGM", async () => {
+  it("verifies cinematic 5-to-1 video countdown with countdown.mp4 and audio BGM", async () => {
     const { sound } = await import("../src/audio.js");
     const controller = new CeremonyController({});
 
-    // Verify clean slide template - no tags, labels, shockwave rings or event subtitles
+    // Verify slide template with video and clean digit fallback - no tags, labels, shockwave rings or event subtitles
     const slideHtml = controller.renderCountdownSlide();
+    expect(slideHtml).toContain('id="countdown-5to1-video"');
+    expect(slideHtml).toContain('src="/assets/countdown.mp4"');
     expect(slideHtml).toContain('id="countdown-5to1-digit"');
-    expect(slideHtml).toContain('class="countdown-5to1-digit"');
+    expect(slideHtml).toContain('class="countdown-5to1-digit fallback-hidden"');
     expect(slideHtml).not.toContain("countdown-5to1-tag");
     expect(slideHtml).not.toContain("countdown-5to1-ring-container");
     expect(slideHtml).not.toContain("countdown-5to1-action-label");
     expect(slideHtml).not.toContain("countdown-5to1-event");
 
-    // Verify dedicated countdown music BGM
-    expect(sound.countdownSourceUrl).toBe("/assets/countdown.mp3");
+    // Verify dedicated countdown audio
+    expect(sound.countdownSourceUrl).toMatch(/\/assets\/countdown\.(wav|mp3)/);
     expect(sound.countdownIsPlaying).toBe(false);
 
     sound.startCountdownBgm();

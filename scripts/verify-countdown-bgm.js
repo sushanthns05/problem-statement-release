@@ -18,6 +18,8 @@ const MIME_TYPES = {
   ".json": "application/json",
   ".mpeg": "audio/mpeg",
   ".mp3": "audio/mpeg",
+  ".wav": "audio/wav",
+  ".mp4": "video/mp4",
 };
 
 const server = http.createServer((req, res) => {
@@ -31,8 +33,13 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  const stat = fs.statSync(filePath);
   const ext = path.extname(filePath).toLowerCase();
-  res.writeHead(200, { "Content-Type": MIME_TYPES[ext] || "text/plain" });
+  res.writeHead(200, {
+    "Content-Type": MIME_TYPES[ext] || "application/octet-stream",
+    "Content-Length": stat.size,
+    "Accept-Ranges": "bytes"
+  });
   fs.createReadStream(filePath).pipe(res);
 });
 
@@ -54,6 +61,7 @@ async function main() {
       `--remote-debugging-port=${debugPort}`,
       `--user-data-dir=${tempUserDataDir}`,
       "--window-size=1920,1080",
+      "--autoplay-policy=no-user-gesture-required",
       `http://127.0.0.1:${PORT}/`,
     ],
     { stdio: "ignore" }
@@ -174,45 +182,61 @@ async function main() {
   console.log("Curtain clicked:", curtainClicked);
   await delay(1200);
 
-  // 2. Jump directly to Step 17 (Countdown 5 to 1: step index 16)
-  console.log("Navigating to Step 17 (Countdown)...");
-  const navigated = await evalExpr(`
+  // 2. Navigate to Step 8: Sponsors & Accreditations (index 7)
+  console.log("Navigating to Step 8 (Sponsors & Accreditations)...");
+  await evalExpr(`window.ceremonyController?.goToStep(7)`);
+  await delay(700);
+
+  const sponsorsAudit = await evalExpr(`
     (() => {
-      if (window.ceremonyController) {
-        window.ceremonyController.goToStep(16);
-        return true;
-      }
-      return false;
+      const divineImg = document.querySelector(".col-divine img");
+      const dlitheImg = document.querySelector(".col-dlithe img");
+      const printImg = document.querySelector(".col-prrintastic img");
+
+      return {
+        divineSrc: divineImg ? divineImg.src : null,
+        divineComplete: divineImg ? divineImg.complete : false,
+        divineNaturalWidth: divineImg ? divineImg.naturalWidth : 0,
+        dlitheSrc: dlitheImg ? dlitheImg.src : null,
+        printSrc: printImg ? printImg.src : null,
+      };
     })()
   `);
-  console.log("Navigated to Step 17:", navigated);
-  await delay(600);
 
-  // 3. Inspect Step 17 DOM elements
-  const audit = await evalExpr(`
+  console.log("[Step 8 Sponsors Audit]:", JSON.stringify(sponsorsAudit, null, 2));
+  if (!sponsorsAudit.divineSrc || !sponsorsAudit.divineSrc.includes("divine-design-seal-clean.png") && !sponsorsAudit.divineSrc.includes("divine-design-seal-gold.png")) {
+    throw new Error("FAIL: Divine Design logo src mismatch! Got: " + sponsorsAudit.divineSrc);
+  }
+  if (!sponsorsAudit.divineComplete || sponsorsAudit.divineNaturalWidth === 0) {
+    throw new Error("FAIL: Divine Design logo image failed to load or has 0 naturalWidth!");
+  }
+  console.log("SUCCESS: Step 8 Divine Design authentic medal emblem verified!");
+
+  const artifactDir = "C:\\Users\\Dell\\.gemini\\antigravity\\brain\\e09ef443-56f5-4d57-9d91-020814f19093";
+  const snapSponsors = await sendPage("Page.captureScreenshot", { format: "png" });
+  fs.writeFileSync(path.join(artifactDir, "sponsors-divine-design-verified.png"), Buffer.from(snapSponsors.data, "base64"));
+  console.log("Saved sponsors screenshot -> sponsors-divine-design-verified.png");
+
+  // 3. Navigate to Step 17: Countdown (index 16)
+  console.log("Navigating to Step 17 (Countdown 5 to 1)...");
+  await evalExpr(`window.ceremonyController?.goToStep(16)`);
+  await delay(700);
+
+  const countdownAudit = await evalExpr(`
     (() => {
       const slide = document.querySelector(".slide-countdown-5to1");
+      const video = document.querySelector("#countdown-5to1-video");
       const digit = document.querySelector("#countdown-5to1-digit");
       const tag = document.querySelector(".countdown-5to1-tag");
       const ring = document.querySelector(".countdown-5to1-ring-container");
       const label = document.querySelector(".countdown-5to1-action-label");
       const eventSub = document.querySelector(".countdown-5to1-event");
 
-      let digitStyle = null;
-      if (digit) {
-        const comp = window.getComputedStyle(digit);
-        digitStyle = {
-          fontFamily: comp.fontFamily,
-          fontSize: comp.fontSize,
-          color: comp.color,
-          fontWeight: comp.fontWeight
-        };
-      }
-
       return {
         slideExists: !!slide,
-        digitText: digit ? digit.textContent : null,
-        digitStyle,
+        hasVideo: !!video,
+        videoSrc: video ? video.src : null,
+        digitExists: !!digit,
         hasTag: !!tag,
         hasRing: !!ring,
         hasLabel: !!label,
@@ -221,36 +245,35 @@ async function main() {
     })()
   `);
 
-  console.log("[Countdown Audit Result]:", JSON.stringify(audit, null, 2));
+  console.log("[Step 17 Countdown Audit]:", JSON.stringify(countdownAudit, null, 2));
 
-  // Assertions
-  if (!audit.slideExists) {
+  if (!countdownAudit.slideExists) {
     throw new Error("FAIL: Step 17 slide (.slide-countdown-5to1) was not found in DOM!");
   }
-  if (!audit.digitText) {
-    throw new Error("FAIL: Countdown digit (#countdown-5to1-digit) not found or empty!");
+  if (!countdownAudit.hasVideo || !countdownAudit.videoSrc.includes("countdown.mp4")) {
+    throw new Error("FAIL: Countdown video (#countdown-5to1-video) not found or src does not point to countdown.mp4!");
   }
-  if (audit.hasTag || audit.hasRing || audit.hasLabel || audit.hasEventSubtitle) {
-    throw new Error("FAIL: Fancy typography elements detected! Required to be clean numerals only.");
+  if (!countdownAudit.digitExists) {
+    throw new Error("FAIL: Countdown digit (#countdown-5to1-digit) fallback not found!");
   }
-  console.log("SUCCESS: Fancy type removed, clean countdown digit confirmed!");
+  if (countdownAudit.hasTag || countdownAudit.hasRing || countdownAudit.hasLabel || countdownAudit.hasEventSubtitle) {
+    throw new Error("FAIL: Fancy typography elements detected! Required to be clean video and numerals.");
+  }
+  console.log("SUCCESS: Authentic countdown video and clean DOM elements verified!");
 
-  // 4. Capture screenshot of clean countdown numeral
-  const screenshotRes = await sendPage("Page.captureScreenshot", { format: "png" });
-  const artifactDir = "C:\\Users\\Dell\\.gemini\\antigravity\\brain\\e09ef443-56f5-4d57-9d91-020814f19093";
-  const screenshotPath = path.join(artifactDir, "countdown-clean-verified.png");
-  fs.writeFileSync(screenshotPath, Buffer.from(screenshotRes.data, "base64"));
-  console.log(`Saved screenshot to: ${screenshotPath}`);
+  const snapCountdown = await sendPage("Page.captureScreenshot", { format: "png" });
+  fs.writeFileSync(path.join(artifactDir, "countdown-video-verified.png"), Buffer.from(snapCountdown.data, "base64"));
+  console.log("Saved countdown screenshot -> countdown-video-verified.png");
 
-  // 5. Check console messages for errors
+  // 4. Check console messages for errors
   if (consoleErrors.length > 0) {
     console.error("Errors found in console:", consoleErrors);
   } else {
-    console.log("SUCCESS: Zero console errors during countdown test!");
+    console.log("SUCCESS: Zero console errors during tests!");
   }
 
   cleanup();
-  console.log("Countdown test completed successfully!");
+  console.log("All verifications completed successfully!");
   process.exit(0);
 }
 

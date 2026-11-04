@@ -2963,11 +2963,13 @@ body.screen-ceremony-active {
   transform: scale(1.04);
 }
 
-/* Divine Design: circular gold seal, transparent bg */
+/* Divine Design: authentic circular medal emblem */
 .slide-sponsors .assoc-logo-divine {
-  height: clamp(74px, 10.5vh, 98px);
+  height: clamp(80px, 11.5vh, 108px);
+  width: auto;
   max-width: 92%;
-  filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.45));
+  border-radius: 50%;
+  filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.45));
   transition: transform 0.25s ease;
 }
 
@@ -3973,7 +3975,7 @@ body.screen-ceremony-active {
 }
 
 /* ==========================================================================
-   SLIDE 16: COUNTDOWN 5 TO 1 (Clean Numerals with Music BGM)
+   SLIDE 16: COUNTDOWN 5 TO 1 (Cinematic Video Countdown with Audio BGM)
    ========================================================================== */
 .slide-countdown-5to1 {
   display: flex;
@@ -3981,8 +3983,22 @@ body.screen-ceremony-active {
   justify-content: center;
   width: 100%;
   height: 100%;
-  min-height: 60vh;
+  min-height: 80vh;
   position: relative;
+  background: #000000;
+  overflow: hidden;
+}
+
+.slide-countdown-5to1 .countdown-5to1-video {
+  width: 100%;
+  height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  background: #000000;
+  border-radius: 8px;
+  box-shadow: 0 0 80px rgba(0, 160, 255, 0.35);
+  display: block;
 }
 
 .slide-countdown-5to1 .countdown-5to1-digit {
@@ -3995,6 +4011,10 @@ body.screen-ceremony-active {
   user-select: none;
   letter-spacing: -0.02em;
   text-align: center;
+}
+
+.slide-countdown-5to1 .countdown-5to1-digit.fallback-hidden {
+  display: none;
 }
 
 @keyframes cleanDigitFade {
