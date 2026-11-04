@@ -143,20 +143,20 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(theme3Screen).toContain("anim-theme-bigscreen-3");
   });
 
-  it("verifies renderSponsorsSlide renders DLithe with official logo, and Divine Designs & Prrintastic with attractive typography", () => {
+  it("verifies renderSponsorsSlide renders DLithe, Divine Designs & Prrintastic with logo images", () => {
     const controller = new CeremonyController({});
     const html = controller.renderSponsorsSlide();
 
     expect(html).toContain("IN ASSOCIATION WITH");
     expect(html).toContain("dlithe-logo-clean.png");
     expect(html).toContain("DLithe");
-    expect(html).toContain("Divine Designs");
-    expect(html).toContain("Prrintastic");
+    expect(html).toContain("divine-design-logo.png");
+    expect(html).toContain("printasstic-logo.jpg");
     expect(html).toContain("Creative &amp; Branding Partner");
     expect(html).toContain("Print &amp; Merchandising Partner");
-    // Verify Divine Designs & Prrintastic image logos are omitted in favor of typography
-    expect(html).not.toContain("divine-designs-logo.svg");
-    expect(html).not.toContain("prrintastic-logo.svg");
+    // Verify all three use img tags with blend classes
+    expect(html).toContain("assoc-logo-transparent");
+    expect(html).toContain("assoc-logo-blend");
   });
 
   it("verifies renderThemeTableSlide renders all 10 statements of the theme in a table with animation classes", () => {

@@ -2934,7 +2934,7 @@ body.screen-ceremony-active {
 }
 
 .slide-sponsors .assoc-partner-top-slot {
-  height: clamp(54px, 7.5vh, 66px);
+  height: clamp(70px, 10vh, 90px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2942,55 +2942,26 @@ body.screen-ceremony-active {
   margin-bottom: 6px;
 }
 
-.slide-sponsors .assoc-partner-logo-box {
-  width: 100%;
-  max-width: 220px;
-  height: clamp(50px, 7vh, 60px);
-  background: #ffffff;
-  border-radius: var(--border-radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 18px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  transition: transform 0.25s ease;
-}
-
 .slide-sponsors .assoc-partner-logo {
   max-height: 100%;
-  max-width: 100%;
+  max-width: 90%;
   width: auto;
   object-fit: contain;
   display: block;
 }
 
-.slide-sponsors .assoc-partner-name {
-  font-family: var(--font-cert);
-  font-size: clamp(1.45rem, 2.2vw, 2rem);
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  text-align: center;
-  line-height: 1.15;
+/* DLithe logo: show on transparent bg, no white box */
+.slide-sponsors .assoc-logo-transparent {
+  height: clamp(50px, 7vh, 64px);
+  filter: drop-shadow(0 2px 12px rgba(255, 255, 255, 0.35));
 }
 
-/* Distinctive glowing metallic typography per partner */
-.slide-sponsors .name-dlithe {
-  color: #ffffff;
-  text-shadow: 0 0 22px rgba(255, 215, 0, 0.45), 0 2px 10px rgba(0, 0, 0, 0.9);
-}
-
-.slide-sponsors .name-divine {
-  background: linear-gradient(135deg, #ffffff 0%, #fef08a 35%, #eab308 75%, #ca8a04 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
-}
-
-.slide-sponsors .name-prrintastic {
-  background: linear-gradient(135deg, #ffffff 0%, #7dd3fc 35%, #f472b6 75%, #fbbf24 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+/* Divine Design & Printasstic: blend white/light bg away on dark card */
+.slide-sponsors .assoc-logo-blend {
+  height: clamp(60px, 9vh, 80px);
+  border-radius: var(--border-radius-sm);
+  mix-blend-mode: screen;
+  filter: brightness(1.05) contrast(1.1) drop-shadow(0 2px 10px rgba(255, 215, 0, 0.2));
 }
 
 .slide-sponsors .assoc-partner-line {
