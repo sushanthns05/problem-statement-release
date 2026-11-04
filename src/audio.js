@@ -14,6 +14,14 @@ class SoundEffects {
     this.bgmAudio = null;
     this.bgmFadeInterval = null;
     this.audioSourceUrl = "/assets/audio.mpeg";
+
+    // Dedicated Countdown BGM
+    this.countdownAudio = null;
+    this.countdownFadeInterval = null;
+    this.countdownIsPlaying = false;
+    this.countdownSourceUrl = "/assets/countdown.mp3";
+    this.countdownSynthGain = null;
+    this.countdownSynthInterval = null;
   }
 
   init() {
@@ -40,6 +48,21 @@ class SoundEffects {
         }, { once: true });
       } catch (err) {
         console.warn("HTML5 Audio preload warning:", err);
+      }
+    }
+    // Preload countdown music BGM
+    if (typeof window !== "undefined" && typeof Audio !== "undefined" && !this.countdownAudio) {
+      try {
+        this.countdownAudio = new Audio(this.countdownSourceUrl);
+        this.countdownAudio.preload = "auto";
+        this.countdownAudio.volume = this.muted ? 0 : 0.85;
+        this.countdownAudio.addEventListener("error", () => {
+          if (this.countdownAudio && this.countdownAudio.src.includes("countdown.mp3")) {
+            this.countdownAudio.src = "/assets/audio.mp3";
+          }
+        }, { once: true });
+      } catch (err) {
+        console.warn("HTML5 Countdown Audio preload warning:", err);
       }
     }
   }
@@ -160,188 +183,166 @@ class SoundEffects {
   }
 
   /**
-   * Curious Mass Beats Countdown Synthesizer
-   * Produces an electrifying South Indian cinema trailer / mass build-up
-   * featuring curious syncopated trailer rhythm hits (taps / dhum)
-   * followed by an explosive sub-bass 808 drop, dhol / war-drum transient punch,
-   * and an escalating suspense tension riser from 5 down to 1.
+   * Countdown Music BGM (Behind 5 to 1 Countdown)
+   * Plays official countdown music audio track behind the 5 to 1 countdown.
    */
-  playCountdown5to1(count) {
+  startCountdownBgm() {
     if (this.muted) return;
     this.init();
-    if (!this.ctx) return;
 
-    const t = this.ctx.currentTime;
+    if (this.countdownIsPlaying) return;
+    this.countdownIsPlaying = true;
 
-    // 1. Heavy Mass Sub-Bass Drop (808 / Cinematic Boom)
-    const playSubBassDrop = (startTime, startFreq, endFreq, peakGain, decaySec) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(startFreq, startTime);
-      osc.frequency.exponentialRampToValueAtTime(endFreq, startTime + decaySec);
-
-      gain.gain.setValueAtTime(0.001, startTime);
-      gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + decaySec);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start(startTime);
-      osc.stop(startTime + decaySec + 0.05);
-    };
-
-    // 2. Punchy War Drum / Dhol transient impact (Mass Kick)
-    const playDrumImpact = (startTime, pitch, peakGain) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(pitch, startTime);
-      osc.frequency.exponentialRampToValueAtTime(35, startTime + 0.18);
-
-      gain.gain.setValueAtTime(peakGain, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.22);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start(startTime);
-      osc.stop(startTime + 0.25);
-
-      // Noise punch for tactile skin impact
-      const bufferSize = Math.floor(this.ctx.sampleRate * 0.05);
-      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
-      }
-      const noise = this.ctx.createBufferSource();
-      noise.buffer = buffer;
-
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = "bandpass";
-      filter.frequency.setValueAtTime(450, startTime);
-      filter.Q.setValueAtTime(2.5, startTime);
-
-      const noiseGain = this.ctx.createGain();
-      noiseGain.gain.setValueAtTime(peakGain * 0.7, startTime);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.055);
-
-      noise.connect(filter);
-      filter.connect(noiseGain);
-      noiseGain.connect(this.ctx.destination);
-
-      noise.start(startTime);
-      noise.stop(startTime + 0.06);
-    };
-
-    // 3. Curious Suspense Pre-Beat Tap (syncopated trailer rhythm: tak / dhum)
-    const playCuriousTap = (startTime, freq, vol) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(freq, startTime);
-      osc.frequency.exponentialRampToValueAtTime(freq * 0.5, startTime + 0.05);
-
-      gain.gain.setValueAtTime(vol, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.06);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start(startTime);
-      osc.stop(startTime + 0.07);
-    };
-
-    // 4. Suspense Tension Drone / Metallic Riser
-    const playSuspenseRiser = (startTime, baseFreq, duration, vol) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc.type = "sawtooth";
-      osc.frequency.setValueAtTime(baseFreq, startTime);
-      osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, startTime + duration);
-
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(600, startTime);
-      filter.frequency.exponentialRampToValueAtTime(1800, startTime + duration);
-
-      gain.gain.setValueAtTime(0.001, startTime);
-      gain.gain.linearRampToValueAtTime(vol, startTime + duration * 0.3);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start(startTime);
-      osc.stop(startTime + duration + 0.02);
-    };
-
-    // Escalating curious mass beat patterns per count:
-    switch (count) {
-      case 5:
-        // Count 5: Curious opening pulse + deep resonant mass strike
-        playCuriousTap(t, 420, 0.18);
-        playCuriousTap(t + 0.15, 520, 0.22);
-        playDrumImpact(t + 0.3, 110, 0.35);
-        playSubBassDrop(t + 0.3, 115, 42, 0.38, 0.65);
-        playSuspenseRiser(t + 0.3, 220, 0.65, 0.08);
-        break;
-
-      case 4:
-        // Count 4: Double curiosity syncopation + heavier punch
-        playCuriousTap(t, 480, 0.2);
-        playCuriousTap(t + 0.12, 600, 0.24);
-        playCuriousTap(t + 0.24, 720, 0.26);
-        playDrumImpact(t + 0.36, 125, 0.4);
-        playSubBassDrop(t + 0.36, 130, 40, 0.42, 0.6);
-        playSuspenseRiser(t + 0.36, 277, 0.6, 0.1);
-        break;
-
-      case 3:
-        // Count 3: Triple curiosity rhythm + deep chest thud
-        playCuriousTap(t, 550, 0.22);
-        playCuriousTap(t + 0.1, 700, 0.26);
-        playCuriousTap(t + 0.2, 850, 0.28);
-        playDrumImpact(t + 0.3, 140, 0.45);
-        playSubBassDrop(t + 0.3, 150, 38, 0.48, 0.65);
-        playSuspenseRiser(t + 0.3, 330, 0.65, 0.12);
-        break;
-
-      case 2:
-        // Count 2: Rapid driving curious roll + hard war drum hit
-        playCuriousTap(t, 620, 0.24);
-        playCuriousTap(t + 0.08, 780, 0.26);
-        playCuriousTap(t + 0.16, 940, 0.3);
-        playCuriousTap(t + 0.24, 1100, 0.32);
-        playDrumImpact(t + 0.32, 160, 0.5);
-        playSubBassDrop(t + 0.32, 175, 36, 0.52, 0.65);
-        playSuspenseRiser(t + 0.32, 440, 0.65, 0.14);
-        break;
-
-      case 1:
-        // Count 1: Maximum mass trailer climax - ta-ka-dhum into explosive sub-bass
-        playCuriousTap(t, 750, 0.28);
-        playCuriousTap(t + 0.06, 950, 0.3);
-        playCuriousTap(t + 0.12, 1150, 0.34);
-        playCuriousTap(t + 0.18, 1400, 0.38);
-        // Colossal Mass Impact
-        playDrumImpact(t + 0.24, 190, 0.6);
-        playSubBassDrop(t + 0.24, 210, 32, 0.6, 0.75);
-        playSuspenseRiser(t + 0.24, 554, 0.75, 0.18);
-        break;
-
-      default:
-        playDrumImpact(t, 120, 0.4);
-        playSubBassDrop(t, 120, 40, 0.4, 0.6);
-        break;
+    if (this.countdownFadeInterval) {
+      clearInterval(this.countdownFadeInterval);
+      this.countdownFadeInterval = null;
     }
+
+    const targetVolume = this.muted ? 0 : 0.85;
+
+    // 1. Primary: HTML5 Audio playing countdown music BGM
+    if (typeof window !== "undefined" && typeof Audio !== "undefined") {
+      try {
+        if (!this.countdownAudio) {
+          this.countdownAudio = new Audio(this.countdownSourceUrl);
+          this.countdownAudio.preload = "auto";
+        }
+
+        this.countdownAudio.muted = this.muted;
+        this.countdownAudio.volume = targetVolume;
+        this.countdownAudio.currentTime = 0;
+
+        const playPromise = this.countdownAudio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.warn("Countdown audio play blocked or failed; falling back to synth countdown music:", err);
+            this.startSynthCountdownBgm();
+          });
+        }
+      } catch (err) {
+        console.warn("Countdown Audio error, falling back:", err);
+        this.startSynthCountdownBgm();
+      }
+    } else {
+      this.startSynthCountdownBgm();
+    }
+  }
+
+  stopCountdownBgm(fadeSec = 0.8) {
+    if (!this.countdownIsPlaying) return;
+    this.countdownIsPlaying = false;
+
+    if (this.countdownFadeInterval) {
+      clearInterval(this.countdownFadeInterval);
+      this.countdownFadeInterval = null;
+    }
+
+    this.stopSynthCountdownBgm(fadeSec);
+
+    if (this.countdownAudio) {
+      const startVol = this.countdownAudio.volume;
+      const steps = 12;
+      const stepTime = Math.max(20, (fadeSec * 1000) / steps);
+      let stepCount = 0;
+
+      this.countdownFadeInterval = setInterval(() => {
+        stepCount++;
+        if (!this.countdownAudio) {
+          clearInterval(this.countdownFadeInterval);
+          this.countdownFadeInterval = null;
+          return;
+        }
+        const newVol = Math.max(0, startVol * (1 - stepCount / steps));
+        this.countdownAudio.volume = newVol;
+
+        if (stepCount >= steps || newVol <= 0.01) {
+          clearInterval(this.countdownFadeInterval);
+          this.countdownFadeInterval = null;
+          try {
+            this.countdownAudio.pause();
+            this.countdownAudio.currentTime = 0;
+          } catch {}
+        }
+      }, stepTime);
+    }
+  }
+
+  startSynthCountdownBgm() {
+    if (!this.ctx) return;
+    if (this.countdownSynthGain) return;
+
+    this.countdownSynthGain = this.ctx.createGain();
+    const targetVol = this.muted ? 0.0001 : 0.22;
+    this.countdownSynthGain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+    this.countdownSynthGain.gain.exponentialRampToValueAtTime(targetVol, this.ctx.currentTime + 0.6);
+    this.countdownSynthGain.connect(this.ctx.destination);
+
+    // Dynamic cinematic countdown chord progression: Dm -> Bb -> F -> C
+    const countdownChords = [
+      { base: 146.83, notes: [146.83, 220.0, 293.66, 349.23, 440.0] },
+      { base: 116.54, notes: [116.54, 174.61, 233.08, 293.66, 349.23] },
+      { base: 87.31, notes: [87.31, 130.81, 174.61, 220.0, 261.63] },
+      { base: 130.81, notes: [130.81, 196.0, 261.63, 329.63, 392.0] },
+    ];
+
+    let cIdx = 0;
+    const playBar = () => {
+      if (!this.countdownIsPlaying || !this.ctx || !this.countdownSynthGain) return;
+      const t = this.ctx.currentTime;
+      const chord = countdownChords[cIdx % countdownChords.length];
+      cIdx++;
+
+      chord.notes.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = idx === 0 ? "sawtooth" : "triangle";
+        osc.frequency.setValueAtTime(freq, t);
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(450 + idx * 80, t);
+
+        gain.gain.setValueAtTime(0.001, t);
+        gain.gain.linearRampToValueAtTime(0.09 / (idx + 1), t + 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.countdownSynthGain);
+
+        osc.start(t);
+        osc.stop(t + 1.25);
+      });
+    };
+
+    playBar();
+    this.countdownSynthInterval = setInterval(playBar, 1000);
+  }
+
+  stopSynthCountdownBgm(fadeSec = 0.8) {
+    if (this.countdownSynthInterval) {
+      clearInterval(this.countdownSynthInterval);
+      this.countdownSynthInterval = null;
+    }
+
+    if (this.countdownSynthGain && this.ctx) {
+      try {
+        const cur = Math.max(0.0001, this.countdownSynthGain.gain.value);
+        this.countdownSynthGain.gain.setValueAtTime(cur, this.ctx.currentTime);
+        this.countdownSynthGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + fadeSec);
+        setTimeout(() => {
+          if (!this.countdownIsPlaying && this.countdownSynthGain) {
+            try { this.countdownSynthGain.disconnect(); } catch {}
+            this.countdownSynthGain = null;
+          }
+        }, fadeSec * 1000 + 100);
+      } catch {}
+    }
+  }
+
+  playCountdown5to1(count) {
+    // Replaced by continuous countdown music BGM behind the countdown (startCountdownBgm)
   }
 
   playStatementTick() {
@@ -575,9 +576,17 @@ class SoundEffects {
       this.bgmAudio.muted = this.muted;
       this.bgmAudio.volume = this.muted ? 0 : 0.75;
     }
+    if (this.countdownAudio) {
+      this.countdownAudio.muted = this.muted;
+      this.countdownAudio.volume = this.muted ? 0 : 0.85;
+    }
     if (this.bgmGain && this.ctx) {
       const vol = this.muted ? 0.0001 : 0.16;
       this.bgmGain.gain.setValueAtTime(vol, this.ctx.currentTime);
+    }
+    if (this.countdownSynthGain && this.ctx) {
+      const vol = this.muted ? 0.0001 : 0.22;
+      this.countdownSynthGain.gain.setValueAtTime(vol, this.ctx.currentTime);
     }
     return this.muted;
   }

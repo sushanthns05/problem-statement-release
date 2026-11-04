@@ -204,15 +204,18 @@ export class CeremonyController {
   destroy() {
     this.clearTimers();
     sound.stopCeremonyBgm(0.5);
+    sound.stopCountdownBgm(0.5);
     if (typeof window !== "undefined" && this.keyHandler) {
       window.removeEventListener("keydown", this.keyHandler);
     }
   }
 
   clearTimers() {
+    if (this.curtainTimer) clearTimeout(this.curtainTimer);
     if (this.stepTimer) clearTimeout(this.stepTimer);
     if (this.progressInterval) clearInterval(this.progressInterval);
     if (this.countdownTimer) clearInterval(this.countdownTimer);
+    this.curtainTimer = null;
     this.stepTimer = null;
     this.progressInterval = null;
     this.countdownTimer = null;
@@ -233,7 +236,7 @@ export class CeremonyController {
     }
 
     // Advance to Step 2: SJBIT after parting starts
-    setTimeout(() => {
+    this.curtainTimer = setTimeout(() => {
       if (curtainStage) curtainStage.classList.add("curtain-hidden");
       this.goToStep(1);
     }, 1800);
@@ -243,6 +246,12 @@ export class CeremonyController {
     this.clearTimers();
     this.isPaused = false;
     this.updatePauseButton();
+
+    const curtainStage = this.container?.querySelector("#ceremony-curtain-stage");
+    if (curtainStage && index >= 1) {
+      curtainStage.classList.add("curtain-hidden");
+      this.curtainOpen = true;
+    }
 
     if (index >= this.steps.length) {
       this.completeCeremony();
@@ -259,6 +268,10 @@ export class CeremonyController {
       sound.startCeremonyBgm();
     } else if (this.currentStepIndex >= 10) {
       sound.stopCeremonyBgm(1.2);
+    }
+
+    if (this.currentStepIndex !== 16) {
+      sound.stopCountdownBgm(0.5);
     }
 
     // Trigger subtle stage viewport ambient flash
@@ -551,26 +564,15 @@ export class CeremonyController {
   start5to1Countdown() {
     let count = 5;
     const digitDisplay = this.container?.querySelector("#countdown-5to1-digit");
-    const labelDisplay = this.container?.querySelector("#countdown-5to1-label");
+    sound.startCountdownBgm();
 
     const updateDisplay = (c) => {
       if (digitDisplay) {
         digitDisplay.textContent = c;
         digitDisplay.style.animation = "none";
         void digitDisplay.offsetWidth;
-        digitDisplay.style.animation = "zoomPulse5to1 1s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+        digitDisplay.style.animation = "cleanDigitFade 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards";
       }
-      const ring = this.container?.querySelector(".countdown-5to1-ring-container");
-      if (ring) {
-        ring.style.animation = "none";
-        void ring.offsetWidth;
-        ring.style.animation = "countdownShockwaveBlast 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards";
-      }
-      if (labelDisplay) {
-        const cues = { 5: "READY", 4: "PREPARE", 3: "GET", 2: "SET", 1: "LAUNCH!" };
-        labelDisplay.textContent = cues[c] || "";
-      }
-      sound.playCountdown5to1(c);
     };
 
     updateDisplay(count);
@@ -592,12 +594,14 @@ export class CeremonyController {
   completeCeremony() {
     this.clearTimers();
     sound.stopCeremonyBgm(0.5);
+    sound.stopCountdownBgm(0.8);
     this.onComplete();
   }
 
   skipToTimer() {
     this.clearTimers();
     sound.stopCeremonyBgm(0.5);
+    sound.stopCountdownBgm(0.5);
     this.onComplete();
   }
 
@@ -1008,16 +1012,11 @@ export class CeremonyController {
     `;
   }
 
-  // Step 17: Countdown 5 to 1 (High Energy Shockwave Pulse with Curious Mass Beats)
+  // Step 17: Countdown 5 to 1 (Clean Numerals with Countdown BGM)
   renderCountdownSlide() {
     return `
       <div class="ceremony-slide slide-countdown-5to1">
-        <div class="countdown-5to1-tag">FINAL COUNTDOWN TO COMMENCEMENT</div>
-        <div class="countdown-5to1-ring-container">
-          <div id="countdown-5to1-digit" class="countdown-5to1-digit">5</div>
-        </div>
-        <div id="countdown-5to1-label" class="countdown-5to1-action-label">READY</div>
-        <div class="countdown-5to1-event">Lakshya 2026 &bull; 24-Hour Hackathon</div>
+        <div id="countdown-5to1-digit" class="countdown-5to1-digit">5</div>
       </div>
     `;
   }

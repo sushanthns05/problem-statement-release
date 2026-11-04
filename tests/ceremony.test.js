@@ -232,4 +232,28 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(toggled).toBe(!initialMute);
     sound.toggleMute(); // restore
   });
+
+  it("verifies clean 5-to-1 countdown without fancy type and with countdown music BGM", async () => {
+    const { sound } = await import("../src/audio.js");
+    const controller = new CeremonyController({});
+
+    // Verify clean slide template - no tags, labels, shockwave rings or event subtitles
+    const slideHtml = controller.renderCountdownSlide();
+    expect(slideHtml).toContain('id="countdown-5to1-digit"');
+    expect(slideHtml).toContain('class="countdown-5to1-digit"');
+    expect(slideHtml).not.toContain("countdown-5to1-tag");
+    expect(slideHtml).not.toContain("countdown-5to1-ring-container");
+    expect(slideHtml).not.toContain("countdown-5to1-action-label");
+    expect(slideHtml).not.toContain("countdown-5to1-event");
+
+    // Verify dedicated countdown music BGM
+    expect(sound.countdownSourceUrl).toBe("/assets/countdown.mp3");
+    expect(sound.countdownIsPlaying).toBe(false);
+
+    sound.startCountdownBgm();
+    expect(sound.countdownIsPlaying).toBe(true);
+
+    sound.stopCountdownBgm(0.01);
+    expect(sound.countdownIsPlaying).toBe(false);
+  });
 });
