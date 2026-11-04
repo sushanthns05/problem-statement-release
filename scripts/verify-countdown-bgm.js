@@ -220,7 +220,7 @@ async function main() {
   // 3. Navigate to Step 17: Countdown (index 16)
   console.log("Navigating to Step 17 (Countdown 5 to 1)...");
   await evalExpr(`window.ceremonyController?.goToStep(16)`);
-  await delay(700);
+  await delay(1800);
 
   const countdownAudit = await evalExpr(`
     (() => {

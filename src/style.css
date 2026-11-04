@@ -3975,29 +3975,29 @@ body.screen-ceremony-active {
 }
 
 /* ==========================================================================
-   SLIDE 16: COUNTDOWN 5 TO 1 (Cinematic Video Countdown with Audio BGM)
+   SLIDE 16: COUNTDOWN 5 TO 1 (Cinematic Fullscreen Video Countdown with Audio BGM)
    ========================================================================== */
 .slide-countdown-5to1 {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  min-height: 80vh;
-  position: relative;
-  background: #000000;
+  background: #020408;
   overflow: hidden;
+  z-index: 20;
 }
 
 .slide-countdown-5to1 .countdown-5to1-video {
-  width: 100%;
-  height: 100%;
-  max-width: 100vw;
-  max-height: 100vh;
-  object-fit: contain;
-  background: #000000;
-  border-radius: 8px;
-  box-shadow: 0 0 80px rgba(0, 160, 255, 0.35);
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  transform: scaleX(1.10) scaleY(1.02);
+  border: none;
+  outline: none;
+  box-shadow: none;
   display: block;
 }
 
