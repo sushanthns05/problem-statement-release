@@ -46,9 +46,11 @@ export class CeremonyController {
     this.currentStepIndex = 0;
     this.isPaused = false;
     this.curtainOpen = false;
+    this.curtainTimer = null;
     this.stepTimer = null;
     this.progressInterval = null;
     this.countdownTimer = null;
+    this.videoAdvanceHandler = null;
 
     // Theme table timer state (5 seconds per theme)
     this.themeTableDuration = 5000;
@@ -154,8 +156,9 @@ export class CeremonyController {
 
     // Comprehensive Keyboard Shortcuts (Screen clean, no UI toolbar)
     this.keyHandler = (e) => {
-      // Don't intercept if inside input
+      // Don't intercept if inside input or if ceremony is not currently active
       if (e.target && ["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
+      if (!this.container || !this.container.classList.contains("active")) return;
 
       if (e.key === " " || e.code === "Space") {
         e.preventDefault();
@@ -224,8 +227,12 @@ export class CeremonyController {
     this.countdownTimer = null;
     const activeVideo = this.container?.querySelector("#countdown-5to1-video");
     if (activeVideo) {
+      if (this.videoAdvanceHandler) {
+        try { activeVideo.removeEventListener("ended", this.videoAdvanceHandler); } catch {}
+      }
       try { activeVideo.pause(); } catch {}
     }
+    this.videoAdvanceHandler = null;
   }
 
   openCurtain() {
@@ -602,6 +609,7 @@ export class CeremonyController {
         this.nextStep();
       };
 
+      this.videoAdvanceHandler = advance;
       video.addEventListener("ended", advance, { once: true });
 
       // Fallback timer: Video duration is ~15.1s. Ensure advance if ended doesn't fire

@@ -124,6 +124,12 @@ export function setScreen(targetState) {
   if (screenProblems) screenProblems.classList.remove("active");
   screenCountdown.classList.remove("active");
 
+  // If leaving 24H countdown screen, clear the 50ms interval to conserve CPU & memory
+  if (targetState !== "COUNTDOWN" && countdownInterval) {
+    clearInterval(countdownInterval);
+    countdownInterval = null;
+  }
+
   // If leaving ceremony, stop any active ceremony timer and BGM
   if (targetState !== "CEREMONY") {
     if (ceremonyController) {

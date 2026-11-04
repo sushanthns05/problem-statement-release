@@ -214,10 +214,19 @@ class SoundEffects {
 
         const playPromise = this.countdownAudio.play();
         if (playPromise !== undefined) {
-          playPromise.catch((err) => {
-            console.warn("Countdown audio play blocked or failed; falling back to synth countdown music:", err);
-            this.startSynthCountdownBgm();
-          });
+          playPromise
+            .then(() => {
+              if (!this.countdownIsPlaying) {
+                try {
+                  this.countdownAudio.pause();
+                  this.countdownAudio.currentTime = 0;
+                } catch {}
+              }
+            })
+            .catch((err) => {
+              console.warn("Countdown audio play blocked or failed; falling back to synth countdown music:", err);
+              this.startSynthCountdownBgm();
+            });
         }
       } catch (err) {
         console.warn("Countdown Audio error, falling back:", err);
@@ -399,6 +408,13 @@ class SoundEffects {
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
+              if (!this.bgmIsPlaying) {
+                try {
+                  this.bgmAudio.pause();
+                  this.bgmAudio.currentTime = 0;
+                } catch {}
+                return;
+              }
               // Smooth fade-in over ~1.2s
               let cur = 0;
               const step = 0.05;

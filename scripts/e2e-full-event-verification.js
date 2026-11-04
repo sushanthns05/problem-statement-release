@@ -18,6 +18,8 @@ const MIME_TYPES = {
   ".json": "application/json",
   ".mpeg": "audio/mpeg",
   ".mp3": "audio/mpeg",
+  ".wav": "audio/wav",
+  ".mp4": "video/mp4",
 };
 
 const server = http.createServer((req, res) => {
@@ -31,9 +33,32 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  const stat = fs.statSync(filePath);
   const ext = path.extname(filePath).toLowerCase();
-  res.writeHead(200, { "Content-Type": MIME_TYPES[ext] || "text/plain" });
-  fs.createReadStream(filePath).pipe(res);
+  const contentType = MIME_TYPES[ext] || "application/octet-stream";
+
+  const range = req.headers.range;
+  if (range && (ext === ".mp4" || ext === ".wav" || ext === ".mpeg" || ext === ".mp3")) {
+    const parts = range.replace(/bytes=/, "").split("-");
+    const start = parseInt(parts[0], 10);
+    const end = parts[1] ? parseInt(parts[1], 10) : stat.size - 1;
+    const chunksize = end - start + 1;
+    const file = fs.createReadStream(filePath, { start, end });
+    res.writeHead(206, {
+      "Content-Range": `bytes ${start}-${end}/${stat.size}`,
+      "Accept-Ranges": "bytes",
+      "Content-Length": chunksize,
+      "Content-Type": contentType,
+    });
+    file.pipe(res);
+  } else {
+    res.writeHead(200, {
+      "Content-Length": stat.size,
+      "Accept-Ranges": "bytes",
+      "Content-Type": contentType,
+    });
+    fs.createReadStream(filePath).pipe(res);
+  }
 });
 
 async function runE2E() {
@@ -41,7 +66,7 @@ async function runE2E() {
   console.log(`[Test Server] Serving dist on http://127.0.0.1:${PORT}`);
 
   const chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-  const debugPort = 9298;
+  const debugPort = 9310;
   const tempUserDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "cdp-e2e-event-"));
 
   const chrome = spawn(
@@ -54,9 +79,9 @@ async function runE2E() {
       `--remote-debugging-port=${debugPort}`,
       `--user-data-dir=${tempUserDataDir}`,
       "--window-size=1920,1080",
+      "--autoplay-policy=no-user-gesture-required",
       `http://127.0.0.1:${PORT}/`,
-    ],
-    { stdio: "ignore" }
+    ]
   );
 
   const cleanup = () => {
@@ -71,26 +96,35 @@ async function runE2E() {
     } catch {}
   };
 
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-  let wsUrl = null;
-  for (let i = 0; i < 25; i++) {
-    await delay(300);
-    try {
-      const res = await fetch(`http://127.0.0.1:${debugPort}/json/version`);
-      if (res.ok) {
-        const data = await res.json();
-        wsUrl = data.webSocketDebuggerUrl;
-        break;
-      }
-    } catch {}
-  }
-
-  if (!wsUrl) {
-    console.error("Failed to connect to Chrome debugging port");
+  process.on("exit", cleanup);
+  process.on("SIGINT", () => {
     cleanup();
     process.exit(1);
-  }
+  });
+
+  // Extract wsUrl from stderr
+  const wsUrl = await new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error("Timeout waiting for Chrome DevTools websocket URL"));
+    }, 12000);
+
+    let buf = "";
+    chrome.stderr.on("data", (chunk) => {
+      buf += chunk.toString();
+      const match = buf.match(/DevTools listening on (ws:\/\/[^\s]+)/);
+      if (match) {
+        clearTimeout(timer);
+        resolve(match[1]);
+      }
+    });
+
+    chrome.on("error", reject);
+    chrome.on("exit", (code) => {
+      if (code !== 0) reject(new Error(`Chrome exited prematurely with code ${code}`));
+    });
+  });
+
+  console.log(`[CDP] Connected to Chrome DevTools: ${wsUrl}`);
 
   const ws = new WebSocket(wsUrl);
   let id = 1;
@@ -127,7 +161,12 @@ async function runE2E() {
       ws.send(JSON.stringify({ id: msgId, method, params }));
     });
 
-  await new Promise((resolve) => (ws.onopen = resolve));
+  if (ws.readyState !== 1) { // 1 = OPEN
+    await new Promise((resolve, reject) => {
+      ws.onopen = resolve;
+      ws.onerror = reject;
+    });
+  }
 
   const targetsRes = await send("Target.getTargets");
   const targetInfos = targetsRes.targetInfos || targetsRes.result?.targetInfos || [];
@@ -151,6 +190,8 @@ async function runE2E() {
 
   await sendPage("Page.enable");
   await sendPage("Runtime.enable");
+
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const evalExpr = async (expression) => {
     const res = await sendPage("Runtime.evaluate", {
@@ -186,14 +227,8 @@ async function runE2E() {
   await evalExpr(`document.getElementById("btn-open-curtain").click();`);
   await delay(2200);
 
-  const bgmStatus = await evalExpr(`(() => {
-    const s = window.ceremonyController?.sound || window.sound;
-    return {
-      isPlaying: !!window.ceremonyController?.sound?.bgmIsPlaying,
-      step: window.ceremonyController?.currentStepIndex
-    };
-  })()`);
-  console.log("  ✓ Curtain parted. Current Step Index:", bgmStatus.step);
+  const curStep = await evalExpr(`window.ceremonyController?.currentStepIndex`);
+  console.log("  ✓ Curtain parted. Current Step Index:", curStep);
 
   // 3. Walk through slides 2 to 8
   console.log("[Test 3/10] Walking through Slides 2 to 8...");
@@ -202,7 +237,7 @@ async function runE2E() {
     const stepTitle = await evalExpr(`window.ceremonyController.steps[window.ceremonyController.currentStepIndex]?.title`);
     console.log(`  -> Step ${curIdx + 1} of 18: ${stepTitle}`);
     if (curIdx < 7) {
-      await evalExpr(`window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));`);
+      await evalExpr(`window.ceremonyController.nextStep();`);
       await delay(400);
     }
   }
@@ -232,12 +267,12 @@ async function runE2E() {
 
   // Advance to Step 9: Problem Statements title
   console.log("  -> Advancing to Step 9: Problem Statements Title...");
-  await evalExpr(`window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));`);
+  await evalExpr(`window.ceremonyController.nextStep();`);
   await delay(400);
 
   // Advance to Step 10: Click to Release
   console.log("[Test 5/10] Advancing to Step 10: Click on Release...");
-  await evalExpr(`window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));`);
+  await evalExpr(`window.ceremonyController.nextStep();`);
   await delay(500);
 
   const releaseBtn = await evalExpr(`!!document.getElementById("btn-dignitary-trigger")`);
@@ -295,7 +330,11 @@ async function runE2E() {
   // Countdown 5 to 1 & Launch Transition
   console.log("[Test 9/10] Verifying Final Countdown (5-4-3-2-1) & Launch Transition...");
   await evalExpr(`window.ceremonyController.nextStep();`); // Countdown 5 to 1
-  await delay(500);
+  await delay(800);
+
+  // Check that countdown video element exists and is active
+  const videoExists = await evalExpr(`!!document.getElementById("countdown-5to1-video")`);
+  console.log("  ✓ Countdown video element present:", videoExists);
 
   // Skip to timer / complete ceremony
   await evalExpr(`window.ceremonyController.completeCeremony();`);
