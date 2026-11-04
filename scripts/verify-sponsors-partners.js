@@ -148,18 +148,59 @@ async function main() {
 
   await delay(1200);
 
-  console.log("Opening curtain...");
-  await evalExpr(`document.getElementById("btn-open-curtain")?.click();`);
-  await delay(2000);
-
-  // Navigate to Step 8: Sponsors & Accreditations (from Step 2, 6 ArrowRights)
-  console.log("[Test] Navigating to Step 8: Sponsors & Accreditations...");
-  for (let i = 0; i < 6; i++) {
-    await evalExpr(`window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));`);
-    await delay(300);
+  // Generate crisp solid transparent Printasstic logo directly from source image via browser canvas
+  try {
+    const printassticDataUrl = await evalExpr(`
+      (async () => {
+        const img = new Image();
+        img.src = '/assets/printasstic-logo.jpg';
+        await img.decode();
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d = data.data;
+        for (let i = 0; i < d.length; i += 4) {
+          const r = d[i], g = d[i+1], b = d[i+2];
+          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          if (lum > 218 || (r > 200 && g > 200 && b > 200)) {
+            d[i+3] = 0;
+          } else {
+            const y = Math.floor((i / 4) / canvas.width);
+            if (y > 48 && r < 120 && g < 120 && b < 120) {
+              d[i] = 255; d[i+1] = 255; d[i+2] = 255; d[i+3] = 255;
+            } else {
+              d[i] = 236; d[i+1] = 72; d[i+2] = 153; d[i+3] = 255;
+            }
+          }
+        }
+        ctx.putImageData(data, 0, 0);
+        return canvas.toDataURL('image/png');
+      })()
+    `);
+    if (printassticDataUrl) {
+      const base64 = printassticDataUrl.replace(/^data:image\/png;base64,/, '');
+      fs.writeFileSync('public/assets/printasstic-transparent.png', Buffer.from(base64, 'base64'));
+      if (fs.existsSync('dist/assets/printasstic-transparent.png')) {
+        fs.writeFileSync('dist/assets/printasstic-transparent.png', Buffer.from(base64, 'base64'));
+      }
+      console.log("[Converter] Generated solid printasstic-transparent.png");
+    }
+  } catch (err) {
+    console.warn("Printasstic canvas conversion warning:", err);
   }
 
-  await delay(1500); // Allow slide fold animation to complete
+  console.log("Clicking Open Curtain, waiting for transition, then jumping to Step 8...");
+  await evalExpr(`document.getElementById("btn-open-curtain")?.click();`);
+  await delay(1800);
+  await evalExpr(`
+    if (window.ceremonyController) {
+      window.ceremonyController.goToStep(7);
+    }
+  `);
+  await delay(1500);
 
   // Evaluate visible elements
   const info = await evalExpr(`
@@ -172,11 +213,17 @@ async function main() {
         return { w: Math.round(r.width), h: Math.round(r.height) };
       });
 
+      const logos = Array.from(document.querySelectorAll('.assoc-partner-logo')).map(el => {
+        const r = el.getBoundingClientRect();
+        return { src: el.getAttribute('src'), w: Math.round(r.width), h: Math.round(r.height) };
+      });
+
       return {
         hasDlitheLogo: !!dlitheLogo && dlitheLogo.naturalWidth > 0,
         names,
         roles,
-        cols
+        cols,
+        logos
       };
     })()
   `);

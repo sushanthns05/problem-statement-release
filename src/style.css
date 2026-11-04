@@ -2909,7 +2909,7 @@ body.screen-ceremony-active {
   background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.08) 0%, rgba(12, 22, 40, 0.75) 85%);
   border: 1.5px solid rgba(255, 215, 0, 0.3);
   border-radius: var(--border-radius-md);
-  padding: clamp(20px, 3vh, 32px) clamp(16px, 2vw, 24px);
+  padding: clamp(16px, 2.2vh, 26px) clamp(16px, 2vw, 24px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   position: relative;
@@ -2934,7 +2934,7 @@ body.screen-ceremony-active {
 }
 
 .slide-sponsors .assoc-partner-top-slot {
-  height: clamp(70px, 10vh, 90px);
+  height: clamp(80px, 11vh, 106px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2944,24 +2944,47 @@ body.screen-ceremony-active {
 
 .slide-sponsors .assoc-partner-logo {
   max-height: 100%;
-  max-width: 90%;
+  max-width: 92%;
   width: auto;
   object-fit: contain;
   display: block;
 }
 
-/* DLithe logo: show on transparent bg, no white box */
+/* DLithe logo: show on transparent bg, larger to fit the frame */
+.slide-sponsors .assoc-logo-dlithe,
 .slide-sponsors .assoc-logo-transparent {
-  height: clamp(50px, 7vh, 64px);
-  filter: drop-shadow(0 2px 12px rgba(255, 255, 255, 0.35));
+  height: clamp(75px, 10.5vh, 100px);
+  max-width: 92%;
+  filter: drop-shadow(0 3px 14px rgba(255, 255, 255, 0.4));
+  transition: transform 0.25s ease;
 }
 
-/* Divine Design & Printasstic: blend white/light bg away on dark card */
-.slide-sponsors .assoc-logo-blend {
-  height: clamp(60px, 9vh, 80px);
-  border-radius: var(--border-radius-sm);
-  mix-blend-mode: screen;
-  filter: brightness(1.05) contrast(1.1) drop-shadow(0 2px 10px rgba(255, 215, 0, 0.2));
+.slide-sponsors .col-dlithe:hover .assoc-logo-dlithe {
+  transform: scale(1.04);
+}
+
+/* Divine Design: circular gold seal, transparent bg */
+.slide-sponsors .assoc-logo-divine {
+  height: clamp(74px, 10.5vh, 98px);
+  max-width: 92%;
+  filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.45));
+  transition: transform 0.25s ease;
+}
+
+.slide-sponsors .col-divine:hover .assoc-logo-divine {
+  transform: scale(1.04);
+}
+
+/* Printasstic: transparent bg, magenta + white slogan */
+.slide-sponsors .assoc-logo-prrintastic {
+  height: clamp(58px, 8vh, 78px);
+  max-width: 94%;
+  filter: drop-shadow(0 2px 12px rgba(236, 72, 153, 0.4));
+  transition: transform 0.25s ease;
+}
+
+.slide-sponsors .col-prrintastic:hover .assoc-logo-prrintastic {
+  transform: scale(1.04);
 }
 
 .slide-sponsors .assoc-partner-line {

@@ -212,12 +212,13 @@ async function runE2E() {
   await delay(600);
   const sponsorsData = await evalExpr(`
     (() => {
-      const names = Array.from(document.querySelectorAll('.assoc-partner-name')).map(el => el.textContent.trim());
-      const dlithe = document.querySelector('.assoc-partner-logo[src*="dlithe"]');
-      if (dlithe) names.unshift("DLithe");
+      const partners = [];
+      if (document.querySelector('.assoc-partner-logo[src*="dlithe"]')) partners.push("DLithe");
+      if (document.querySelector('.assoc-partner-logo[src*="divine"]')) partners.push("Divine Designs");
+      if (document.querySelector('.assoc-partner-logo[src*="printasstic"]')) partners.push("Prrintastic");
       const accreditations = document.querySelector('.all-logos-img');
       return {
-        partners: names,
+        partners,
         hasAccreditations: !!accreditations && accreditations.naturalWidth > 0
       };
     })()

@@ -150,13 +150,14 @@ describe("Lakshya 2026 Big Screen Ceremony Sequence", () => {
     expect(html).toContain("IN ASSOCIATION WITH");
     expect(html).toContain("dlithe-logo-clean.png");
     expect(html).toContain("DLithe");
-    expect(html).toContain("divine-design-logo.png");
-    expect(html).toContain("printasstic-logo.jpg");
+    expect(html).toContain("divine-design-seal-gold.png");
+    expect(html).toContain("printasstic-transparent.png");
     expect(html).toContain("Creative &amp; Branding Partner");
     expect(html).toContain("Print &amp; Merchandising Partner");
-    // Verify all three use img tags with blend classes
+    // Verify all three use transparent logo classes
     expect(html).toContain("assoc-logo-transparent");
-    expect(html).toContain("assoc-logo-blend");
+    expect(html).toContain("assoc-logo-divine");
+    expect(html).toContain("assoc-logo-prrintastic");
   });
 
   it("verifies renderThemeTableSlide renders all 10 statements of the theme in a table with animation classes", () => {

@@ -775,30 +775,30 @@ export class CeremonyController {
         <div class="assoc-dlithe-card">
           <div class="assoc-label">IN ASSOCIATION WITH</div>
           <div class="assoc-partners-grid">
-            <!-- DLithe (Logo - No White Box) -->
+            <!-- DLithe (Logo - No White Box, Enlarged to Fit Frame) -->
             <div class="assoc-partner-col col-dlithe">
               <div class="assoc-partner-top-slot">
-                <img src="/assets/dlithe-logo-clean.png" alt="DLithe - Be Agile..Be in Demand" class="assoc-partner-logo assoc-logo-transparent" />
+                <img src="/assets/dlithe-logo-clean.png" alt="DLithe - Be Agile..Be in Demand" class="assoc-partner-logo assoc-logo-dlithe assoc-logo-transparent" />
               </div>
               <div class="assoc-partner-line"></div>
               <div class="assoc-partner-role">Empowering Next-Gen Tech Talent</div>
               <div class="assoc-partner-tagline">Be Agile..Be in Demand</div>
             </div>
 
-            <!-- Divine Designs (Logo) -->
+            <!-- Divine Designs (Logo - Transparent Gold Seal) -->
             <div class="assoc-partner-col col-divine">
               <div class="assoc-partner-top-slot">
-                <img src="/assets/divine-design-logo.png" alt="Divine Design - Urban Planners, Architects & Interior Designers" class="assoc-partner-logo assoc-logo-blend" />
+                <img src="/assets/divine-design-seal-gold.png" alt="Divine Design - Urban Planners, Architects & Interior Designers" class="assoc-partner-logo assoc-logo-divine" />
               </div>
               <div class="assoc-partner-line"></div>
               <div class="assoc-partner-role">Creative &amp; Branding Partner</div>
               <div class="assoc-partner-tagline">Design Studio &bull; Visual Identity</div>
             </div>
 
-            <!-- Prrintastic (Logo) -->
+            <!-- Prrintastic (Logo - Transparent Brand Colors) -->
             <div class="assoc-partner-col col-prrintastic">
               <div class="assoc-partner-top-slot">
-                <img src="/assets/printasstic-logo.jpg" alt="Printasstic - Dedicated Partner for All End-to-End Printing Requirements" class="assoc-partner-logo assoc-logo-blend" />
+                <img src="/assets/printasstic-transparent.png" alt="Printasstic - Dedicated Partner for All End-to-End Printing Requirements" class="assoc-partner-logo assoc-logo-prrintastic" />
               </div>
               <div class="assoc-partner-line"></div>
               <div class="assoc-partner-role">Print &amp; Merchandising Partner</div>
